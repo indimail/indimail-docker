@@ -1,3 +1,4 @@
+FROM debian:9
 MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
