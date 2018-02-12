@@ -7,6 +7,7 @@ RUN apt-get install -y wget openssl man-db vim net-tools gnupg2 procps systemd l
 RUN wget -nv https://download.opensuse.org/repositories/home:mbhangui/Debian_9.0/Release.key -O - | apt-key add -
 RUN echo 'deb http://download.opensuse.org/repositories/home:/mbhangui/Debian_9.0/ /' > /etc/apt/sources.list.d/indimail.list 
 RUN apt-get -y update
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install mrtg
 RUN apt-get -y install indimail
 RUN hostname indimail.org
 RUN /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org
