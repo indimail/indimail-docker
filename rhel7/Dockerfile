@@ -1,4 +1,4 @@
-FROM rhel:7
+FROM rhel7
 MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
