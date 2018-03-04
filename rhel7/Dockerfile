@@ -1,4 +1,4 @@
-FROM rhel7
+FROM registry.access.redhat.com/rhel7/rhel
 MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
