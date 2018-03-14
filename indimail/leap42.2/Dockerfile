@@ -2,7 +2,7 @@ FROM opensuse:42.2
 MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
-RUN zypper --non-interactive install wget openssl vim net-tools gnupg2 procps systemd less telnet openssh-server which systemd-sysvinit hostname
+RUN zypper --non-interactive install wget openssl vim net-tools procps systemd less telnet openssh which systemd-sysvinit hostname
 RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_42.2/home:mbhangui.repo
 RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_42.2/server:database.repo
 RUN hostname indimail.org
