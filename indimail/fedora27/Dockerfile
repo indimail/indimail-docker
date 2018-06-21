@@ -1,7 +1,7 @@
 FROM fedora:27
 MAINTAINER cprogrammer
 
-RUN yum -y install wget openssl man-db vim net-tools gnupg2 procps systemd less telnet openssh-server which hostname
+RUN dnf -y install wget openssl man-db vim net-tools gnupg2 procps systemd less telnet openssh-server which hostname
 RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf config-manager --add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_27/home:mbhangui.repo
 RUN dnf -y update
