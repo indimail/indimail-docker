@@ -4,7 +4,7 @@ MAINTAINER cprogrammer
 # Freshen RUN apt-get -y update
 RUN zypper --non-interactive install wget openssl vim net-tools procps systemd less telnet openssh which systemd-sysvinit sudo patch
 RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_42.2/home:mbhangui.repo
-RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_42.2/server:database.repo
+RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_42.3/server:database.repo
 RUN zypper --non-interactive --gpg-auto-import-keys refresh
 RUN zypper --non-interactive --gpg-auto-import-keys install indimail libmysqlclient18 mysql-community-server
 RUN wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/indimail/leap42.2/mysql_install_db.patch -O /tmp/mysql_install_db.patch
