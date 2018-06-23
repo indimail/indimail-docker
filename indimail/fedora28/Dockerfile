@@ -5,6 +5,7 @@ RUN dnf -y install wget initscripts binutils openssl man-db vim net-tools gnupg2
 RUN dnf -y install 'dnf-command(config-manager)'
 RUN dnf config-manager --add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_28/home:mbhangui.repo
 RUN dnf -y update
+RUN /usr/bin/hostname indimail.org
 RUN dnf -y install indimail mrtg
 RUN /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org
 RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
