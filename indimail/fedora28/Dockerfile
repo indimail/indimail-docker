@@ -25,6 +25,6 @@ RUN export HOSTNAME=indimail.org \
 		vim \
 		wget \
 		which \
-		indimail
+		indimail \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org \
 	&& unset HOSTNAME
