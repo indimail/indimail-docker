@@ -1,0 +1,1 @@
+-kr -bap -fc1 -nbc -brs -bs -cdw -bli0 -cdb -ci0 -cli0 -cbi0 -ce -d4 -di16 -cs -i4 -ip4 -nprs -nss -ts4 -lp -sc -psl -v -l132 -nhnl

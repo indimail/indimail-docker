@@ -1,0 +1,22 @@
+# Some useful aliases.
+alias h='history'
+alias j="jobs -l"
+alias term='set noglob; eval `tset -Q -s `'
+alias pu="pushd"
+alias po="popd"
+alias which='builtin type'
+alias cp='cp -i'
+alias mv='mv -i'
+alias cc='gcc'
+alias what=ident
+alias vi='/usr/bin/vim -i NONE'
+alias more=less
+alias cls=clear
+alias c=clear
+alias rm='rm -i'
+alias ls='ls --color=auto'
+#alias webdav='cadaver https://frs.sourceforge.net/m/mb/mbhangui/uploads'
+#
+# Csh compatability:
+#
+alias unsetenv=unset
