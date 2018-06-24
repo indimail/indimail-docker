@@ -1,11 +1,11 @@
 FROM fedora:28
 MAINTAINER cprogrammer
 
-COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root
 RUN dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager --add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_28/home:mbhangui.repo \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
 RUN export HOSTNAME=indimail.org \
+	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \
 		binutils \
@@ -17,9 +17,11 @@ RUN export HOSTNAME=indimail.org \
 		man-db \
 		mrtg \
 		net-tools \
+		openssh-clients \
 		openssh-server \
 		openssl \
 		procps \
+		rsync \
 		systemd \
 		telnet \
 		vim \
@@ -28,3 +30,4 @@ RUN export HOSTNAME=indimail.org \
 		indimail \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org \
 	&& unset HOSTNAME
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root
