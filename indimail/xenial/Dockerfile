@@ -3,12 +3,29 @@ From ubuntu:xenial
 MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
-RUN apt-get -y update
-RUN apt-get install -y wget openssl man-db vim net-tools gnupg2 procps systemd systemd-sysv less debianutils telnet openssh-server
-RUN wget -nv https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_16.04/Release.key -O - | apt-key add -
-RUN echo 'deb http://download.opensuse.org/repositories/home:/mbhangui/xUbuntu_16.04/ /' > /etc/apt/sources.list.d/indimail.list
-RUN apt-get -y update
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install mrtg
-RUN apt-get -y install indimail
-RUN /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org
-RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
+	&& mkdir -p /root \
+	&& apt-get -y update \
+	&& apt-get install -y wget gnupg2 \
+	&& wget -nv https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_16.04/Release.key -O - | apt-key add - \
+	&& echo 'deb http://download.opensuse.org/repositories/home:/mbhangui/xUbuntu_16.04/ /' > /etc/apt/sources.list.d/indimail.list \
+	&& apt-get -y update \
+	&& apt-get -y install \
+		debianutils \
+		less \
+		man-db \
+		net-tools \
+		openssh-server \
+		openssl \
+		procps \
+		systemd \
+		systemd-sysv \
+		telnet \
+		strace \
+		lsof
+		vim \
+	&& apt-get -y install mrtg indimail \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null \
+	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
+	&& unset HOSTNAME
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
