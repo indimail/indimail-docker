@@ -31,7 +31,6 @@ if [ "$PS1" ]; then
 	# Make it so that failed `exec' commands don't flush this shell.
 	no_exit_on_failed_exec=1 
 	HISTFILE=$HOME/.history
-	HISTSIZE=-1
 	HISTFILESIZE=-1
 	MAIL=$HOME/Maildir
 	MAILCHECK=60
