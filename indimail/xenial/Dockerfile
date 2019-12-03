@@ -22,7 +22,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		systemd-sysv \
 		telnet \
 		strace \
-		lsof
+		lsof \
 		vim \
 	&& apt-get -y install mrtg indimail \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null \
