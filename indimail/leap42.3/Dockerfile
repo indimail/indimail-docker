@@ -1,4 +1,4 @@
-FROM opensuse:42.3
+FROM opensuse/leap:42.3
 MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
