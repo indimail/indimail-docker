@@ -1,4 +1,4 @@
-FROM opensuse:tumbleweed
+FROM opensuse/tumbleweed
 MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
