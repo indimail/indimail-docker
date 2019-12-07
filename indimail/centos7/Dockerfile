@@ -26,7 +26,7 @@ RUN export HOSTNAME=indimail.org \
 	&& wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm \
 	&& rpm -ivh mysql80-community-release-el7-3.noarch.rpm \
 	&& yum -y install indimail mrtg mysql-community-server mysql-community-libs mysql-community-client iwebadmin \
-	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME
 COPY docker-entrypoint.sh /usr/bin
