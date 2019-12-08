@@ -1,9 +1,12 @@
 # Dockerfile repository for automated builds.
 
 This repo contains repository for Dockerfiles used for building
-docker/podman images at
+docker/podman images for indimail & indimail-mta at
 
+```
 https://hub.docker.com/r/cprogrammer/autobuild-indimail
+https://hub.docker.com/r/cprogrammer/autobuild-indimail-mta
+```
 
 The following tags/images can be pulled by executing
 the commands
@@ -12,6 +15,7 @@ the commands
 
 ```
 docker pull cprogrammer/autobuild-indimail:tag
+docker pull cprogrammer/autobuild-indimail-mta:tag
 ```
 
 or
@@ -20,6 +24,7 @@ or
 
 ```
 podman pull cprogrammer/autobuild-indimail:tag
+podman pull cprogrammer/autobuild-indimail-mta:tag
 ```
 
 Replace tag in the above command with one of the following
