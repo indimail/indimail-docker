@@ -1,5 +1,4 @@
-Dockerfile repository for automated builds.
-==========================================
+# Dockerfile repository for automated builds.
 
 This repo contains repository for Dockerfiles used for building
 docker/podman images at
@@ -9,16 +8,16 @@ https://hub.docker.com/r/cprogrammer/autobuild-indimail
 The following tags/images can be pulled by executing
 the commands
 
-a) docker
+## a) docker
    docker pull cprogrammer/autobuild-indimail:tag
 
 or
 
-b) podman
+## b) podman
    podman pull cprogrammer/autobuild-indimail:tag
 
 Replace tag in the above command with one of the following
-
+...
 disco    for ubuntu 19.04
 bionic   for ubuntu 18.04
 xenial   for ubuntu 16.04
@@ -28,43 +27,49 @@ debian9  for debian9
 debian8  for debian8
 fc31     for fc31
 fc30     for fc30
+...
 
-Instructions for starting the docker/podman container
-=====================================================
+## Instructions for starting the docker/podman container
+
 
 (replace podman with docker for docker operations)
 
 
-list podman images
-------------------
+### list podman images
 
 $ podman images
+...
 REPOSITORY                                 TAG       IMAGE ID       CREATED       SIZE
 docker.io/cprogrammer/autobuild-indimail   centos7   fba3b42e0164   5 hours ago   2.9 GB
 docker.io/cprogrammer/autobuild-indimail   fc30      a5266643441b   4 days ago    1.13 GB
+...
 
-Start the podman container
---------------------------
+### Start the podman container
 
 $ podman run -d -h indimail.org  fba3b42e0164 indimail
+...
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
+...
 
-Query the id of the container
------------------------------
+### Query the id of the container
 
 $ podman ps
+...
 CONTAINER ID  IMAGE                                             COMMAND   CREATED             STATUS                 PORTS  NAMES
 08a4df5054d9  docker.io/cprogrammer/autobuild-indimail:centos7  indimail  About a minute ago  Up About a minute ago         inspiring_chatterjee
+...
 
-Execute an interactive shell in the container
----------------------------------------------
+### Execute an interactive shell in the container
 
 $ podman exec -ti 08a4df5054d9 /bin/bash
+...
+indimail:/>
+...
 
-Get processlist in the container
---------------------------------
+### Get processlist in the container
 
 indimail:/> ps -ef
+...
 UID          PID    PPID  C STIME TTY          TIME CMD
 root           1       0  0 13:39 ?        00:00:00 /usr/sbin/svscan /service
 root           2       1  0 13:39 ?        00:00:00 supervise qmail-smtpd.587
@@ -215,15 +220,18 @@ mysql        353      44 48 13:40 ?        00:00:02 /usr/sbin/mysqld --defaults-
 indimail     406      65  0 13:40 ?        00:00:00 /usr/sbin/inlookup -i 5 -c 5184000
 root         407     301  0 13:40 pts/0    00:00:00 ps -ef
 indimail:/> exit
+...
 
-Stop the container
------------------
+### Stop the container
 
 $ podman stop `podman ps -q`
+...
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
+...
 
-Clear the stopped container image
----------------------------------
+### Clear the stopped container image
 
 $ podman rm `podman ps -aq`
+...
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
+...
