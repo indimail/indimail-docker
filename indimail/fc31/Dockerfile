@@ -30,7 +30,7 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		deltarpm \
 		indimail \
-	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /tmp/cert.log 2>&1 \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
