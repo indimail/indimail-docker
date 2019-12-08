@@ -222,7 +222,7 @@ indimail:/> exit
 
 ### Stop the container
 
-$ podman stop `podman ps -q`
+$ podman stop \`podman ps -q\`
 ```
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
 ```
