@@ -1,0 +1,12 @@
+--- /usr/bin/mysql_install_db   2018-01-18 13:32:55.000000000 +0000
++++ mysql_install_db    2018-03-15 09:17:35.439970444 +0000
+@@ -583,8 +583,7 @@
+                                     "libexec","sbin","bin") ||  # ,"sql"
+                     find_in_basedir($opt,"file","mysqld-nt",
+                                   "bin");  # ,"sql"
+-  $pkgdatadir     = find_in_basedir($opt,"dir","fill_help_tables.sql",
+-                                    "share","share/mysql");  # ,"scripts"
++  $pkgdatadir     = '/usr/share/mysql-community-server';
+   $scriptdir      = "$opt->{basedir}/scripts";
+ }
+ else
