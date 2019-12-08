@@ -9,12 +9,18 @@ The following tags/images can be pulled by executing
 the commands
 
 ## a) docker
-   docker pull cprogrammer/autobuild-indimail:tag
+
+```
+docker pull cprogrammer/autobuild-indimail:tag
+```
 
 or
 
 ## b) podman
-   podman pull cprogrammer/autobuild-indimail:tag
+
+```
+podman pull cprogrammer/autobuild-indimail:tag
+```
 
 Replace tag in the above command with one of the following
 ```
@@ -66,8 +72,8 @@ indimail:/>
 
 ### Get processlist in the container
 
-indimail:/> ps -ef
 ```
+indimail:/> ps -ef
 UID          PID    PPID  C STIME TTY          TIME CMD
 root           1       0  0 13:39 ?        00:00:00 /usr/sbin/svscan /service
 root           2       1  0 13:39 ?        00:00:00 supervise qmail-smtpd.587
