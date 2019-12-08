@@ -4,8 +4,8 @@ This repo contains repository for Dockerfiles used for building
 docker/podman images for indimail & indimail-mta at
 
 ```
-https://hub.docker.com/r/cprogrammer/autobuild-indimail
-https://hub.docker.com/r/cprogrammer/autobuild-indimail-mta
+https://hub.docker.com/r/cprogrammer/indimail
+https://hub.docker.com/r/cprogrammer/indimail-mta
 ```
 
 The following tags/images can be pulled by executing
@@ -14,8 +14,8 @@ the commands
 ## a) docker
 
 ```
-docker pull cprogrammer/autobuild-indimail:tag
-docker pull cprogrammer/autobuild-indimail-mta:tag
+docker pull cprogrammer/indimail:tag
+docker pull cprogrammer/indimail-mta:tag
 ```
 
 or
@@ -23,8 +23,8 @@ or
 ## b) podman
 
 ```
-podman pull cprogrammer/autobuild-indimail:tag
-podman pull cprogrammer/autobuild-indimail-mta:tag
+podman pull cprogrammer/indimail:tag
+podman pull cprogrammer/indimail-mta:tag
 ```
 
 Replace tag in the above command with one of the following
@@ -49,8 +49,8 @@ fc30     for fc30
 $ podman images
 ```
 REPOSITORY                                 TAG       IMAGE ID       CREATED       SIZE
-docker.io/cprogrammer/autobuild-indimail   centos7   fba3b42e0164   5 hours ago   2.9 GB
-docker.io/cprogrammer/autobuild-indimail   fc30      a5266643441b   4 days ago    1.13 GB
+docker.io/cprogrammer/indimail             centos7   fba3b42e0164   5 hours ago   2.9 GB
+docker.io/cprogrammer/indimail             fc30      a5266643441b   4 days ago    1.13 GB
 ```
 
 ### Start the podman container
@@ -64,8 +64,8 @@ $ podman run -d -h indimail.org  fba3b42e0164 indimail
 
 $ podman ps
 ```
-CONTAINER ID  IMAGE                                             COMMAND   CREATED             STATUS                 PORTS  NAMES
-08a4df5054d9  docker.io/cprogrammer/autobuild-indimail:centos7  indimail  About a minute ago  Up About a minute ago         inspiring_chatterjee
+CONTAINER ID  IMAGE                                   COMMAND   CREATED             STATUS                 PORTS  NAMES
+08a4df5054d9  docker.io/cprogrammer/indimail:centos7  indimail  About a minute ago  Up About a minute ago         inspiring_chatterjee
 ```
 
 ### Execute an interactive shell in the container
