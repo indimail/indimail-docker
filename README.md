@@ -229,7 +229,7 @@ $ podman stop `podman ps -q`
 
 ### Clear the stopped container image
 
-$ podman rm ``podman ps -aq``
+$ podman rm \`podman ps -aq\`
 ```
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
 ```
