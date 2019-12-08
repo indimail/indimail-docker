@@ -1,7 +1,6 @@
 FROM fedora:31
 MAINTAINER cprogrammer
 
-COPY docker-entrypoint.sh /usr/bin
 RUN dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager --add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_31/home:mbhangui.repo
 RUN export HOSTNAME=indimail.org \
@@ -32,9 +31,8 @@ RUN export HOSTNAME=indimail.org \
 		deltarpm \
 		indimail \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /tmp/cert.log 2>&1 \
-	&& chmod 755 /usr/bin/docker-entrypoint.sh \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint"]
 CMD ["indimail"]
