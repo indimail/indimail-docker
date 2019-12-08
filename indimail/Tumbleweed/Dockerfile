@@ -9,7 +9,7 @@ RUN zypper --non-interactive addrepo \
 RUN zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo
 RUN zypper --non-interactive --gpg-auto-import-keys refresh
-RUN zypper --non-interactive --gpg-auto-import-keys install indimail libmysqlclient18 mysql-community-server
+RUN zypper --non-interactive --gpg-auto-import-keys install indimail iwebadmin libmysqlclient18 mysql-community-server
 RUN wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/indimail/Tumbleweed/mysql_install_db.patch \
 		-O /tmp/mysql_install_db.patch
 RUN patch -p0 < /tmp/mysql_install_db.patch
