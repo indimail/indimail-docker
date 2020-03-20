@@ -55,6 +55,8 @@ docker.io/cprogrammer/indimail             fc30      a5266643441b   4 days ago  
 
 ### Start the podman container
 
+indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail or indimail-mta. You just need to pass the argument indimail, indimail-mta or svscan. e.g.
+
 $ podman run -d -h indimail.org  fba3b42e0164 indimail
 ```
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
