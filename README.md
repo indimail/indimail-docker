@@ -3,10 +3,13 @@
 This repo contains repository for Dockerfiles used for building
 docker/podman images for indimail & indimail-mta at
 
-```
+**indimail**
 https://hub.docker.com/r/cprogrammer/indimail
+
+and
+
+**indimail-mta**
 https://hub.docker.com/r/cprogrammer/indimail-mta
-```
 
 The following tags/images can be pulled by executing
 the commands
@@ -246,3 +249,15 @@ $ podman rm \`podman ps -aq\`
 ```
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
 ```
+
+## c) github respository for Dockerfile
+
+The Dockerfile for each of the images is located in a separate subdirectory for each linux distro
+
+**indimail**
+https://github.com/mbhangui/docker/tree/master/indimail
+
+and
+
+**indimail-mta**
+https://github.com/mbhangui/docker/tree/master/indimail-mta
