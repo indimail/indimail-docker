@@ -270,16 +270,16 @@ COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /roo
 
 To build the image use need to use the docker/podman build command .e.g.
 ```
-$ docker build -t indimail:fc31 ./Dockerfile
+$ docker build -t indimail:fc31 ./Dockerfile .
 or
-$ podman build -t indimail:fc31 ./Dockerfile
+$ podman build -t indimail:fc31 ./Dockerfile .
 ```
 
 ## NOTE
 The images above have been installed without clam anti virus to keep the image size as low as possible. You may install and configure it using the below steps.
 ```
-dnf -y install clamav clamav-update clamd # use apt-get for ubuntu/debian, zypper for openSUSE
-svctool --clamd --clamdPrefix=/usr --servicedir=/service --sysconfdir=/etc/clamd.d
-svctool --config=clamd
-svctool --config=foxhole
+$ sudo dnf -y install clamav clamav-update clamd # use apt-get for ubuntu/debian, zypper for openSUSE
+$ sudo svctool --clamd --clamdPrefix=/usr --servicedir=/service --sysconfdir=/etc/clamd.d
+$ sudo svctool --config=clamd
+$ sudo svctool --config=foxhole
 ```
