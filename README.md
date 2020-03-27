@@ -32,15 +32,15 @@ podman pull cprogrammer/indimail-mta:tag
 
 Replace tag in the above command with one of the following
 ```
-disco    for ubuntu 19.04
-bionic   for ubuntu 18.04
 xenial   for ubuntu 16.04
+bionic   for ubuntu 18.04
+disco    for ubuntu 19.04
 centos7  for centos7
-debian10 for debian10
-debian9  for debian9
 debian8  for debian8
-fc31     for fc31
+debian9  for debian9
+debian10 for debian10
 fc30     for fc30
+fc31     for fc31
 ```
 
 ## Instructions for starting the docker/podman container
@@ -53,7 +53,7 @@ $ podman images
 ```
 REPOSITORY                                 TAG       IMAGE ID       CREATED       SIZE
 docker.io/cprogrammer/indimail             centos7   fba3b42e0164   5 hours ago   2.9 GB
-docker.io/cprogrammer/indimail             fc30      a5266643441b   4 days ago    1.13 GB
+docker.io/cprogrammer/indimail             fc31      a5266643441b   4 days ago    1.13 GB
 ```
 
 ### Start the podman container
@@ -261,3 +261,25 @@ and
 
 **indimail-mta**
 https://github.com/mbhangui/docker/tree/master/indimail-mta
+
+If you want to build the image yourself instead of using hub.docker.com, ensure that you remove the below line from your Dockerfile
+
+```
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+```
+
+To build the image use need to use the docker/podman build command .e.g.
+```
+$ docker build -t indimail:fc31 ./Dockerfile
+or
+$ podman build -t indimail:fc31 ./Dockerfile
+```
+
+## NOTE
+The images above have been installed without clam anti virus to keep the image size as low as possible. You may install and configure it using the below steps.
+```
+dnf -y install clamav clamav-update clamd # use apt-get for ubuntu/debian, zypper for openSUSE
+svctool --clamd --clamdPrefix=/usr --servicedir=/service --sysconfdir=/etc/clamd.d
+svctool --config=clamd
+svctool --config=foxhole
+```
