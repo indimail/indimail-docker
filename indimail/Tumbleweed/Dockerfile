@@ -1,17 +1,32 @@
 FROM opensuse/tumbleweed
 MAINTAINER cprogrammer
 
-# Freshen RUN apt-get -y update
-RUN zypper --non-interactive install wget openssl vim net-tools procps systemd less telnet \
-		openssh which systemd-sysvinit sudo patch
-RUN zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo
-RUN zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo
-RUN zypper --non-interactive --gpg-auto-import-keys refresh
-RUN zypper --non-interactive --gpg-auto-import-keys install indimail iwebadmin libmysqlclient18 mysql-community-server
-RUN wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/indimail/Tumbleweed/mysql_install_db.patch \
-		-O /tmp/mysql_install_db.patch
-RUN patch -p0 < /tmp/mysql_install_db.patch
-RUN /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null
-RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+RUN export HOSTNAME=indimail.org \
+	&& mkdir -p /root \
+	&& zypper --non-interactive update \
+	&& zypper --non-interactive install \
+		wget \
+		openssl \
+		vim \
+		net-tools \
+		procps \
+		systemd \
+		less \
+		telnet \
+		openssh \
+		which \
+		systemd-sysvinit \
+		sudo \
+		strace \
+		lsof \
+		patch \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \
+	&& zypper --non-interactive --gpg-auto-import-keys refresh \
+	&& zypper --non-interactive --gpg-auto-import-keys install indimail iwebadmin \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \
+	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
+	&& unset HOSTNAME
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["indimail"]
