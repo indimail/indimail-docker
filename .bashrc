@@ -3,11 +3,13 @@
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
+if [ -n "$USER" ] ; then
+	declare -x USER=`whoami`
+fi
 # If running interactively, then:
 if [ "$PS1" ]; then
 	set noclobber
-	HNAME=`/bin/hostname | cut -d. -f1`
-	declare -x PROMPT_COMMAND='PS1=$HNAME:`pwd`\>'
+	declare -x PROMPT_COMMAND='PS1=`pwd`\>'
 	#
 	# Set readonly variables
 	#
