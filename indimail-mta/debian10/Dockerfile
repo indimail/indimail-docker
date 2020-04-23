@@ -1,3 +1,4 @@
+# docker build -f dockerfile.debian10 -t cprogrammer/indimail:debian10
 FROM debian:10
 MAINTAINER cprogrammer
 
@@ -22,9 +23,9 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		systemd \
 		systemd-sysv \
 		telnet \
-		vim \
-		lsof \
 		strace \
+		lsof \
+		vim \
 		mrtg \
 		indimail-mta \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \

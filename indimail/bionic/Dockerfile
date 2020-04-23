@@ -1,4 +1,4 @@
-# docker build -f dockerfile.xenial -t cprogrammer/indimail:xenial
+# docker build -f dockerfile.bionic -t cprogrammer/indimail:bionic
 From ubuntu:bionic
 MAINTAINER cprogrammer
 

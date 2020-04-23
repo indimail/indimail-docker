@@ -1,3 +1,4 @@
+# docker build -f dockerfile.fc30 -t cprogrammer/indimail:fc30
 FROM fedora:30
 MAINTAINER cprogrammer
 
@@ -31,6 +32,9 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		deltarpm \
 		indimail \
+		ezmlm-idx \
+		ezmlm-idx-cgi \
+		ezmlm-idx-mysql \
 		iwebadmin \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \

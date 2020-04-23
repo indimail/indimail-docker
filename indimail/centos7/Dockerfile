@@ -1,3 +1,4 @@
+# docker build -f dockerfile.centos7 -t cprogrammer/indimail:centos7
 FROM centos:7
 MAINTAINER cprogrammer
 
@@ -26,7 +27,16 @@ RUN export HOSTNAME=indimail.org \
 	&& wget https://download.opensuse.org/repositories/home:mbhangui/CentOS_7/home:mbhangui.repo -O /etc/yum.repos.d/indimail.repo \
 	&& wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm \
 	&& rpm -ivh mysql80-community-release-el7-3.noarch.rpm \
-	&& yum -y install indimail mrtg mysql-community-server mysql-community-libs mysql-community-client iwebadmin \
+	&& yum -y install \
+		mysql-community-server \
+		mysql-community-libs \
+		mysql-community-client \
+		indimail \
+		ezmlm-idx \
+		ezmlm-idx-cgi \
+		ezmlm-idx-mysql \
+		iwebadmin \
+		mrtg \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME

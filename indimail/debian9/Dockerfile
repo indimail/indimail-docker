@@ -1,3 +1,4 @@
+# docker build -f dockerfile.debian9 -t cprogrammer/indimail:debian9
 FROM debian:9
 MAINTAINER cprogrammer
 
@@ -22,12 +23,15 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		systemd \
 		systemd-sysv \
 		telnet \
-		vim \
-		lsof \
 		strace \
+		lsof \
+		vim \
 		mrtg \
 		indimail \
 		iwebadmin \
+		ezmlm-idx \
+		ezmlm-idx-cgi \
+		ezmlm-idx-mysql \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME
