@@ -18,6 +18,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		openssh-server \
 		openssl \
 		procps \
+		psmisc \
 		systemd \
 		systemd-sysv \
 		telnet \

@@ -10,6 +10,7 @@ RUN export HOSTNAME=indimail.org \
 		vim \
 		net-tools \
 		procps \
+		psmisc \
 		systemd \
 		less \
 		telnet \

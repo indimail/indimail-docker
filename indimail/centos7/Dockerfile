@@ -14,6 +14,7 @@ RUN export HOSTNAME=indimail.org \
 		openssh-server \
 		openssl \
 		procps \
+		psmisc \
 		systemd \
 		telnet \
 		vim \

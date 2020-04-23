@@ -20,6 +20,7 @@ RUN export HOSTNAME=indimail.org \
 		openssh-server \
 		openssl \
 		procps \
+		psmisc \
 		rsync \
 		systemd \
 		telnet \
