@@ -1,4 +1,4 @@
-# docker build -f dockerfile.debian10 -t cprogrammer/indimail:debian10
+# docker build -f dockerfile.bionic -t cprogrammer/indimail:bionic
 From ubuntu:bionic
 MAINTAINER cprogrammer
 
