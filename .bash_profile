@@ -5,7 +5,7 @@ trap "" SIGHUP SIGQUIT
 trap "sh $HOME/.glogout" SIGTERM EXIT
 umask 022
 
-if [ -n "$USER" ] ; then
+if [ -z "$USER" ] ; then
 	declare -x USER=`whoami`
 fi
 if [ "$PS1" ]; then

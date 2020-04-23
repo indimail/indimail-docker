@@ -3,7 +3,7 @@
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
-if [ -n "$USER" ] ; then
+if [ -z "$USER" ] ; then
 	declare -x USER=`whoami`
 fi
 # If running interactively, then:
