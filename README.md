@@ -34,8 +34,9 @@ Replace tag in the above command with one of the following
 ```
 xenial   for ubuntu 16.04
 bionic   for ubuntu 18.04
-disco    for ubuntu 19.04
+focal    for ubuntu 20.04
 centos7  for centos7
+centos8  for centos8
 debian8  for debian8
 debian9  for debian9
 debian10 for debian10
