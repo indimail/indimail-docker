@@ -12,6 +12,7 @@ RUN export HOSTNAME=indimail.org \
 	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \
 	&& dnf -y install \
 		gnupg2 \
+		binutils \
 		hostname \
 		less \
 		man-db \

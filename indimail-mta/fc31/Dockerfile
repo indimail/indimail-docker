@@ -7,8 +7,8 @@ RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \
-		binutils \
 		gnupg2 \
+		binutils \
 		hostname \
 		initscripts \
 		less \

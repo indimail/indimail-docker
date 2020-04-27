@@ -6,6 +6,7 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
+		binutils \
 		openssl \
 		vim \
 		net-tools \

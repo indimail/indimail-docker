@@ -12,6 +12,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& apt-get -y update \
 	&& apt-get -y install \
 		debianutils \
+		binutils \
 		cron \
 		less \
 		man-db \

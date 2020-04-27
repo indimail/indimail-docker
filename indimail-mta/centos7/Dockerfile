@@ -7,6 +7,7 @@ RUN export HOSTNAME=indimail.org \
 	&& yum -y update \
 	&& yum -y install \
 		gnupg2 \
+		binutils \
 		hostname \
 		less \
 		man-db \
