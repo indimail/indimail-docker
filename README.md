@@ -32,16 +32,18 @@ podman pull cprogrammer/indimail-mta:tag
 
 Replace tag in the above command with one of the following
 ```
-xenial   for ubuntu 16.04
-bionic   for ubuntu 18.04
-focal    for ubuntu 20.04
-centos7  for centos7
-centos8  for centos8
-debian8  for debian8
-debian9  for debian9
-debian10 for debian10
-fc30     for fc30
-fc31     for fc31
+xenial     for Ubuntu 16.04
+bionic     for Ubuntu 18.04
+focal      for Ubuntu 20.04
+centos7    for CentOS 7
+centos8    for CentOS 8
+debian8    for Debian  8
+debian9    for Debian  9
+debian10   for Debian 10
+fc30       for Fedora Core 30
+fc31       for Fedora Core 31
+Tumbleweed for openSUSE Tumbleweed
+Leap15.2   for openSUSE Leap 15.2
 ```
 
 ## Instructions for starting the docker/podman container
