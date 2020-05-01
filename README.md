@@ -37,11 +37,11 @@ bionic     for Ubuntu 18.04
 focal      for Ubuntu 20.04
 centos7    for CentOS 7
 centos8    for CentOS 8
-debian8    for Debian  8
-debian9    for Debian  9
+debian8    for Debian 8
+debian9    for Debian 9
 debian10   for Debian 10
-fc30       for Fedora Core 30
 fc31       for Fedora Core 31
+fc32       for Fedora Core 32
 Tumbleweed for openSUSE Tumbleweed
 Leap15.2   for openSUSE Leap 15.2
 ```
