@@ -24,8 +24,11 @@ RUN export HOSTNAME=indimail.org \
 		patch \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/openSUSE_Tumbleweed/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
-	&& zypper --non-interactive --gpg-auto-import-keys install indimail-mta \
+	&& zypper --non-interactive --gpg-auto-import-keys install \
+		indimail-mta \
+		mrtg \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \
 	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME
