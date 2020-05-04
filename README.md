@@ -11,7 +11,7 @@ https://hub.docker.com/r/cprogrammer/indimail-mta
 https://hub.docker.com/r/cprogrammer/indimail
 
 **indimail+roundcube **
-https://hub.docker.com/r/cprogrammer/webmail
+https://hub.docker.com/r/cprogrammer/indimail-web
 
 
 The following tags/images can be pulled by executing
