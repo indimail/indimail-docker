@@ -17,8 +17,8 @@ RUN export HOSTNAME=indimail.org \
 		less \
 		man-db \
 		net-tools \
-		openssh-server \
 		openssl \
+		openssh-clients \
 		procps \
 		psmisc \
 		systemd \
@@ -42,7 +42,6 @@ RUN export HOSTNAME=indimail.org \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/ezmlm-idx-mysql-7.2.2-1.1.el8.x86_64.rpm \
 		mrtg \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
-	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
