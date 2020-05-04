@@ -1,15 +1,18 @@
 # Dockerfile repository for automated builds.
 
 This repo contains repository for Dockerfiles used for building
-docker/podman images for indimail & indimail-mta at
+docker/podman images for indimail-mta, indimail and  indimail with
+roundcube webfrontend at
+
+**indimail-mta**
+https://hub.docker.com/r/cprogrammer/indimail-mta
 
 **indimail**
 https://hub.docker.com/r/cprogrammer/indimail
 
-and
+**indimail+roundcube **
+https://hub.docker.com/r/cprogrammer/webmail
 
-**indimail-mta**
-https://hub.docker.com/r/cprogrammer/indimail-mta
 
 The following tags/images can be pulled by executing
 the commands
@@ -17,8 +20,9 @@ the commands
 ## a) docker
 
 ```
-docker pull cprogrammer/indimail:tag
 docker pull cprogrammer/indimail-mta:tag
+docker pull cprogrammer/indimail:tag
+docker pull cprogrammer/webmail:tag
 ```
 
 or
@@ -61,11 +65,18 @@ docker.io/cprogrammer/indimail             fc31      a5266643441b   4 days ago  
 
 ### Start the podman container
 
-indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail or indimail-mta. You just need to pass the argument indimail, indimail-mta or svscan. e.g.
+indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default entrypoint. Passing webmail argument starts apache in addition to indimail.
 
-$ podman run -d -h indimail.org  fba3b42e0164 indimail
+$ podman run -d -h indimail.org --name indimail fba3b42e0164
 ```
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
+```
+
+You can use --net host to map the container's network to the HOST
+```
+$ docker run --net host -d -h indimail.org --name indimail fba3b42e0164
+or
+$ podman run --net host -d -h indimail.org --name indimail fba3b42e0164
 ```
 
 ### Query the id of the container
@@ -73,12 +84,12 @@ $ podman run -d -h indimail.org  fba3b42e0164 indimail
 $ podman ps
 ```
 CONTAINER ID  IMAGE                                   COMMAND   CREATED             STATUS                 PORTS  NAMES
-08a4df5054d9  docker.io/cprogrammer/indimail:centos7  indimail  About a minute ago  Up About a minute ago         inspiring_chatterjee
+08a4df5054d9  docker.io/cprogrammer/indimail:centos7  indimail  About a minute ago  Up About a minute ago         indimail
 ```
 
 ### Execute an interactive shell in the container
 
-$ podman exec -ti 08a4df5054d9 /bin/bash
+$ podman exec -ti indimail /bin/bash
 ```
 indimail:/>
 ```
@@ -257,13 +268,15 @@ $ podman rm \`podman ps -aq\`
 
 The Dockerfile for each of the images is located in a separate subdirectory for each linux distro
 
+**indimail-mta**
+https://github.com/mbhangui/docker/tree/master/indimail-mta
+
 **indimail**
 https://github.com/mbhangui/docker/tree/master/indimail
 
-and
+**indimail+roundcube**
+https://github.com/mbhangui/docker/tree/master/webmail
 
-**indimail-mta**
-https://github.com/mbhangui/docker/tree/master/indimail-mta
 
 If you want to build the image yourself instead of using hub.docker.com, ensure that you remove the below line from your Dockerfile
 
