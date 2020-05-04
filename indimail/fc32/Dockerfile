@@ -18,9 +18,8 @@ RUN export HOSTNAME=indimail.org \
 		man-db \
 		mrtg \
 		net-tools \
-		openssh-clients \
-		openssh-server \
 		openssl \
+		openssh-clients \
 		procps \
 		psmisc \
 		rsync \
@@ -39,7 +38,6 @@ RUN export HOSTNAME=indimail.org \
 		iwebadmin \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
-	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
