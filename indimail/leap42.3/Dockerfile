@@ -35,7 +35,7 @@ RUN export HOSTNAME=indimail.org \
 	&& wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/indimail/leap42.3/mysql_install_db.patch -O /tmp/mysql_install_db.patch \
 	&& patch -p0 < /tmp/mysql_install_db.patch \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \
-	&& echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config \
+	&& systemctl disable sshd \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
