@@ -39,7 +39,6 @@ RUN export HOSTNAME=indimail.org \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/ezmlm-idx-7.2.2-1.1.el8.x86_64.rpm \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/ezmlm-idx-cgi-7.2.2-1.1.el8.x86_64.rpm \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/ezmlm-idx-mysql-7.2.2-1.1.el8.x86_64.rpm \
-		mrtg \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/

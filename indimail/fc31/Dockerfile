@@ -16,7 +16,6 @@ RUN export HOSTNAME=indimail.org \
 		less \
 		mailx \
 		man-db \
-		mrtg \
 		net-tools \
 		openssl \
 		openssh-clients \

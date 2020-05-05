@@ -27,7 +27,6 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail \
-		mrtg \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
