@@ -30,7 +30,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		vim \
 		mrtg \
 		indimail \
-		iwebadmin \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \

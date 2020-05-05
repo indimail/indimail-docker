@@ -36,7 +36,6 @@ RUN export HOSTNAME=indimail.org \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/libqmail-0.1-1.el8.x86_64.rpm \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/indimail-3.0-1.1.el8.x86_64.rpm \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/bogofilter-wordlist-1.0-1.1.el8.x86_64.rpm \
-		http://downloads.sourceforge.net/indimail/Repo/CentOS8/iwebadmin-2.0-1.1.el8.x86_64.rpm \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/ezmlm-idx-7.2.2-1.1.el8.x86_64.rpm \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/ezmlm-idx-cgi-7.2.2-1.1.el8.x86_64.rpm \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/ezmlm-idx-mysql-7.2.2-1.1.el8.x86_64.rpm \

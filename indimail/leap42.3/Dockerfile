@@ -31,7 +31,6 @@ RUN export HOSTNAME=indimail.org \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
-		iwebadmin \
 	&& wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/indimail/leap42.3/mysql_install_db.patch -O /tmp/mysql_install_db.patch \
 	&& patch -p0 < /tmp/mysql_install_db.patch \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \

@@ -32,7 +32,6 @@ RUN export HOSTNAME=indimail.org \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
-		iwebadmin \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \
 	&& systemctl disable sshd \
 	&& unset HOSTNAME
