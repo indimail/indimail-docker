@@ -54,6 +54,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		php-intl \
 		php-imagick \
 		php-json \
+		php-zip \
 		php-cli \
 		ircube \
 	&& update-alternatives --config mta \

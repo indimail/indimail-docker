@@ -2,9 +2,6 @@
 # run dpkg-reconfigure tzdata after starting the container
 From ubuntu:xenial
 MAINTAINER cprogrammer
-#		zip \
-#		unzip \
-#		composer \
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
@@ -56,8 +53,8 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		php-intl \
 		php-imagick \
 		php-json \
-		php-cli \
 		php-zip \
+		php-cli \
 		php-pear \
 		ircube \
 	&& update-alternatives --config mta \
