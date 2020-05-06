@@ -1,9 +1,10 @@
 FROM fedora:32
 MAINTAINER cprogrammer
 
-RUN dnf -y install 'dnf-command(config-manager)' \
-	&& dnf config-manager --add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_32/home:mbhangui.repo
 RUN export HOSTNAME=indimail.org \
+	&& dnf -y install 'dnf-command(config-manager)' \
+	&& dnf config-manager \
+		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_32/home:mbhangui.repo \
 	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \
@@ -30,7 +31,8 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		deltarpm \
 		indimail-mta \
-	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
+	&& /usr/sbin/svctool \
+		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
