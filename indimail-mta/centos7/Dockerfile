@@ -10,6 +10,7 @@ RUN export HOSTNAME=indimail.org \
 		binutils \
 		hostname \
 		less \
+		cronie \
 		man-db \
 		net-tools \
 		openssh-clients \
