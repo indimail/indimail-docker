@@ -15,6 +15,7 @@ RUN export HOSTNAME=indimail.org \
 		gnupg2 \
 		hostname \
 		less \
+		cronie \
 		man-db \
 		net-tools \
 		openssl \
