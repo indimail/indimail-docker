@@ -2,11 +2,11 @@
 FROM fedora:32
 MAINTAINER cprogrammer
 
-RUN dnf -y install 'dnf-command(config-manager)' \
-	&& dnf config-manager \
-		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_32/home:mbhangui.repo
 RUN export HOSTNAME=indimail.org \
-	&& mkdir -p /root \
+	&& dnf -y install 'dnf-command(config-manager)' \
+	&& dnf config-manager \
+		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_32/home:mbhangui.repo \
+	&& mkdir -p /root/Downloads \
 	&& dnf -y update \
 	&& dnf -y install \
 		binutils \
@@ -49,18 +49,7 @@ RUN export HOSTNAME=indimail.org \
 			-e 's};listen.owner = nobody}listen.owner = apache}g' \
 			-e 's};listen.group = nobody}listen.group = apache}g' \
 			-e 's};listen.mode = 0660}listen.mode = 0660}g' \
-			-e 's}^listen.acl_users.};&}' /etc/php-fpm.d/www.conf; \
-		mkdir -p /service/httpd; \
-		(echo "#!/bin/sh"; echo "exec /usr/sbin/httpd -DFOREGROUND") \
-			> /service/httpd/run; \
-		chmod 755 /service/httpd/run; \
-		mkdir -p /service/.fpm-php/log; \
-		(echo "#!/bin/sh"; echo "mkdir -p /var/run/php-fpm"; echo "exec /usr/sbin/php-fpm -O -F") \
-			> /service/.fpm-php/run; \
-		chmod 755 /service/.fpm-php/run; \
-		(echo "#!/bin/sh"; echo "exec /usr/bin/setuidgid qmaill \\" echo "  /usr/sbin/multilog t /var/log/svc/php-fpm") \
-			> /service/.fpm-php/log/run; \
-		chmod 755 /service/.fpm-php/log/run) \
+			-e 's}^listen.acl_users.};&}' /etc/php-fpm.d/www.conf) \
 	&& /usr/libexec/indimail/roundcube_config > /tmp/roundcube.log 2>&1 \
 	&& cat /tmp/roundcube.log \
 	&& unset HOSTNAME
