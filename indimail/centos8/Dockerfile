@@ -8,6 +8,7 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y update \
 	&& dnf -y install 'dnf-command(config-manager)' \
 		drpm \
+		deltarpm \
 	&& dnf config-manager --set-enabled PowerTools \
 	&& dnf -y module disable mysql \
 	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \
@@ -30,7 +31,6 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
-		deltarpm \
 		perl \
 		mysql-community-server \
 		mysql-community-client \
