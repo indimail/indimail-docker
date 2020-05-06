@@ -16,6 +16,7 @@ RUN export HOSTNAME=indimail.org \
 		hostname \
 		less \
 		cronie \
+		mailx \
 		man-db \
 		net-tools \
 		openssl \
@@ -29,6 +30,8 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
+		deltarpm \
+		perl \
 		mysql-community-server \
 		mysql-community-client \
 		mysql-community-libs \

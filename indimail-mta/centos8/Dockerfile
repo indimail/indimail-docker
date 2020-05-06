@@ -16,6 +16,7 @@ RUN export HOSTNAME=indimail.org \
 		hostname \
 		less \
 		cronie \
+		mailx \
 		man-db \
 		net-tools \
 		openssh-clients \
@@ -29,6 +30,8 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
+		deltarpm \
+		perl \
 		mysql-community-libs \
 	&& dnf -y install \
 		http://downloads.sourceforge.net/indimail/Repo/CentOS8/indimail-mta-2.10-1.1.el8.x86_64.rpm \

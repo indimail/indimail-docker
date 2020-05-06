@@ -2,10 +2,10 @@
 FROM fedora:31
 MAINTAINER cprogrammer
 
-RUN dnf -y install 'dnf-command(config-manager)' \
-	&& dnf config-manager \
-		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_31/home:mbhangui.repo
 RUN export HOSTNAME=indimail.org \
+	&& dnf -y install 'dnf-command(config-manager)' \
+	&& dnf config-manager \
+		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_31/home:mbhangui.repo \
 	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \

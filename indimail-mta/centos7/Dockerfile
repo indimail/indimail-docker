@@ -11,6 +11,7 @@ RUN export HOSTNAME=indimail.org \
 		hostname \
 		less \
 		cronie \
+		mailx \
 		man-db \
 		net-tools \
 		openssh-clients \
@@ -25,6 +26,7 @@ RUN export HOSTNAME=indimail.org \
 		strace \
 		lsof \
 		deltarpm \
+		perl \
 	&& wget https://download.opensuse.org/repositories/home:mbhangui/CentOS_7/home:mbhangui.repo -O /etc/yum.repos.d/indimail.repo \
 	&& wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm \
 	&& rpm -ivh mysql80-community-release-el7-3.noarch.rpm \
