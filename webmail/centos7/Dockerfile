@@ -85,8 +85,7 @@ RUN export HOSTNAME=indimail.org \
 		chmod 775 roundcubemail/temp roundcubemail/logs; \
 		mv roundcubemail/config /etc/roundcubemail; \
 		ln -s /etc/roundcubemail /usr/share/roundcubemail/config; \
-		systemctl disable mysqld; \
-		systemctl stop mysqld; \
+		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \
 		/bin/rm -r /root/Downloads) >/tmp/roundcube.log 2>&1 \
 	&& cat /tmp/roundcube.log \
