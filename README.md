@@ -35,20 +35,21 @@ podman pull cprogrammer/indimail-mta:tag
 ```
 
 Replace tag in the above command with one of the following
-```
-xenial     for Ubuntu 16.04
-bionic     for Ubuntu 18.04
-focal      for Ubuntu 20.04
-centos7    for CentOS 7
-centos8    for CentOS 8
-debian8    for Debian 8
-debian9    for Debian 9
-debian10   for Debian 10
-fc31       for Fedora Core 31
-fc32       for Fedora Core 32
-Tumbleweed for openSUSE Tumbleweed
-Leap15.2   for openSUSE Leap 15.2
-```
+
+tag|OS Distribution
+----|----------------------
+xenial|Ubuntu 16.04
+bionic|Ubuntu 18.04
+disco|Ubuntu 19.04
+focal|Ubuntu 20.04
+centos7|CentOS 7
+debian8|Debian 8
+debian9|Debian 9
+debian10|Debian10
+fc31|Fedora Core 31
+fc32|Fedora Core 32
+Tumbleweed|openSUSE Tumbleweed
+Leap15.2|openSUSE Leap 15.2
 
 ## Instructions for starting the docker/podman container
 (replace podman with docker for docker operations)
@@ -285,6 +286,7 @@ COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /roo
 ```
 
 To build the image use need to use the docker/podman build command .e.g.
+
 ```
 $ docker build -t indimail:fc31 ./Dockerfile .
 or
@@ -293,6 +295,7 @@ $ podman build -t indimail:fc31 ./Dockerfile .
 
 ## NOTE
 The images above have been installed without clam anti virus to keep the image size as low as possible. You may install and configure it using the below steps.
+
 ```
 $ sudo dnf -y install clamav clamav-update clamd # use apt-get for ubuntu/debian, zypper for openSUSE
 $ sudo svctool --clamd --clamdPrefix=/usr --servicedir=/service --sysconfdir=/etc/clamd.d
