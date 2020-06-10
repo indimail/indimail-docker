@@ -6,9 +6,9 @@ roundcube webfrontend.
 
 Name|Docker Hub Repository Location
 ----|------------------------------
-indimail-mta|[indimail-mta Docker Hub] (https://hub.docker.com/r/cprogrammer/indimail-mta)
-indimail|[indimail Docker Hub] (https://hub.docker.com/r/cprogrammer/indimail)
-indimail|[indimail+Roundcube Docker Hub] (https://hub.docker.com/r/cprogrammer/indimail-web)
+indimail-mta|[indimail-mta] (https://hub.docker.com/r/cprogrammer/indimail-mta)
+indimail|[indimail] (https://hub.docker.com/r/cprogrammer/indimail)
+indimail|[indimail+Roundcube] (https://hub.docker.com/r/cprogrammer/indimail-web)
 
 
 The following tags/images can be pulled by executing the commands
