@@ -6,9 +6,9 @@ roundcube webfrontend.
 
 Name|Docker Hub Repository Location
 ----|------------------------------
-indimail-mta|[indimail-mta](https://hub.docker.com/r/cprogrammer/indimail-mta)
-indimail|[indimail](https://hub.docker.com/r/cprogrammer/indimail)
-indimail|[indimail+Roundcube](https://hub.docker.com/r/cprogrammer/indimail-web)
+indimail-mta|[indimail-mta Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-mta)
+indimail|[indimail Docker Hub](https://hub.docker.com/r/cprogrammer/indimail)
+indimail|[indimail+Roundcube Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-web)
 
 
 The following tags/images can be pulled by executing the commands
@@ -267,9 +267,9 @@ $ podman rm \`podman ps -aq\`
 
 The Dockerfile for each of the images is located in a separate subdirectory for each linux distro
 
-* [indimail-mta] (https://github.com/mbhangui/docker/tree/master/indimail-mta)
-* [indimail] (https://github.com/mbhangui/docker/tree/master/indimail)
-* [indimail+roundcube] (https://github.com/mbhangui/docker/tree/master/webmail)
+* [indimail-mta](https://github.com/mbhangui/docker/tree/master/indimail-mta)
+* [indimail](https://github.com/mbhangui/docker/tree/master/indimail)
+* [indimail+roundcube](https://github.com/mbhangui/docker/tree/master/webmail)
 
 
 If you want to build the image yourself instead of using hub.docker.com, ensure that you remove the below line from your Dockerfile
