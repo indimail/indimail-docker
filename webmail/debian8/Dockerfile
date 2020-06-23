@@ -68,6 +68,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		-O /root/Downloads/roundcubemail.tar.gz \
 	&& (cd /usr/share; \
 		tar xfz /root/Downloads/roundcubemail.tar.gz; \
+		mv roundcubemail/plugins/* roundcubemail-1.4.4/plugins; \
 		/bin/rm -rf roundcubemail; \
 		mv roundcubemail-1.4.4 roundcubemail; \
 		chown -R root:root roundcubemail; \
