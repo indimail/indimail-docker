@@ -4,6 +4,7 @@ MAINTAINER cprogrammer
 
 # Freshen RUN yum update
 RUN export HOSTNAME=indimail.org \
+	&& mkdir -p /root/Downloads \
 	&& yum -y install \
 		epel-release \
 		http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
@@ -11,7 +12,6 @@ RUN export HOSTNAME=indimail.org \
 		yum-utils \
 		deltarpm \
 	&& yum-config-manager --enable remi-php74 \
-	&& mkdir -p /root/Downloads \
 	&& yum -y update \
 	&& yum -y install \
 		binutils \
@@ -36,13 +36,13 @@ RUN export HOSTNAME=indimail.org \
 		strace \
 		lsof \
 		perl \
+		mysql-community-server \
+		mysql-community-libs \
+		mysql-community-client \
 	&& wget -nv \
 		https://download.opensuse.org/repositories/home:mbhangui/CentOS_7/home:mbhangui.repo \
 		-O /etc/yum.repos.d/indimail.repo \
 	&& yum -y install \
-		mysql-community-server \
-		mysql-community-libs \
-		mysql-community-client \
 		indimail \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
@@ -64,6 +64,7 @@ RUN export HOSTNAME=indimail.org \
 		php-zip \
 		php-cli \
 		ircube \
+	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl enable httpd php-fpm \
@@ -78,6 +79,7 @@ RUN export HOSTNAME=indimail.org \
 			-e 's}^listen.acl_users.};&}' /etc/php-fpm.d/www.conf) \
 	&& (cd /usr/share; \
 		tar xfz /root/Downloads/roundcubemail.tar.gz; \
+		mv roundcubemail/plugins/* roundcubemail-1.4.4/plugins; \
 		/bin/rm -rf roundcubemail; \
 		mv roundcubemail-1.4.4 roundcubemail; \
 		chown -R root:root roundcubemail; \
