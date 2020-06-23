@@ -26,13 +26,22 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_42.3/server:database.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
+		indimail-mta \
+		logalert \
+		procmail \
 		indimail \
+		indimail-access \
+		indimail-auth \
+		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
 	&& wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/indimail/leap42.3/mysql_install_db.patch -O /tmp/mysql_install_db.patch \
 	&& patch -p0 < /tmp/mysql_install_db.patch \
-	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \
+	&& echo "Creating self-signed certificate" \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl disable sshd \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/

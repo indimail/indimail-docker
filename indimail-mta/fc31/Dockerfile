@@ -15,10 +15,9 @@ RUN export HOSTNAME=indimail.org \
 		less \
 		mailx \
 		man-db \
-		mrtg \
 		net-tools \
-		openssh-clients \
 		openssl \
+		openssh-clients \
 		procps \
 		psmisc \
 		rsync \
@@ -31,6 +30,15 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		deltarpm \
 		indimail-mta \
+		logalert \
+		procmail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
+	&& dnf -y install \
+		indimail-spamfilter \
+	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& unset HOSTNAME

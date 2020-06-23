@@ -36,7 +36,6 @@ tag|OS Distribution
 ----|----------------------
 xenial|Ubuntu 16.04
 bionic|Ubuntu 18.04
-disco|Ubuntu 19.04
 focal|Ubuntu 20.04
 centos7|CentOS 7
 debian8|Debian 8

@@ -9,8 +9,8 @@ RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \
-		binutils \
 		gnupg2 \
+		binutils \
 		hostname \
 		initscripts \
 		less \
@@ -30,10 +30,20 @@ RUN export HOSTNAME=indimail.org \
 		strace \
 		lsof \
 		deltarpm \
+		indimail-mta \
+		logalert \
+		procmail \
 		indimail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+	&& dnf -y install \
+		indimail-spamfilter \
+	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& unset HOSTNAME

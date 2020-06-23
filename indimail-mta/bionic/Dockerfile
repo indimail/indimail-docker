@@ -27,8 +27,17 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		strace \
 		lsof \
 		vim \
-		mrtg \
 		indimail-mta \
+		logalert \
+		procmail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
+		bsd-mailx \
+	&& apt-get -y install \
+		indimail-spamfilter \
+	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/

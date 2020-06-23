@@ -1,4 +1,4 @@
-# docker build -f dockerfile.leap42.3 -t cprogrammer/indimail:leap42.3
+# docker build -f dockerfile.leap15.2 -t cprogrammer/indimail:leap42.3
 FROM opensuse/leap:15.2
 MAINTAINER cprogrammer
 
@@ -24,11 +24,19 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		patch \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.2/home:mbhangui.repo \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/openSUSE_Leap_15.2/server:monitoring.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_42.3/server:database.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail-mta \
-		mrtg \
+		logalert \
+		procmail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
+		mailx \
+	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl disable sshd \
 	&& unset HOSTNAME

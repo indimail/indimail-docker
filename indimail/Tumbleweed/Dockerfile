@@ -7,6 +7,7 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
+		binutils \
 		openssl \
 		vim \
 		net-tools \
@@ -27,11 +28,21 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/openSUSE_Tumbleweed/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
+		indimail-mta \
+		logalert \
+		procmail \
 		indimail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
+		mailx \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
-	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null \
+	&& echo "Creating self-signed certificate" \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl disable sshd \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/

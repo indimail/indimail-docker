@@ -28,10 +28,19 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/openSUSE_Leap_15.2/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
+		indimail-mta \
+		logalert \
+		procmail \
 		indimail \
+		indimail-access \
+		indimail-auth \
+		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl disable sshd \
 	&& unset HOSTNAME

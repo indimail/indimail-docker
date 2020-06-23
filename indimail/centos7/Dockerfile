@@ -10,6 +10,7 @@ RUN export HOSTNAME=indimail.org \
 	&& yum -y update \
 	&& yum -y install \
 		gnupg2 \
+		binutils \
 		hostname \
 		less \
 		cronie \
@@ -33,12 +34,21 @@ RUN export HOSTNAME=indimail.org \
 	&& rpm -ivh mysql80-community-release-el7-3.noarch.rpm \
 	&& yum -y install \
 		mysql-community-server \
-		mysql-community-libs \
 		mysql-community-client \
+		mysql-community-libs \
+		indimail-mta \
+		logalert \
+		procmail \
 		indimail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+	&& echo "Creating self signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& unset HOSTNAME
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/

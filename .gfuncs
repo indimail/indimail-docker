@@ -6,6 +6,8 @@
 #
 
 alias unsetenv=unset
+unalias dir 2>/dev/null
+unalias l 2>/dev/null
 
 function setenv()
 {

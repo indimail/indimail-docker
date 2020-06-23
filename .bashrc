@@ -8,7 +8,7 @@ if [ ! -d $HOME/history ] ; then
 fi
 index=$1
 dt=$2
-tm=$2
+tm=$3
 shift 3
 echo "$dt $tm [$PWD] [$index]: $*" >> $HOME/history/.history.$ext
 }
@@ -16,6 +16,7 @@ echo "$dt $tm [$PWD] [$index]: $*" >> $HOME/history/.history.$ext
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
+umask 022
 if [ -z "$USER" ] ; then
 	declare -x USER=`whoami`
 fi
@@ -49,7 +50,6 @@ if [ "$PS1" ]; then
 		mkdir -p $HOME/history
 	fi
 	HISTFILE=$HOME/history/.history
-	HISTSIZE=300
 	HISTTIMEFORMAT="%F %T "
 	HISTCONTROL="ignorespace:ignoredups"
 	MAIL=$HOME/Maildir

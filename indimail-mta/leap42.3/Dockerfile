@@ -1,11 +1,45 @@
+# docker build -f dockerfile.leap42.3 -t cprogrammer/indimail:leap42.3
 FROM opensuse/leap:42.3
 MAINTAINER cprogrammer
 
-# Freshen RUN apt-get -y update
-RUN zypper --non-interactive install wget openssl vim net-tools procps psmisc systemd less telnet openssh which systemd-sysvinit sudo patch
-RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_42.3/home:mbhangui.repo
-RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_42.3/server:database.repo
-RUN zypper --non-interactive --gpg-auto-import-keys refresh
-RUN zypper --non-interactive --gpg-auto-import-keys install indimail-mta
-RUN /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null
-RUN echo 'PermitRootLogin yes' >> /etc/ssh/sshd_config
+RUN export HOSTNAME=indimail.org \
+	&& mkdir -p /root \
+	&& zypper --non-interactive update \
+	&& zypper --non-interactive install \
+		wget \
+		binutils \
+		openssl \
+		vim \
+		net-tools \
+		procps \
+		psmisc \
+		systemd \
+		less \
+		telnet \
+		openssh \
+		which \
+		systemd-sysvinit \
+		sudo \
+		strace \
+		lsof \
+		patch \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_42.3/home:mbhangui.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_42.3/server:database.repo \
+	&& zypper --non-interactive --gpg-auto-import-keys refresh \
+	&& zypper --non-interactive --gpg-auto-import-keys install \
+		indimail-mta \
+		logalert \
+		procmail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
+		mailx \
+	&& echo "Creating self-signed certificate" \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
+	&& systemctl disable sshd \
+	&& unset HOSTNAME
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["indimail-mta"]
