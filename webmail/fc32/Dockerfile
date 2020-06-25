@@ -53,7 +53,8 @@ RUN export HOSTNAME=indimail.org \
 			-e 's}^listen.acl_users.};&}' /etc/php-fpm.d/www.conf) \
 	&& /usr/libexec/indimail/roundcube_config > /tmp/roundcube.log 2>&1 \
 	&& cat /tmp/roundcube.log \
-	&& unset HOSTNAME
+	&& unset HOSTNAME \
+	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["webmail"]

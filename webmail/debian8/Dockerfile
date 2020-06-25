@@ -84,7 +84,8 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/tmp/roundcube_config; \
 		/bin/rm -r /tmp/roundcube_config /root/Downloads) >/tmp/roundcube.log 2>&1 \
 	&& cat /tmp/roundcube.log \
-	&& unset HOSTNAME
+	&& unset HOSTNAME \
+	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["webmail"]

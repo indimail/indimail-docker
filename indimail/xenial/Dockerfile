@@ -43,7 +43,8 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
-	&& unset HOSTNAME
+	&& unset HOSTNAME \
+	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["indimail"]
