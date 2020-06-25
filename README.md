@@ -1,8 +1,6 @@
 # Dockerfile repository for automated builds.
 
-This repo contains repository for Dockerfiles used for building
-docker/podman images for indimail-mta, indimail and  indimail with
-roundcube webfrontend.
+This repo contains repository for Dockerfiles used for building docker/podman images for indimail-mta, indimail and  indimail with roundcube webfrontend.
 
 Name|Docker Hub Repository Location
 ----|------------------------------
@@ -38,6 +36,7 @@ xenial|Ubuntu 16.04
 bionic|Ubuntu 18.04
 focal|Ubuntu 20.04
 centos7|CentOS 7
+centos8|CentOS 8
 debian8|Debian 8
 debian9|Debian 9
 debian10|Debian10
