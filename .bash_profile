@@ -14,7 +14,7 @@ fi
 
 # If the user has her own init file, then use that one, else use the
 # canonical one.
-declare -x PATH=$PATH:/usr/local/bin:$HOME/bin:/usr/local/mysql/bin:/var/indimail/bin:/var/indimail/sbin:/usr/libexec/indimail
+declare -x PATH=$PATH:/bin:$HOME/bin:/usr/libexec/indimail
 if [ -f ~/.bashrc ]; then
 	source ~/.bashrc
 else
