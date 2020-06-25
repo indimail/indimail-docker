@@ -1,6 +1,6 @@
 # Dockerfile repository for automated builds.
 
-This repo contains repository for Dockerfiles used for building docker/podman images for indimail-mta, indimail and  indimail with roundcube webfrontend.
+This repo contains repository for Dockerfiles used for building docker/podman images for indimail-mta, indimail and indimail with roundcube web frontend. Read [Docker-indimail](Docker-indimail.md) on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works.
 
 Name|Docker Hub Repository Location
 ----|------------------------------
