@@ -285,6 +285,7 @@ $ podman build -t indimail:fc31 ./Dockerfile .
 ```
 
 ## NOTE
+
 The images above have been installed without clam anti virus to keep the image size as low as possible. You may install and configure it using the below steps.
 
 ```
@@ -298,7 +299,7 @@ $ sudo svctool --config=foxhole
 
 ## IRC / Matrix
 
-* Join me https://matrix.to/#/#indimail:matrix.org
+* Join me [#indimail:matrix.org](https://matrix.to/#/#indimail:matrix.org)
 * IndiMail has an IRC channel #indimail-mta
 
 ## Mailing list
