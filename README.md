@@ -76,6 +76,42 @@ or
 $ podman run --net host -d -h indimail.org --name indimail fba3b42e0164
 ```
 
+There are other cool things you can do with the docker/podman images. The images have their own filesystem with the queue and the user's home directory. It is better to have them on the host running the containers.
+
+### Creating podman volumes
+
+```
+podman create voleume create queue
+podman create voleume create mail
+
+$ docker run --net host -d -h indimail.org --name indimail \
+    -v queue:/var/indimail/queue -v mail:/home fba3b42e0164
+or
+$ podman run --net host -d -h indimail.org --name indimail \
+    -v queue:/var/indimail/queue -v mail:/home fba3b42e0164
+```
+
+If you do this way you will have to initialize the queue the first time.
+
+```
+$ podman exec -ti indimail bash
+indimail.org:(root) / > cd /var/indimail/queue
+indimail.org:(root) /var/indimail/queue > for i in 1 2 3 4 5 6
+> do
+> queue-fix queue"$i" >/dev/null
+> done
+indimail.org:(root) /var/indimail/queue >queue-fix nqueue
+queue-fix finished...
+indimail.org:(root) /var/indimail/queue >ls -l
+total 24
+drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 nqueue
+drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue1
+drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue2
+drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue3
+drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue4
+drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue5
+```
+
 ### Query the id of the container
 
 ```
