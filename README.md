@@ -81,8 +81,10 @@ There are other cool things you can do with the docker/podman images. The images
 ### Creating podman volumes
 
 ```
-podman create voleume create queue
-podman create voleume create mail
+$ podman create volume create queue
+queue
+$ podman create volume create mail
+mail
 
 $ docker run --net host -d -h indimail.org --name indimail \
     -v queue:/var/indimail/queue -v mail:/home fba3b42e0164
@@ -110,6 +112,39 @@ drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue2
 drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue3
 drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue4
 drwxr-x--- 12 qmailq qmail 4096 Jul  6 04:07 queue5
+```
+
+The volumes are created in your home directory. You can inspect them using the `podman volume inspect` command
+
+```
+$ podman volume inspect queue
+[
+     {
+          "Name": "queue",
+          "Driver": "local",
+          "Mountpoint": "/home/mbhangui/.local/share/containers/storage/volumes/queue/_data",
+          "CreatedAt": "2020-07-06T09:44:18.83317159+05:30",
+          "Labels": {
+               
+          },
+          "Scope": "local",
+          "Options": {
+               
+          },
+          "UID": 0,
+          "GID": 0,
+          "Anonymous": false
+     }
+]
+$ cd /home/mbhangui/.local/share/containers/storage/volumes/queue/_data
+$ ls -l
+total 24
+drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 nqueue
+drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 queue1
+drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 queue2
+drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 queue3
+drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 queue4
+drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 queue5
 ```
 
 ### Query the id of the container
