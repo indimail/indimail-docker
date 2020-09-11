@@ -197,7 +197,7 @@ $ mkdir -p /home/podman/queue
 $ mkdir -p /home/podman/mail
 ```
 
-Now we can start the container with the `podman run` command. You can use the following script to start any container. Here podman mounts /home/podman/queue as /var/indimail/queue and /home/podman/mail as /home/mail. To backup the mail directory, you just need to backup /home/podman/mail.
+Now we can start the container with the `podman run` command. Here podman mounts /home/podman/queue as /var/indimail/queue and /home/podman/mail as /home/mail. To backup the mail directory, you just need to backup /home/podman/mail. Like the previous examples where we used volumes, you will have to initialize the queue using the `queue-fix` command in /var/indimail/queue directory.
 
 ```
 $ podman run -d -h indimail.org \
