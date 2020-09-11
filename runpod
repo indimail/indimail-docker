@@ -1,4 +1,7 @@
 #!/bin/sh
+# $Log: $
+#
+# $Id: $
 
 usage()
 {
@@ -8,9 +11,11 @@ usage()
     echo "  [--port=port1 --port=port2 ... --port=portn]"
     echo "  [--volume=dir:mount_port1 --volume=dir:mount_port2 ... --volume=dir:mount_portn]"
     echo "  [--capability=cap1 --capability=cap2 ... --capability=cap3]"
+    echo "  [--command=podman|docker]"
     exit $1
 }
 
+command=podman
 while test $# -gt 0; do
     case "$1" in
         -*=*)
@@ -22,6 +27,13 @@ while test $# -gt 0; do
     esac
 
     case "$1" in
+        --command=*)
+            command=$optarg
+            if [ " $command" != " podman" -a " $command" != " docker" ] ; then
+                echo "command should be podman or docker" 1>&2
+                usage 1
+            fi
+        ;;
         --id=*)
             imageid=$optarg
         ;;
@@ -50,12 +62,12 @@ while test $# -gt 0; do
                     usage 1
                 fi
             else
-                podman volume inspect $dir > /dev/null
+                $command volume inspect $dir > /dev/null
                 if [ $? -ne 0 ] ; then
                     (
                     echo "$dir: No such volume"
                     echo "List of volumes are"
-                    podman volume ls
+                    $command volume ls
                     ) 1>&2
                     usage 1
                 fi
@@ -99,9 +111,15 @@ case $name in
             host_arg="-h indimail.org"
         fi
         if [ -z "$vol_args" ] ; then
-            vol_args="$vol_args-v /home/podman/queue:/var/indimail/queue "
-            vol_args="$vol_args-v /home/podman/mail:/home/mail "
-            vol_args="$vol_args-v /usr/local/src:/usr/local/src"
+            if [ -d /home/$command/queue ] ; then
+                vol_args="$vol_args-v /home/$command/queue:/var/indimail/queue "
+            fi
+            if [ -d /home/$command/mail ] ; then
+                vol_args="$vol_args-v /home/$command/mail:/home/mail "
+            fi
+            if [ -d /usr/local/src ] ; then
+                vol_args="$vol_args-v /usr/local/src:/usr/local/src"
+            fi
         fi
         if [ -z "$systemd" ] ; then
             if [ " $name" = " build" ] ; then
@@ -114,7 +132,7 @@ esac
 if [ -z "$imageid" ] ; then
     usage 1
 fi
-tag=`podman images | grep  $imageid | awk '{print $2}'`
+tag=`$command images | grep  $imageid | awk '{print $2}'`
 if [ -z "$systemd" ] ; then
     case $tag in
         xenial*|debian*|focal*|bionic*)
@@ -126,7 +144,7 @@ if [ -z "$systemd" ] ; then
     esac
 fi
 
-echo "podman run $extra_args"
+echo "$command run $extra_args"
 echo "    --name $name"
 if [ -n "$cap_args" ] ; then
     echo "    $cap_args"
@@ -144,7 +162,7 @@ echo "    -v /sys/fs/cgroup:/sys/fs/cgroup:ro"
 echo "    --device /dev/fuse"
 echo "    image=$imageid systemd=$systemd"
 
-podman run $extra_args \
+$command run $extra_args \
     --name $name \
     --device /dev/fuse \
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
