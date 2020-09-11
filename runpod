@@ -1,0 +1,151 @@
+#!/bin/sh
+
+usage()
+{
+    echo "`basename $0` --id=imageid [--name=name] [--systemd=systemd_path|auto]"
+    echo "  [--args=extra_args1 --args=extra_args2 ... --args=extra_argsn]"
+    echo "  [--host=host]"
+    echo "  [--port=port1 --port=port2 ... --port=portn]"
+    echo "  [--volume=dir:mount_port1 --volume=dir:mount_port2 ... --volume=dir:mount_portn]"
+    echo "  [--capability=cap1 --capability=cap2 ... --capability=cap3]"
+    exit $1
+}
+
+while test $# -gt 0; do
+    case "$1" in
+        -*=*)
+            optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'`
+        ;;
+        *)
+            optarg=""
+        ;;
+    esac
+
+    case "$1" in
+        --id=*)
+            imageid=$optarg
+        ;;
+        --name=*)
+            name=$optarg
+        ;;
+        --host=*)
+            host_arg="-h $optarg"
+        ;;
+        --port=*)
+            port_args="$port_args""-p $optarg "
+        ;;
+        --capability=*)
+            cap_args="$cap_args--cap-add $optarg "
+        ;;
+        --volume=*)
+            word_count=$(echo $optarg | cut --output-delimiter=" " -d: -f1,2,3 | wc -w)
+            if [ $word_count -ne 2 ] ; then
+                echo "volume should be of the form \"dir:mount_point\""
+            fi
+            dir=$(echo $optarg|cut -d: -f1)
+            first_char=$(echo $dir | cut -c1)
+            if [ " $first_char" = " /" ] ; then
+                if [ ! -d $dir ] ; then
+                    echo "$dir: No such directory" 1>&2
+                    usage 1
+                fi
+            else
+                podman volume inspect $dir > /dev/null
+                if [ $? -ne 0 ] ; then
+                    (
+                    echo "$dir: No such volume"
+                    echo "List of volumes are"
+                    podman volume ls
+                    ) 1>&2
+                    usage 1
+                fi
+          fi
+          dir=$(echo $optarg|cut -d: -f2)
+          first_char=$(echo $dir | cut -c1)
+          if [ " $first_char" != " /" ] ; then
+              echo "$dir should be a valid path" 1>&2
+              usage 1
+          fi
+          vol_args="$vol_args""-v $optarg "
+      ;;
+      --systemd=*)
+          systemd=$optarg
+      ;;
+      --args=*)
+          extra_args="$extra_args""$optarg "
+      ;;
+      *)
+          echo "invalid option [$1]"
+          read key
+          usage 1
+      ;;
+    esac
+    shift
+done
+
+case $name in
+    indimail|indimail-mta|webmail|build|devel)
+        if [ -z "$port_args" ] ; then
+            port_args="$port_args-p 2025:25   -p 2106:106  -p 2110:110  -p 2143:143 "
+            port_args="$port_args-p 2209:209  -p 2366:366  -p 2465:465  -p 2587:587 "
+            port_args="$port_args-p 2628:628  -p 2993:993  -p 2995:995  -p 4110:4110 "
+            port_args="$port_args-p 4143:4143 -p 9110:9110 -p 9143:9143 -p 8080:80"
+        fi
+        if [ -z "$cap_args" ] ; then
+            cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
+            cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE"
+        fi
+        if [ -z "$host_arg" ] ; then
+            host_arg="-h indimail.org"
+        fi
+        if [ -z "$vol_args" ] ; then
+            vol_args="$vol_args-v /home/podman/queue:/var/indimail/queue "
+            vol_args="$vol_args-v /home/podman/mail:/home/mail "
+            vol_args="$vol_args-v /usr/local/src:/usr/local/src"
+        fi
+        if [ -z "$systemd" ] ; then
+            if [ " $name" = " build" ] ; then
+                systemd="bash"
+            fi
+        fi
+    ;;
+esac
+
+if [ -z "$imageid" ] ; then
+    usage 1
+fi
+tag=`podman images | grep  $imageid | awk '{print $2}'`
+if [ -z "$systemd" ] ; then
+    case $tag in
+        xenial*|debian*|focal*|bionic*)
+            systemd=/lib/systemd/systemd
+        ;;
+        *)
+            systemd=/usr/lib/systemd/systemd
+        ;;
+    esac
+fi
+
+echo "podman run $extra_args"
+echo "    --name $name"
+if [ -n "$cap_args" ] ; then
+    echo "    $cap_args"
+fi
+if [ -n "$host_arg" ] ; then
+    echo "    $host_arg"
+fi
+if [ -n "$port_args" ] ; then
+    echo "    $port_args"
+fi
+if [ -n "$vol_args" ] ; then
+    echo "    $vol_args"
+fi
+echo "    -v /sys/fs/cgroup:/sys/fs/cgroup:ro"
+echo "    --device /dev/fuse"
+echo "    image=$imageid systemd=$systemd"
+
+podman run $extra_args \
+    --name $name \
+    --device /dev/fuse \
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    $host_arg $cap_args $port_args $vol_args $imageid $systemd
