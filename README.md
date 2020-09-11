@@ -175,7 +175,9 @@ drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 queue4
 drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 queue5
 ```
 
-There is an alternate way to to have the queue and the home directories on the host server without using podman volumes. All you need to do is create directories on the host system.
+If you backup the user's home directory (e.g. /home/mbhangui), the backup will include /home/mail of the container. You can specifically take a backup of container's user mail directory by doing `podman volume inspect mail` and backup the directory referenced by `Mountpoint`.
+
+There is an alternate way, without having podman volumes, to have the queue and the home directories on the host server. All you need to do is create directories on the host system.
 
 **Create Directories**
 
@@ -195,7 +197,7 @@ $ mkdir -p /home/podman/queue
 $ mkdir -p /home/podman/mail
 ```
 
-Now we can start the container with the `podman run` command. You can use the following script to start any container
+Now we can start the container with the `podman run` command. You can use the following script to start any container. Here podman mounts /home/podman/queue as /var/indimail/queue and /home/podman/mail as /home/mail. To backup the mail directory, you just need to backup /home/podman/mail.
 
 ```
 $ podman run -d -h indimail.org \
@@ -621,12 +623,12 @@ $ runpod --id=7bcf4b2ff83e --name=indimail --host=mydomain.org --args="-d"
 podman run -d 
     --name indimail
     --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK   --cap-add SYS_RESOURCE
-    -h indimail.org
+    -h mydomain.org
     -p 2025:25   -p 2106:106  -p 2110:110  -p 2143:143 -p 2209:209  -p 2366:366  -p 2465:465  -p 2587:587 -p 2628:628  -p 2993:993  -p 2995:995  -p 4110:4110 -p 4143:4143 -p 9110:9110 -p 9143:9143 -p 8080:80
     -v queue:/var/indimail/queue -v mail:/home 
     -v /sys/fs/cgroup:/sys/fs/cgroup:ro
     --device /dev/fuse
-    image=e543dee69ab7 systemd=/usr/lib/systemd/systemd
+    image=7bcf4b2ff83e systemd=/usr/lib/systemd/systemd
 471b4e53020b350c5e62e4913fe815203d16827e3e6cfc5e14fced8579c4a2b3
 ```
 
