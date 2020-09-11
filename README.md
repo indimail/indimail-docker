@@ -612,83 +612,32 @@ $ podman rm indimail
 0deab2154ef89688fc1953dc32dcf0c3a4fcde50ce79ed6a47e4886415093304
 ```
 
-You can now use the container with id `7bcf4b2ff83e` to run the indimail server with mydomain.com as the domain.
+You can now use the container with id `7bcf4b2ff83e` to run the indimail server with mydomain.org as the domain.
 
-I use the below script to run my indimail containers. It should be invoked like this `$ runpod 7bcf4b2ff83e mydomain indimail -d`. The third argument `indimail` is needed. It is actually an entry point in all the indimail, indimail-mta containers to start `svscan` command. The `svscan` command further runs `supervise` command on all services in the `/service` directory. Similarly the `indimail-web` container images have the entry point `webmail` which does everything that `indimail` entrypoint does and addiotionally runs the `apache` web server.
+I use [this](https://github.com/mbhangui/docker/blob/master/runpod) script to run my indimail containers. It should be invoked like this
+
+```
+$ runpod --id=7bcf4b2ff83e --name=indimail --host=mydomain.org --args="-d"
+podman run -d 
+    --name indimail
+    --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK   --cap-add SYS_RESOURCE
+    -h indimail.org
+    -p 2025:25   -p 2106:106  -p 2110:110  -p 2143:143 -p 2209:209  -p 2366:366  -p 2465:465  -p 2587:587 -p 2628:628  -p 2993:993  -p 2995:995  -p 4110:4110 -p 4143:4143 -p 9110:9110 -p 9143:9143 -p 8080:80
+    -v queue:/var/indimail/queue -v mail:/home 
+    -v /sys/fs/cgroup:/sys/fs/cgroup:ro
+    --device /dev/fuse
+    image=e543dee69ab7 systemd=/usr/lib/systemd/systemd
+471b4e53020b350c5e62e4913fe815203d16827e3e6cfc5e14fced8579c4a2b3
+```
+
+The argument --id=indimail is needed. It is actually an entry point in all the indimail, indimail-mta containers to start `svscan` command. The `svscan` command further runs `supervise` command on all services in the `/service` directory. Similarly the `indimail-web` container images have the entry point `webmail` which does everything that `indimail` entrypoint does and addiotionally runs the `apache` web server.
 
 If you use this script it will
 
-1. mount /home/podman/mail as the maildir, /home/podman/queue as the queue
+1. mount mail volume as the /home, queue volume as the /var/indimail/queue
 2. Map high number ports on the host to low number ports on the container. If you want to map low number ports or to map the same ports (like port 25 on the host to be mapped to port 25 on the container), you will have to run podman with root privileges. You can map high number ports and set **iptable**(8) rules to map the same ports on the host system to a port on the container. If you run podman with root privileges, you can use --net host to map the container's network to the HOST. In that case you don't have to map the ports using the `-p` argument.
 3. Use the [docker entrypoint](https://docs.docker.com/engine/reference/builder/#entrypoint) **indimail** to start all indimail services.
 4. Run the container with special privileges that allows it to start like a normal OS with systemd, privileges to do strace and IPC locking
-
-```
-#!/bin/sh
-if [ $# -lt 1 ] ; then
-    echo runpodman imageid name systemd
-    exit 1
-fi
-imageid=$1
-if [ $# -gt 3 ] ; then
-    name=$2
-    systemd=$3
-    shift 3
-    args=$*
-    echo args=$args
-elif [ $# -gt 2 ] ; then
-    name=$2
-    systemd=$3
-    args="-ti"
-elif [ $# -gt 1 ] ; then
-    name=$2
-    args="-d"
-    systemd="" # choose systemd path automatically
-else
-    name="indimail"
-    systemd=""
-fi
-tag=`podman images | grep  $imageid | awk '{print $2}'`
-if [ -z "$systemd" ] ; then
-    case $tag in
-        xenial*|debian*|focal*|bionic*)
-        systemd=/lib/systemd/systemd
-        ;;
-        *)
-        systemd=/usr/lib/systemd/systemd
-        ;;
-    esac
-fi
-echo "podman run $args -h indimail.org --name $name $imageid $systemd"
-podman run $args -h indimail.org \
-    -p 2025:25 \
-    -p 2106:106 \
-    -p 2110:110 \
-    -p 2143:143 \
-    -p 2209:209 \
-    -p 2366:366 \
-    -p 2465:465 \
-    -p 2587:587 \
-    -p 2628:628 \
-    -p 2993:993 \
-    -p 2995:995 \
-    -p 4110:4110 \
-    -p 4143:4143 \
-    -p 9110:9110 \
-    -p 9143:9143 \
-    -p 8080:80 \
-    --cap-add SYS_PTRACE \
-    --cap-add SYS_ADMIN \
-    --cap-add IPC_LOCK \
-    --cap-add SYS_RESOURCE \
-    --device /dev/fuse \
-    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    -v /home/podman/queue:/var/indimail/queue \
-    -v /home/podman/mail:/home/mail \
-    -v /usr/local/src:/usr/local/src \
-    --name $name $imageid $systemd
-podman ps
-```
 
 
 ### Stop the container
