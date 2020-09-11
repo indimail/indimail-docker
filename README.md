@@ -109,9 +109,9 @@ The big advantage of using docker / podman container is the ease with which you 
 These two directories change often and change continuously. You don't want the snapshots to take too long to complete. Hence it is best to have these two directories on your host rather than be a part of the container image. You can have it part of the container. But when you run the `podman commit` command, the changes to the container since you started it, will be huge. Hence the commit might take very long. It is best that you backup the queue and the maildir directories on the host itself. To achieve this you can do the following
 
 ```
-$ podman create volume create queue
+$ podman volume create queue
 queue
-$ podman create volume create mail
+$ podman volume create mail
 mail
 
 $ docker run --net host -d -h indimail.org --name indimail \
