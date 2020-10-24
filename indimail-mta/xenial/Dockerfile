@@ -14,6 +14,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		debianutils \
 		binutils \
 		cron \
+		s-nail \
 		less \
 		man-db \
 		net-tools \
