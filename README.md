@@ -690,6 +690,21 @@ $ sudo svctool --config=clamd
 $ sudo svctool --config=foxhole
 ```
 
+The images are without man pages. You do the following
+
+```
+On Debian
+# apt-get install man-db
+
+On Fedora/CentOS
+
+# yum/dnf --setopt=tsflags=''
+# yum/dnf install man-db man-pages
+
+On openSUSE
+# zypper install man man-pages
+```
+
 # SUPPORT INFORMATION
 
 ## IRC / Matrix
@@ -707,3 +722,7 @@ There are four Mailing Lists for IndiMail
 4. Archive at [Google Groups](http://groups.google.com/group/indimail). This groups acts as a remote archive for indimail-support and indimail-devel.
 
 There is also a [Project Tracker](http://sourceforge.net/tracker/?group_id=230686) for IndiMail (Bugs, Feature Requests, Patches, Support Requests)
+
+## References
+
+1. [Super-Slim Docker Containers](https://medium.com/better-programming/super-slim-docker-containers-fdaddc47e560)
