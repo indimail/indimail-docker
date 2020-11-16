@@ -98,16 +98,16 @@ done
 
 port_str=""
 case $name in
-    indimail|indimail-mta|webmail|build|devel)
-        if [ -z "$port_args" ] ; then
+    indimail|indimail-mta|webmail|build|devel|test)
+        if [ ! "$name" = "test" -a ! "$name" = "build" -a -z "$port_args" ] ; then
             port_args="$port_args-p 2025:25   -p 2106:106  -p 2110:110  -p 2143:143 "
             port_args="$port_args-p 2209:209  -p 2366:366  -p 2465:465  -p 2587:587 "
             port_args="$port_args-p 2628:628  -p 2993:993  -p 2995:995  -p 4110:4110 "
             port_args="$port_args-p 4143:4143 -p 9110:9110 -p 9143:9143 -p 8080:80"
-			NEWLINE=$'\n'
-			port_str=""
+            NEWLINE=$'\n'
+            port_str=""
             port_str="${port_str}  -p 2025:25   -p 2106:106  -p 2110:110  -p 2143:143${NEWLINE}"
-			port_str="${port_str}  -p 2209:209  -p 2366:366  -p 2465:465  -p 2587:587${NEWLINE}"
+            port_str="${port_str}  -p 2209:209  -p 2366:366  -p 2465:465  -p 2587:587${NEWLINE}"
             port_str="${port_str}  -p 2628:628  -p 2993:993  -p 2995:995  -p 4110:4110${NEWLINE}"
             port_str="${port_str}  -p 4143:4143 -p 9110:9110 -p 9143:9143 -p 8080:80"
         fi
@@ -130,7 +130,7 @@ case $name in
             fi
         fi
         if [ -z "$systemd" ] ; then
-            if [ " $name" = " build" ] ; then
+            if [ " $name" = " build" -o " $name" = " devel" -o " $name" = " test" ] ; then
                 systemd="bash"
             fi
         fi
@@ -152,7 +152,7 @@ if [ -z "$systemd" ] ; then
     esac
 fi
 if [ -z "$extra_args" ] ; then
-	extra_args="-ti --rm"
+  extra_args="-ti --rm"
 fi
 echo "$command run $extra_args"
 echo "  --name $name"
@@ -163,11 +163,11 @@ if [ -n "$host_arg" ] ; then
     echo "  $host_arg"
 fi
 if [ -n "$port_args" ] ; then
-	if [ -z "$port_str" ] ; then
-    	echo "  $port_args"
-	else
-		echo "$port_str"
-	fi
+  if [ -z "$port_str" ] ; then
+    echo "  $port_args"
+  else
+    echo "$port_str"
+  fi
 fi
 if [ -n "$vol_args" ] ; then
     echo "  $vol_args"
@@ -177,7 +177,7 @@ echo "  --device /dev/fuse"
 echo "  image=$imageid systemd=$systemd"
 
 $command run $extra_args \
-    --name $name \
-    --device /dev/fuse \
-    -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    $host_arg $cap_args $port_args $vol_args $imageid $systemd
+  --name $name \
+  --device /dev/fuse \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+  $host_arg $cap_args $port_args $vol_args $imageid $systemd
