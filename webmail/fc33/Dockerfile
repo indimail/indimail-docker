@@ -1,11 +1,11 @@
-# docker build -f dockerfile.fc32 -t cprogrammer/indimail:fc32
+# docker build -f dockerfile.fc33 -t cprogrammer/indimail:fc33
 FROM fedora:33
 MAINTAINER cprogrammer
 
 RUN export HOSTNAME=indimail.org \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager \
-		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_32/home:mbhangui.repo \
+		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_33/home:mbhangui.repo \
 	&& mkdir -p /root/Downloads \
 	&& dnf -y update \
 	&& dnf -y install \
