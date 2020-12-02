@@ -141,7 +141,7 @@ case $name in
             fi
         fi
         if [ -z "$extra_args" ] ; then
-            if [ " $name" = " test" -o " $name" = " devel" ] ; then
+            if [ " $name" = " devel" -o " $name" = " test" ] ; then
                 extra_args="-ti --rm"
             else
                 extra_args="-d --rm"
@@ -163,6 +163,8 @@ if [ -z "$systemd" ] ; then
             systemd=/usr/lib/systemd/systemd
         ;;
     esac
+elif [ "$systemd" = "svscan" ] ; then
+	systemd=""
 fi
 if [ -z "$extra_args" ] ; then
     extra_args="-ti --rm"
