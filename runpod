@@ -98,7 +98,7 @@ done
 
 port_str=""
 case $name in
-    indimail|indimail-mta|webmail|build|devel|test)
+    indimail|indimail-mta|webmail|devel|svscan|test)
         if [ -z "$port_args" ] ; then
             case $name in
                 indimail|indimail-mta|webmail)
@@ -134,12 +134,18 @@ case $name in
             fi
         fi
         if [ -z "$systemd" ] ; then
-            if [ " $name" = " build" -o " $name" = " devel" ] ; then
+            if [ " $name" = " devel" -o " $name" = " test" ] ; then
                 systemd="bash"
+            else
+                systemd="svscan"
             fi
         fi
-        if [ " $name" = " test" ] ; then
-            extra_args="-d --rm"
+        if [ -z "$extra_args" ] ; then
+            if [ " $name" = " test" -o " $name" = " devel" ] ; then
+                extra_args="-ti --rm"
+            else
+                extra_args="-d --rm"
+            fi
         fi
     ;;
 esac
