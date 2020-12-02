@@ -46,11 +46,10 @@ bionic|Ubuntu 18.04
 focal|Ubuntu 20.04
 centos7|CentOS 7
 centos8|CentOS 8
-debian8|Debian 8
 debian9|Debian 9
 debian10|Debian10
-fc31|Fedora Core 31
 fc32|Fedora Core 32
+fc33|Fedora Core 33
 Tumbleweed|openSUSE Tumbleweed
 Leap15.2|openSUSE Leap 15.2
 
@@ -77,16 +76,25 @@ $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
 docker.io/cprogrammer/indimail   centos8      e543dee69ab7   38 hours ago   1.03 GB
 docker.io/cprogrammer/indimail   centos7      fba3b42e0164   5 hours ago    2.9 GB
-docker.io/cprogrammer/indimail   fc31         a5266643441b   4 days ago     1.13 GB
+docker.io/cprogrammer/indimail   fc33         a5266643441b   4 days ago     1.13 GB
 ```
 
 ### Start the podman container
 
-indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default entrypoint. Passing webmail argument starts apache in addition to indimail.
+indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
+
+The below command will start svscan process
 
 ```
 $ podman run -d -h indimail.org --name indimail fba3b42e0164
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
+```
+
+The below command will execute bash instead of the default svscan process in the docker-entrypoint.
+
+```
+$ podman run -it --h indimail.org --name=indimail 4fce1055b1e7 bash
+docker-entrypoint: executing bash
 ```
 
 You can use --net host to map the container's network to the HOST
