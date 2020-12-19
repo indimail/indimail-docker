@@ -6,7 +6,7 @@ The complete set of installing podman is given [here](https://podman.io/getting-
 
 You have to decide the image that you would like to use.
 
-* indimail-mta - for a minimal server that gives you a MTA. This server can receive mails from the internet and send mails to users with the same server or to the internet.
+* indimail-mta - for a minimal server that gives you a MTA. This server can receive mails from the internet and send mails to users within the same server or to the internet.
 * indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and all everything that the **indimail-mta** image does.
 * indimail-web - Like the **indimail** image with the addition of a web based email based on [Roundcube Mail](https://roundcube.net/).
 
