@@ -52,6 +52,7 @@ fc32|Fedora Core 32
 fc33|Fedora Core 33
 Tumbleweed|openSUSE Tumbleweed
 Leap15.2|openSUSE Leap 15.2
+oracle8|Orace Linux 8
 
 Let's say you want to use the **indimail** image and CentOS8
 
@@ -704,7 +705,7 @@ The images are without man pages. You do the following
 On Debian
 # apt-get install man-db
 
-On Fedora/CentOS
+On Fedora/CentOS/Oracle Linux
 
 # yum/dnf --setopt=tsflags=''
 # yum/dnf install man-db man-pages
