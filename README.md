@@ -10,11 +10,11 @@ You have to decide the image that you would like to use.
 * indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and all everything that the **indimail-mta** image does.
 * indimail-web - Like the **indimail** image with the addition of a web based email based on [Roundcube Mail](https://roundcube.net/).
 
-Name|Docker Hub Repository Location
-----|------------------------------
-indimail-mta|[indimail-mta Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-mta)
-indimail|[indimail Docker Hub](https://hub.docker.com/r/cprogrammer/indimail)
-indimail|[indimail+Roundcube Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-web)
+Name|Docker Hub Repository Location|Build Status
+----|------------------------------|------------
+indimail-mta|[indimail-mta Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-mta)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail-mta)
+indimail|[indimail Docker Hub](https://hub.docker.com/r/cprogrammer/indimail)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail)
+indimail|[indimail+Roundcube Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-web)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail-web)
 
 
 The following tags/images can be pulled by executing the commands
