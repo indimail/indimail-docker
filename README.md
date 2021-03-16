@@ -14,7 +14,7 @@ Name|Docker Hub Repository Location|Build Status
 ----|------------------------------|------------
 indimail-mta|[indimail-mta Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-mta)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail-mta)
 indimail|[indimail Docker Hub](https://hub.docker.com/r/cprogrammer/indimail)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail)
-indimail|[indimail+Roundcube Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-web)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail-web)
+indimail-web|[indimail+Roundcube Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-web)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail-web)
 
 
 The following tags/images can be pulled by executing the commands
