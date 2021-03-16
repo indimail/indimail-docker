@@ -1,10 +1,10 @@
 # Dockerfile repository for automated builds.
 
-This repo contains repository for Dockerfiles used for building docker/podman images for indimail-mta, indimail and indimail with roundcube web frontend. Read this document on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works.
+This repo contains repository for Dockerfiles used for building docker/podman images for [indimail-mta](https://github.com/mbhangui/indimail-mta), [indimail](https://github.com/mbhangui/indimail-virtualdomains) and [indimail](https://github.com/mbhangui/indimail-virtualdomains) with [roundcube](https://roundcube.net/) web frontend. Read this document on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works.
 
 The complete set of instructions for installing podman is given [here](https://podman.io/getting-started/installation.html).
 
-You have to decide the image that you would like to use.
+You have to decide the image that you want.
 
 * indimail-mta - for a minimal server that gives you a MTA. This server can receive mails from the internet and send mails to users within the same server or to the internet.
 * indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and all everything that the **indimail-mta** image does.
