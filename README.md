@@ -2,7 +2,7 @@
 
 This repo contains repository for Dockerfiles used for building docker/podman images for [indimail-mta](https://github.com/mbhangui/indimail-mta), [indimail](https://github.com/mbhangui/indimail-virtualdomains) and [indimail](https://github.com/mbhangui/indimail-virtualdomains) with [roundcube](https://roundcube.net/) web frontend. Read this document on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works.
 
-The complete set of instructions for installing podman is given [here](https://podman.io/getting-started/installation.html).
+You can use either docker or podman. One of the downsides of Docker is it has a central daemon that runs as the root user, and this has security implications. But this is where Podman comes in handy. Podman is a [daemonless container engine](https://podman.io/) for developing, managing, and running OCI Containers on your Linux system in root or rootless mode. The complete set of instructions for installing podman is given [here](https://podman.io/getting-started/installation.html). If you decide to use docker, the complet set of instructions for installing docker is given [here](https://docs.docker.com/engine/install/).
 
 You have to decide the image that you want.
 
@@ -717,6 +717,8 @@ On openSUSE
 # SUPPORT INFORMATION
 
 ## IRC / Matrix
+
+![Matrix](https://img.shields.io/matrix/indimail:matrix.org)
 
 * Join me [#indimail:matrix.org](https://matrix.to/#/#indimail:matrix.org)
 * IndiMail has an IRC channel #indimail-mta
