@@ -8,10 +8,12 @@ usage()
     echo "`basename $0` --id=imageid [--name=name] [--systemd=systemd_path|auto]"
     echo "  [--args=extra_args1 --args=extra_args2 ... --args=extra_argsn]"
     echo "  [--host=host]"
-    echo "  [--port=port1 --port=port2 ... --port=portn]"
-    echo "  [--volume=dir:mount_port1 --volume=dir:mount_port2 ... --volume=dir:mount_portn]"
+    echo "  [--port=lport1:rport1 --port=lport2:rport2 ... --port=lportn:rportn]"
+    echo "  [--volume=dir:mount_point1 --volume=dir:mount_point2 ... --volume=dir:mount_pointn]"
     echo "  [--capability=cap1 --capability=cap2 ... --capability=cap3]"
     echo "  [--command=podman|docker]"
+    echo
+    echo "lport - local port, rport - remote port"
     exit $1
 }
 
@@ -106,6 +108,8 @@ case $name in
                 port_args="$port_args-p 2209:209  -p 2366:366  -p 2465:465  -p 2587:587 "
                 port_args="$port_args-p 2628:628  -p 2993:993  -p 2995:995  -p 4110:4110 "
                 port_args="$port_args-p 4143:4143 -p 9110:9110 -p 9143:9143 -p 8080:80"
+
+                # port_str is used just for display purpose
                 NEWLINE=$'\n'
                 port_str=""
                 port_str="${port_str}  -p 2025:25   -p 2106:106  -p 2110:110  -p 2143:143${NEWLINE}"
@@ -124,7 +128,7 @@ case $name in
         fi
         if [ -z "$vol_args" ] ; then
             if [ -d /home/$command/queue ] ; then
-                vol_args="$vol_args-v /home/$command/queue:/var/indimail/queue "
+                vol_args="$vol_args-v /home/$command/queue:/var/queue "
             fi
             if [ -d /home/$command/mail ] ; then
                 vol_args="$vol_args-v /home/$command/mail:/home/mail "
