@@ -7,7 +7,7 @@ MAINTAINER cprogrammer
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root \
 	&& apt-get -y update \
-	&& apt-get -y install wget gnupg2 apt-utils \
+	&& apt-get -y install wget gpgv2 gnupg2 apt-utils \
 	&& wget -nv https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_21.04/Release.key -O - | apt-key add - \
 	&& printf "deb http://download.opensuse.org/repositories/home:/mbhangui/xUbuntu_21.04/ /\n" > /etc/apt/sources.list.d/indimail.list \
 	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"             > /etc/apt/preferences.d/preferences \
