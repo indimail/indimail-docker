@@ -3,8 +3,6 @@ FROM fedora:34
 MAINTAINER cprogrammer
 
 RUN export HOSTNAME=indimail.org \
-	DOCKER_BUILDKIT=0 \
-	COMPOSE_DOCKER_CLI_BUILD=0 \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager \
 		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_34/home:mbhangui.repo \
