@@ -1,11 +1,11 @@
-# docker build -f dockerfile.fc32 -t cprogrammer/indimail:fc32
-FROM fedora:32
+# docker build -f dockerfile.fc34 -t cprogrammer/indimail-mta:fc34
+FROM fedora:34
 MAINTAINER cprogrammer
 
 RUN export HOSTNAME=indimail.org \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager \
-		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_32/home:mbhangui.repo \
+		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_34/home:mbhangui.repo \
 	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \
@@ -33,14 +33,10 @@ RUN export HOSTNAME=indimail.org \
 		indimail-mta \
 		logalert \
 		procmail \
-		indimail \
 		indimail-auth \
 		indimail-access \
 		indimail-utils \
 		bogofilter-wordlist \
-		ezmlm-idx \
-		ezmlm-idx-cgi \
-		ezmlm-idx-mysql \
 	&& dnf -y install \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
@@ -50,4 +46,4 @@ RUN export HOSTNAME=indimail.org \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["indimail"]
+CMD ["indimail-mta"]
