@@ -5,6 +5,7 @@ MAINTAINER cprogrammer
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
+	LD_DEBUG=unused \
 	&& mkdir -p /root \
 	&& apt-get -y update \
 	&& apt-get -y install curl gnupg2 apt-utils \
