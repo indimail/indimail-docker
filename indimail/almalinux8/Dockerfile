@@ -5,9 +5,9 @@ MAINTAINER cprogrammer
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
-	&& dnf -y update \
 	&& dnf -y install 'dnf-command(config-manager)' \
 		drpm \
+	&& dnf -y update \
 	&& dnf config-manager --set-enabled powertools \
 	&& dnf -y module disable mysql \
 	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \

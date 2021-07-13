@@ -6,7 +6,7 @@ MAINTAINER cprogrammer
 RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root/Downloads \
 	&& dnf -y install \
-		'dnf-command(config-manager)' powertools \
+		'dnf-command(config-manager)' \
 		epel-release \
 		http://rpms.remirepo.net/enterprise/remi-release-8.rpm \
 		https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \
@@ -16,6 +16,7 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y module enable php:remi-7.4 \
 	&& dnf -y module disable mysql \
 	&& dnf -y update \
+	&& dnf config-manager --set-enabled powertools \
 	&& dnf -y install \
 		binutils \
 		gnupg2 \
