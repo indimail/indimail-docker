@@ -32,6 +32,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		lsof \
 		vim \
 		mrtg \
+		indimail-mta \
 		indimail \
 		iwebadmin \
 		ezmlm-idx \
