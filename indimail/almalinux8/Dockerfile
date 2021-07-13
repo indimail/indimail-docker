@@ -1,5 +1,5 @@
-# docker build -f dockerfile.centos8 -t cprogrammer/indimail:centos8
-FROM centos:8
+# docker build -f dockerfile.almalinux8 -t cprogrammer/indimail:almalinux8
+FROM almalinux:8
 MAINTAINER cprogrammer
 
 # Freshen RUN dnf update

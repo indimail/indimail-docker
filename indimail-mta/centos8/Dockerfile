@@ -8,7 +8,7 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y install 'dnf-command(config-manager)' \
 		drpm \
 	&& dnf -y update \
-	&& dnf config-manager --set-enabled PowerTools \
+	&& dnf config-manager --set-enabled powertools \
 	&& dnf -y module disable mysql \
 	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \
 	&& dnf -y install \

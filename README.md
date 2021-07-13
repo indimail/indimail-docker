@@ -44,15 +44,18 @@ tag|OS Distribution
 xenial|Ubuntu 16.04
 bionic|Ubuntu 18.04
 focal|Ubuntu 20.04
+hirsute|Ubuntu 21.04
 centos7|CentOS 7
 centos8|CentOS 8
 debian9|Debian 9
 debian10|Debian10
-fc32|Fedora Core 32
 fc33|Fedora Core 33
+fc34|Fedora Core 34
 Tumbleweed|openSUSE Tumbleweed
 Leap15.2|openSUSE Leap 15.2
+Leap15.3|openSUSE Leap 15.3
 oracle8|Orace Linux 8
+almalinux8|Alma Linux 8
 
 Let's say you want to use the **indimail** image and CentOS8
 
