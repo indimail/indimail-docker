@@ -1,4 +1,4 @@
-# docker build -f dockerfile.almalinux -t cprogrammer/indimail-mta:almalinux
+# docker build -f dockerfile.almalinux8 -t cprogrammer/indimail-mta:almalinux8
 FROM almalinux:8
 MAINTAINER cprogrammer
 

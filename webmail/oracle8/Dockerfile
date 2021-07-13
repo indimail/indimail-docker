@@ -1,4 +1,4 @@
-# docker build -f dockerfile.centos7 -t cprogrammer/indimail:centos7
+# docker build -f dockerfile.oracle8 -t cprogrammer/indimail-web:oracle8
 FROM oraclelinux:8
 MAINTAINER cprogrammer
 
