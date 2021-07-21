@@ -17,11 +17,10 @@ fi
 declare -x PATH=$PATH:/bin:$HOME/bin:/usr/libexec/indimail
 if [ -f ~/.bashrc ]; then
 	source ~/.bashrc
-else
-if [ -f ${default_dir}Bashrc ]; then
+elif [ -f ${default_dir}Bashrc ]; then
 	source ${default_dir}Bashrc;
 fi
-fi
+declare -x PAGER=less
 declare -x LESS=-e
 declare -x SIMPLE_BACKUP_SUFFIX='.BAK'
 declare -x MANPATH="$MANPATH:/usr/local/man"
@@ -29,7 +28,6 @@ declare -x GIT_PAGER=""
 ENV=$HOME/.bashrc
 export PATH
 if [ " $TERM" = " xterm" -o " $TERM" = " xterm-256color" ] ; then
-	declare -x TERM=vt100
 	if [ -x /usr/bin/screen -a ! -f ~/.noscreen ] ; then
 		exec /usr/bin/screen
 	fi
