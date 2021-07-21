@@ -11,7 +11,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		gnupg2 \
 		apt-utils \
 	&& wget -nv https://download.opensuse.org/repositories/home:mbhangui/Debian_9.0/Release.key -O - | apt-key add - \
-	&& printf "deb http://download.opensuse.org/repositories/home:/mbhangui/Debian_9.0/ /\n" > /etc/apt/sources.list.d/indimail.list  \
+	&& printf "deb http://download.opensuse.org/repositories/home:/mbhangui/Debian_9.0/ /\n" > /etc/apt/sources.list.d/indimail.list \
 	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"          > /etc/apt/preferences.d/preferences \
 	&& apt-get -y update \
 	&& apt-get -y install \
@@ -80,6 +80,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		systemctl stop mariadb; \
 		/usr/libexec/indimail/roundcube_config; \
 		/bin/rm -r /root/Downloads) >/tmp/roundcube.log 2>&1 \
+	&& cat /tmp/roundcube.log \
 	&& unset HOSTNAME \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
