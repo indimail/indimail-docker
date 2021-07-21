@@ -59,12 +59,12 @@ seq ()
 
 l()
 {
-	/bin/ls --color=always -al "$@" | less -M -N -r
+	/bin/ls --color=auto -al "$@" | less
 }
 
 dir()
 {
-	/bin/ls --color=auto -l "$@" | grep '^d' | less -M -N
+	/bin/ls --color=auto -l "$@" | grep '^d' | less
 }
 
 limit()
