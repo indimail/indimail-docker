@@ -7,10 +7,10 @@ usage()
 {
     echo "`basename $0` --id=imageid [--name=name] [--systemd=systemd_path|auto]"
     echo "  [--args=extra_args1 --args=extra_args2 ... --args=extra_argsn]"
-    echo "  [--host=host]"
+    echo "  [--host=host] [--cgroup=cgroup]"
     echo "  [--port=lport1:rport1 --port=lport2:rport2 ... --port=lportn:rportn]"
     echo "  [--volume=dir:mount_point1 --volume=dir:mount_point2 ... --volume=dir:mount_pointn]"
-    echo "  [--capability=cap1 --capability=cap2 ... --capability=cap3]"
+    echo "  [--capability=cap1 --capability=cap2 ... --capability=cap3] | [capability=auto]"
     echo "  [--command=podman|docker]"
     echo
     echo "lport - local port, rport - remote port"
@@ -50,7 +50,15 @@ while test $# -gt 0; do
             port_args="$port_args""-p $optarg "
         ;;
         --capability=*)
-            cap_args="$cap_args--cap-add $optarg "
+           if [ " $optarg" = " auto" ] ; then
+             cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
+             cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE"
+           else
+             cap_args="$cap_args--cap-add $optarg "
+           fi
+        ;;
+        --cgroup=*)
+            cgroup="$optarg"
         ;;
         --volume=*)
             word_count=$(echo $optarg | cut --output-delimiter=" " -d: -f1,2,3 | wc -w)
@@ -84,7 +92,10 @@ while test $# -gt 0; do
           vol_args="$vol_args""-v $optarg "
       ;;
       --systemd=*)
-          systemd=$optarg
+          if [ " $optarg" = " auto" ] ; then
+		  else
+            systemd=$optarg
+		  fi
       ;;
       --args=*)
           extra_args="$extra_args""$optarg "
@@ -137,19 +148,11 @@ case $name in
                 vol_args="$vol_args-v /usr/local/src:/usr/local/src"
             fi
         fi
-        if [ -z "$systemd" ] ; then
-            if [ " $name" = " devel" -o " $name" = " test" ] ; then
-                systemd="bash"
-            else
-                systemd="svscan"
-            fi
-        fi
-        if [ -z "$extra_args" ] ; then
-            if [ " $name" = " devel" -o " $name" = " test" ] ; then
-                extra_args="-ti --rm"
-            else
-                extra_args="-d --rm"
-            fi
+        if [ " $name" = " devel" -o " $name" = " test" ] ; then
+          systemd="bash"
+          if [ -z "$extra_args" ] ; then
+            extra_args="-ti --rm"
+          fi
         fi
     ;;
 esac
@@ -157,23 +160,29 @@ esac
 if [ -z "$imageid" ] ; then
     usage 1
 fi
-tag=`$command images | grep  $imageid | awk '{print $2}'`
-if [ -z "$systemd" ] ; then
+if [ "$systemd" = "auto" ] ; then
+    tag=`$command images | grep  $imageid | awk '{print $2}'`
     case $tag in
         xenial*|debian*|focal*|bionic*)
-            systemd=/lib/systemd/systemd
+        systemd=/lib/systemd/systemd
+        ;;
+        alpine)
+        systemd="/sbin/init"
         ;;
         *)
-            systemd=/usr/lib/systemd/systemd
+        systemd=/usr/lib/systemd/systemd
         ;;
     esac
 elif [ "$systemd" = "svscan" ] ; then
-	systemd=""
+  systemd=""
 fi
 if [ -z "$extra_args" ] ; then
-    extra_args="-ti --rm"
+    extra_args="-d --rm"
 fi
-echo "$command run $extra_args"
+if [ -z "$cgroup" ] ; then
+  cgroup="/sys/fs/cgroup:/sys/fs/cgroup:ro"
+fi
+echo "$command run -v $cgroup $extra_args"
 echo "  --name $name"
 if [ -n "$cap_args" ] ; then
     echo "  $cap_args"
@@ -191,12 +200,11 @@ fi
 if [ -n "$vol_args" ] ; then
     echo "  $vol_args"
 fi
-echo "  -v /sys/fs/cgroup:/sys/fs/cgroup:ro"
 echo "  --device /dev/fuse"
 echo "  $imageid $systemd"
 
-$command run $extra_args \
+$command run -v $cgroup $extra_args \
   --name $name \
   --device /dev/fuse \
-  -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-  $host_arg $cap_args $port_args $vol_args $imageid $systemd
+  $host_arg $cap_args $port_args $vol_args $imageid \
+  $systemd
