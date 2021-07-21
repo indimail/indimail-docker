@@ -1,0 +1,56 @@
+.TH runpod 1
+.SH NAME
+runpod \- Run podman / docker image using podman / docker
+
+.SH SYNOPSIS
+\fBrunpod\fR [\fIOPTIONS\fR]
+
+.SH OPTIONS
+.TP
+\fB\-\-id\fR=\fIimageID\fR
+Use this option to specify image id
+
+.TP
+\fB\-\-name\fR=\fIname\fR
+Use this option to specify name for the running image. \fIname\fR has
+special significance if name is either of indimail, indimail-mta, webmail
+
+.EX
+2025 -> 25, 2106 -> 106, 2110 -> 110  2143 -> 143, 2209 -> 209,
+2366 -> 366, 2465 -> 465, 2587 -> 587 2628 -> 628, 2993 -> 993,
+2995 -> 995, 4110 -> 4110 4143 -> 4143, 9110 -> 9110, 9143 -> 9143,
+8080 -> 80
+.EE
+
+If the \fIname\fR is test or svscan, the command that will be excuted will
+be bash.
+
+.TP
+\fB\-\-capability\fR=\fIcap\fI
+Use this option to add capabilities like SYS_PTRACE, SYS_ADMIN, IPC_LOCK,
+SYS_RESOURCE
+
+.TP
+\fB\-\-host\fR=\fIhost\fI
+Specify hostname for the container.
+
+.TP
+\fB\-\-systemd\fR=\fIhost\fI
+Specify the binary to execute on startup. if \fIname\fR is indimail,
+indimail-mta, webmail, runpod will let the docker-entrypoint get executed.
+If the name test or devel, runpod will run bash in the container with a
+tty. If this is not specified, systemd will be loaded for
+debian, ubuntu, fedora, centos, almalinux, oraclelinux, opensuse images.
+For alpine linux bash will be loaded with a controlling terminal
+
+.TP
+\fB\-\-port\fR=\fIlport\fR:\fIrport\fR
+Map local port \fIlport\fR to remote port \fIrport\fR in the container
+
+.TP
+\fB\-\-command\fR=\fIdocker|podman\fI
+Use docker or podoman to run the container. Default is podman
+
+.TP
+\fB\-\-volume\fR=\fIlocal_dir:remote_dir\fI
+mount \fIlocal_dir\fR as \fIremote_dir\fR in the container
