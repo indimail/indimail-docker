@@ -644,7 +644,7 @@ podman run -d
 471b4e53020b350c5e62e4913fe815203d16827e3e6cfc5e14fced8579c4a2b3
 ```
 
-The argument --id=indimail is needed. It is actually an entry point in all the indimail, indimail-mta containers to start `svscan` command. The `svscan` command further runs `supervise` command on all services in the `/service` directory. Similarly the `indimail-web` container images have the entry point `webmail` which does everything that `indimail` entrypoint does and addiotionally runs the `apache` web server.
+The argument --name=indimail is needed. It is actually an entry point in all the indimail, indimail-mta containers to start `svscan` command. The `svscan` command further runs `supervise` command on all services in the `/service` directory. Similarly the `indimail-web` container images have the entry point `webmail` which does everything that `indimail` entrypoint does and addiotionally runs the `apache` web server.
 
 If you use this script it will
 
