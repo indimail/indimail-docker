@@ -56,6 +56,7 @@ Leap15.2|openSUSE Leap 15.2
 Leap15.3|openSUSE Leap 15.3
 oracle8|Orace Linux 8
 almalinux8|Alma Linux 8
+alpine|alpine Linux v3.14
 
 Let's say you want to use the **indimail** image and CentOS8
 
