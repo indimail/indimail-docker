@@ -45,10 +45,10 @@ RUN export HOSTNAME=indimail.org \
 		php-imagick \
 		ircube \
 	&& echo "Creating self-signed certificate" \
-	&& (/usr/sbin/svctool \
+	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org \
 		--common_name=indimail.org > /dev/null 2>/tmp/cert.log || \
-		echo "certificate generation failed") \
+		echo "certificate generation failed" \
 	&& (sed -i \
 			-e 's};listen.owner = nobody}listen.owner = apache}g' \
 			-e 's};listen.group = nobody}listen.group = apache}g' \

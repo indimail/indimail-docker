@@ -44,10 +44,10 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y install \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
-	&& (/usr/sbin/svctool \
+	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org \
 		--common_name=indimail.org > /dev/null 2>/tmp/cert.log || \
-		echo "certificate generation failed") \
+		echo "certificate generation failed" \
 	&& unset HOSTNAME \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
