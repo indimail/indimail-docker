@@ -74,6 +74,76 @@ Storing signatures
 e543dee69ab797c3a496295c96228265c45f5d221718a24ed8d230c5d79f943f
 ```
 
+You can combine the above in a single command. Below are 3 use cases of invocation.
+
+```
+1) Run the container in detached mode with systemd (init), just like a normal machine
+$ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+    --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
+    -d --rm -h indimal.org --name indimail \
+    cprogrammer/indimail:centos8 /usr/lib/systemd/systemd
+  Connect to the container
+  $ podman exec -ti indimail bash
+  $ ps -ef
+
+2) Run the container with just indimail with a controlling terminal and bash shell
+   $ podman run -it --rm -h indimal.org --name indimail \
+     cprogrammer/indimail:centos8 bash
+   start indimail
+   $ /usr/libexec/indimail/svscanboot &
+   $ ps -ef
+
+3) Run the container with just indimail in detached mode and svscan running as PID 1
+   The containers have been configured with 5 queues as default and hence you will
+   see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn
+   $ podman run -d --rm -h indimal.org --name indimail \
+     cprogrammer/indimail:centos8
+   indimal.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
+   root           1       0  0 17:23 ?        00:00:00 /usr/sbin/svscan /service
+   root           2       1  0 17:23 ?        00:00:00 supervise log .svscan
+   root          15       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.587
+   root          16       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.587
+   qmaill        19       2  0 17:23 ?        00:00:00 /usr/sbin/multilog t /var/log/svc/svscan
+   root          32       1  0 17:23 ?        00:00:00 supervise qmail-send.25
+   root          33       1  0 17:23 ?        00:00:00 supervise log qmail-send.25
+   root          46       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.25
+   root          47       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.25
+   root          48       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.465
+   root          49       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.465
+   root          76       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.366
+   root          77       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.366
+   indimail     110      76  0 17:23 ?        00:00:00 /usr/bin/tcpserver -v -H -R -l indimal.org -x /etc/indimail/tcp/tcp.smtp.cdb -c variables/MAXDAEMONS -o -b 150 -u 555 -g 555 0 366 /usr/sbin/qmail-smtpd
+   root         175      88  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       176      88  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       177      88  0 17:23 ?        00:00:00 qmail-clean
+   qmails       338     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       339     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       340     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       341     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       342     335  0 17:23 ?        00:00:00 qmail-send
+   root         343     338  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   root         344     339  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       345     338  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailr       346     339  0 17:23 ?        00:00:00 qmail-rspawn
+   root         347     340  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailq       348     338  0 17:23 ?        00:00:00 qmail-clean
+   qmailr       349     340  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       350     339  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       352     340  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       354     338  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       356     339  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       357     340  0 17:23 ?        00:00:00 qmail-clean
+   root         358     342  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       359     342  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       360     342  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       362     342  0 17:23 ?        00:00:00 qmail-clean
+   root         363     341  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       364     341  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       365     341  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       367     341  0 17:23 ?        00:00:00 qmail-clean
+   root         505     481  0 17:29 pts/0    00:00:00 grep -E --color=auto svscan|qmail-send|qmail-smtpd|qmail-clean|spawn
+```
+
 You can list the image using the `podman images` command
 
 ```
