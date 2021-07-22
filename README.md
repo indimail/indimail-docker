@@ -794,8 +794,10 @@ On openSUSE
 
 ![Matrix](https://img.shields.io/matrix/indimail:matrix.org)
 
-* Join me [#indimail:matrix.org](https://matrix.to/#/#indimail:matrix.org)
-* IndiMail has an IRC channel #indimail-mta
+* [Matrix Invite Link #indimail:matrix.org](https://matrix.to/#/#indimail:matrix.org)
+* IndiMail has an [IRC channel on libera](https://libera.chat/) #indimail-mta
+
+The matrix room and libera.chat channel have been bridged so joining either one should be sufficient.
 
 ## Mailing list
 
