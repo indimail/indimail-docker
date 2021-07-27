@@ -78,16 +78,16 @@ You can combine the above in a single command. Below are 3 use cases of invocati
 
 ```
 1) Run the container in detached mode with systemd (init), just like a normal machine
-$ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-    --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
-    -d --rm -h indimal.org --name indimail \
-    cprogrammer/indimail:centos8 /usr/lib/systemd/systemd
-  Connect to the container
-  $ podman exec -ti indimail bash
-  $ ps -ef
+   $ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+      --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
+      -d --rm -h indimail.org --name indimail \
+      cprogrammer/indimail:centos8 /usr/lib/systemd/systemd
+   Connect to the container
+   $ podman exec -ti indimail bash
+   $ ps -ef
 
 2) Run the container with just indimail with a controlling terminal and bash shell
-   $ podman run -it --rm -h indimal.org --name indimail \
+   $ podman run -it --rm -h indimail.org --name indimail \
      cprogrammer/indimail:centos8 bash
    start indimail
    $ /usr/libexec/indimail/svscanboot &
@@ -96,9 +96,9 @@ $ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
 3) Run the container with just indimail in detached mode and svscan running as PID 1
    The containers have been configured with 5 queues as default and hence you will
    see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn
-   $ podman run -d --rm -h indimal.org --name indimail \
+   $ podman run -d --rm -h indimail.org --name indimail \
      cprogrammer/indimail:centos8
-   indimal.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
+   indimail.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
    root           1       0  0 17:23 ?        00:00:00 /usr/sbin/svscan /service
    root           2       1  0 17:23 ?        00:00:00 supervise log .svscan
    root          15       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.587
@@ -112,7 +112,7 @@ $ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
    root          49       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.465
    root          76       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.366
    root          77       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.366
-   indimail     110      76  0 17:23 ?        00:00:00 /usr/bin/tcpserver -v -H -R -l indimal.org -x /etc/indimail/tcp/tcp.smtp.cdb -c variables/MAXDAEMONS -o -b 150 -u 555 -g 555 0 366 /usr/sbin/qmail-smtpd
+   indimail     110      76  0 17:23 ?        00:00:00 /usr/bin/tcpserver -v -H -R -l indimail.org -x /etc/indimail/tcp/tcp.smtp.cdb -c variables/MAXDAEMONS -o -b 150 -u 555 -g 555 0 366 /usr/sbin/qmail-smtpd
    root         175      88  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
    qmailr       176      88  0 17:23 ?        00:00:00 qmail-rspawn
    qmailq       177      88  0 17:23 ?        00:00:00 qmail-clean
@@ -813,3 +813,4 @@ There is also a [Project Tracker](http://sourceforge.net/tracker/?group_id=23068
 ## References
 
 1. [Super-Slim Docker Containers](https://medium.com/better-programming/super-slim-docker-containers-fdaddc47e560)
+2. [Rootless containers with Podman: The basics](https://developers.redhat.com/blog/2020/09/25/rootless-containers-with-podman-the-basics#why_containers_)
