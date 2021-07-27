@@ -225,7 +225,7 @@ mcd()
 		$ECHO "Usage: mcd user@domain"
 		return 1
 	fi
-	/var/indimail/bin/vuserinfo $1 | tee /tmp/vuserinfo.$$
+	/usr/bin/vuserinfo $1 | tee /tmp/vuserinfo.$$
 	mdir=`cat /tmp/vuserinfo.$$|sed -n 7p | cut -d: -f2`
 	cd $mdir
 }
@@ -257,8 +257,8 @@ cscope()
 
 tail()
 {
-	if [ -f /var/indimail/bin/tai64nlocal ] ; then
-		/usr/bin/tail $* | /var/indimail/bin/tai64nlocal
+	if [ -f /usr/bin/tai64nlocal ] ; then
+		/usr/bin/tail $* | /usr/bin/tai64nlocal
 	else
 		/usr/bin/tail $*
 	fi
