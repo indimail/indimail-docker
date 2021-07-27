@@ -19,6 +19,7 @@ usage()
 
 command=podman
 name="test"
+detached=0
 while test $# -gt 0; do
   case "$1" in
     -*=*)
@@ -36,6 +37,7 @@ while test $# -gt 0; do
         echo "command should be podman or docker" 1>&2
         usage 1
       fi
+      command="exec $command"
     ;;
     --id=*)
       imageid=$optarg
@@ -51,10 +53,10 @@ while test $# -gt 0; do
     ;;
     --capability=*)
        if [ " $optarg" = " auto" ] ; then
-       cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
-       cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE"
+         cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
+         cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE "
        else
-       cap_args="$cap_args--cap-add $optarg "
+         cap_args="$cap_args--cap-add $optarg "
        fi
     ;;
     --cgroup=*)
@@ -95,6 +97,7 @@ while test $# -gt 0; do
       systemd=$optarg
     ;;
     --args=*)
+      echo $optarg | grep "\-d" && detached=1
       extra_args="$extra_args""$optarg "
     ;;
     *)
@@ -129,7 +132,7 @@ case $name in
     fi
     if [ -z "$cap_args" ] ; then
       cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
-      cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE"
+      cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE "
     fi
     if [ -z "$host_arg" ] ; then
       host_arg="-h indimail.org"
@@ -171,10 +174,20 @@ if [ "$systemd" = "auto" ] ; then
     ;;
   esac
   systemd="/sbin/init"
+  if [ -z "$cap_args" ] ; then
+    cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
+    cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE "
+  else
+    echo $cap_args|grep SYS_ADMIN > /dev/null
+    if [ $? -ne 0 ] ; then
+       cap_args="$cap_args--cap-add SYS_ADMIN "
+    fi
+  fi
 elif [ "$systemd" = "svscan" ] ; then
   systemd=""
 fi
 if [ -z "$extra_args" ] ; then
+  detached=1
   extra_args="-d --rm"
 fi
 if [ -z "$cgroup" ] ; then
@@ -191,7 +204,7 @@ if [ -n "$cap_args" ] ; then
 fi
 if [ -z "$port_args" ] ; then
   if [ -n "$port_str" ] ; then
-	port_args=$port_str
+    port_args=$port_str
     echo " $port_args"
   fi
 fi
@@ -204,3 +217,6 @@ $command run -v $cgroup $extra_args \
   --device /dev/fuse \
   $host_arg $cap_args $port_args $vol_args \
   $imageid $systemd
+if [ $? -eq 0 -a $detached -eq 1 ] ; then
+	podman exec -ti $name bash
+fi
