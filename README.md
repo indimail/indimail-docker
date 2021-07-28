@@ -43,21 +43,41 @@ $ podman build -t localhost/indimail-mta:alpine .
 You can use the docker images or podman images command to list the container images
 
 $ podman images
-REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
-localhost/mycontainer            latest       7bcf4b2ff83e   53 seconds ago   1.16 GB
-docker.io/cprogrammer/indimail   centos8      e543dee69ab7   39 hours ago     1.03 GB
-docker.io/cprogrammer/indimail   centos7      fba3b42e0164   5 hours ago      2.9 GB
-docker.io/cprogrammer/indimail   fc31         a5266643441b   4 days ago       1.13 GB
+REPOSITORY                                 TAG         IMAGE ID      CREATED            SIZE
+localhost/indimail                         alpine      62f9d0d95427  About an hour ago  468 MB
+localhost/indimail-mta                     alpine      0dffb4b398af  15 hours ago       404 MB
+localhost/tinydnssec                       alpine      dc1c37c76a50  28 hours ago       97.2 MB
+localhost/indimail-mta                     leap15.3    899596f466a1  2 weeks ago        500 MB
+localhost/indimail-mta                     debian10    f3a8194282d7  3 weeks ago        306 MB
+registry.opensuse.org/opensuse/leap        15.3        accc3d285fe7  4 weeks ago        108 MB
+docker.io/library/almalinux                8           7a497d63e726  4 weeks ago        216 MB
+docker.io/library/debian                   10          7a4951775d15  5 weeks ago        119 MB
+registry.fedoraproject.org/fedora          34          abec9a7a7dc6  6 weeks ago        184 MB
+docker.io/library/almalinux                latest      11c550a4f6c5  8 weeks ago        216 MB
+docker.io/gentoo/stage3                    latest      e95526ecc92d  3 months ago       919 MB
+docker.io/library/archlinux                latest      3de742be9254  4 months ago       416 MB
+docker.io/library/debian                   8           3aaeab7a4777  4 months ago       135 MB
+k8s.gcr.io/pause                           3.5         ed210e3e4a5b  4 months ago       690 kB
+registry.opensuse.org/opensuse/tumbleweed  latest      cdd77ba4b087  4 months ago       94.7 MB
+docker.io/library/ubuntu                   xenial      8185511cd5ad  6 months ago       136 MB
+docker.io/library/oraclelinux              8           f4a1f2c861ca  6 months ago       436 MB
+docker.io/library/ubuntu                   focal       f643c72bc252  8 months ago       75.3 MB
+docker.io/library/ubuntu                   bionic      2c047404e52d  8 months ago       65.6 MB
+docker.io/library/fedora                   33          b3048463dcef  8 months ago       181 MB
+docker.io/opensuse/tumbleweed              latest      2eac6045a15c  8 months ago       93.4 MB
+docker.io/library/centos                   7           7e6257c9f8d8  11 months ago      211 MB
+docker.io/library/centos                   8           0d120b6ccaa8  11 months ago      222 MB
+docker.io/library/centos                   6           d0957ffdf8a2  2 years ago        202 MB
 ```
 
 ### Start the podman container
 
 indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
 
-The below command will start svscan process. In the earlier `podman images` command we listed the images that we have built. When we want to run a container, we need to pass the **IMAGE ID** to the docker or podman command. e.g. `fba3b42e0164` is the image id of the indimail container that we have for centos7.
+The below command will start svscan process. In the earlier `podman images` command we listed the images that we have built. When we want to run a container, we need to pass the **IMAGE ID** to the docker or podman command. e.g. `62f9d0d95427` is the image id of the indimail container that we have for alpine.
 
 ```
-$ podman run -d -h indimail.org --name indimail fba3b42e0164
+$ podman run -d -h indimail.org --name indimail 62f9d0d95427
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
 ```
 
@@ -71,9 +91,9 @@ docker-entrypoint: executing bash
 You can use --net host to map the container's network to the HOST
 
 ```
-$ docker run --net host -d -h indimail.org --name indimail fba3b42e0164
+$ docker run --net host -d -h indimail.org --name indimail 62f9d0d95427
 or
-$ podman run --net host -d -h indimail.org --name indimail fba3b42e0164
+$ podman run --net host -d -h indimail.org --name indimail 62f9d0d95427
 ```
 
 There are other cool things you can do with the docker/podman images. You can have the images have their own filesystem with the queue and the user's home directory. It is better to have them on the host running the containers.
@@ -94,10 +114,10 @@ $ podman volume create mail
 mail
 
 $ docker run --net host -d -h indimail.org --name indimail \
-    -v queue:/var/indimail/queue -v mail:/home fba3b42e0164
+    -v queue:/var/indimail/queue -v mail:/home 62f9d0d95427
 or
 $ podman run --net host -d -h indimail.org --name indimail \
-    -v queue:/var/indimail/queue -v mail:/home fba3b42e0164
+    -v queue:/var/indimail/queue -v mail:/home 62f9d0d95427
 ```
 
 If you do this way you will have to initialize the queue the first time.
