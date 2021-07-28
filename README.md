@@ -642,21 +642,6 @@ The Dockerfile for each of the images is located in a separate subdirectory for 
 * [indimail](https://github.com/mbhangui/docker/tree/master/indimail)
 * [indimail+roundcube](https://github.com/mbhangui/docker/tree/master/webmail)
 
-
-If you want to build the image yourself instead of using hub.docker.com, ensure that you remove the below line from your Dockerfile
-
-```
-COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
-```
-
-To build the image use need to use the docker/podman build command .e.g.
-
-```
-$ docker build -t indimail:fc31 ./Dockerfile .
-or
-$ podman build -t indimail:fc31 ./Dockerfile .
-```
-
 ## NOTE
 
 The images above have been installed without clam anti virus to keep the image size as low as possible. You may install and configure it using the below steps.
