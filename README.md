@@ -1,4 +1,4 @@
-# Dockerfile repository for automated builds.
+# Dockerfile repository for indimail, indimail-mta
 
 This repo contains repository for Dockerfiles used for building docker/podman images for [indimail-mta](https://github.com/mbhangui/indimail-mta), [indimail](https://github.com/mbhangui/indimail-virtualdomains) and [indimail](https://github.com/mbhangui/indimail-virtualdomains) with [roundcube](https://roundcube.net/) web frontend. Read this document on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works.
 
@@ -10,157 +10,50 @@ You have to decide the image that you want.
 * indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and all everything that the **indimail-mta** image does.
 * indimail-web - Like the **indimail** image with the addition of a web based email client based on [Roundcube Mail](https://roundcube.net/).
 
-Name|Docker Hub Repository Location|Build Status
-----|------------------------------|------------
-indimail-mta|[indimail-mta Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-mta)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail-mta)
-indimail|[indimail Docker Hub](https://hub.docker.com/r/cprogrammer/indimail)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail)
-indimail-web|[indimail+Roundcube Docker Hub](https://hub.docker.com/r/cprogrammer/indimail-web)|![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/cprogrammer/indimail-web)
+
+### Building container images
+
+You need to have docker or podman installed. Installation of docker or podman is beyond the scope of this document. But you can refer to the official documents for installing docker or podman. Just google and you will know how to do that.
+
+The Dockerfile for each of the images is located in a separate subdirectory for each linux distro
+
+* [indimail-mta](https://github.com/mbhangui/docker/tree/master/indimail-mta)
+* [indimail](https://github.com/mbhangui/docker/tree/master/indimail)
+* [indimail+roundcube](https://github.com/mbhangui/docker/tree/master/webmail)
 
 
-The following tags/images can be pulled by executing the commands
-
-NOTE: Docker no longer allows only paid accounts to connect to github. As I cannot afford to have pay a hefty amount to docker every month, I will no longer be updatding docker hub. You can build your own images using the Dockerfile in this repository. I will also update all my documents to remove reference to docker soon.
-
-**Docker**
-
-```
-docker pull cprogrammer/indimail-mta:tag
-docker pull cprogrammer/indimail:tag
-docker pull cprogrammer/webmail:tag
-```
-
-or
-
-**podman**
+To build the image ensure that you create a build directory and copy the Docker file and .alias, .bash_profile, .bashrc, .exrc, .gfuncs, .glogout, .indent.pro, .vimrc
 
 ```
-podman pull cprogrammer/indimail:tag
-podman pull cprogrammer/indimail-mta:tag
-podman pull cprogrammer/webmail:tag
+$ mkdir -p /usr/local/src
+$ cd /usr/local/src
+# let us say you want to build the alpine image for indimail-mta
+$ git clone https://github.com/mbhangui/docker.git
+$ cd docker/indimail-mta/alpine
+$ for i in .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc; do cp ../../$i .; done
+
+# for building a docker container use
+$ docker build -t localhost/indimail-mta:alpine .
+
+# for building a podman container use
+$ podman build -t localhost/indimail-mta:alpine .
 ```
-
-Replace tag in the above command with one of the following
-
-tag|OS Distribution
-----|----------------------
-xenial|Ubuntu 16.04
-bionic|Ubuntu 18.04
-focal|Ubuntu 20.04
-hirsute|Ubuntu 21.04
-centos7|CentOS 7
-centos8|CentOS 8
-debian9|Debian 9
-debian10|Debian10
-fc33|Fedora Core 33
-fc34|Fedora Core 34
-Tumbleweed|openSUSE Tumbleweed
-Leap15.2|openSUSE Leap 15.2
-Leap15.3|openSUSE Leap 15.3
-oracle8|Orace Linux 8
-almalinux8|Alma Linux 8
-alpine|alpine Linux v3.14
-
-Let's say you want to use the **indimail** image and CentOS8
-
-```
-$ podman pull cprogrammer/indimail:centos8
-Trying to pull docker.io/cprogrammer/indimail:centos8...
-Getting image source signatures
-Copying blob 6910e5a164f7 skipped: already exists  
-Copying blob 9c29f394b0db done  
-Copying blob 6db186b8f3c7 [======>-------------------------------] 33.8MiB / 187.3MiB
-Copying blob 6db186b8f3c7 done
-Copying config e543dee69a done
-Writing manifest to image destination
-Storing signatures
-e543dee69ab797c3a496295c96228265c45f5d221718a24ed8d230c5d79f943f
-```
-
-You can combine the above in a single command. Below are 3 use cases of invocation.
-
-```
-1) Run the container in detached mode with systemd (init), just like a normal machine
-   $ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-      --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
-      -d --rm -h indimail.org --name indimail \
-      cprogrammer/indimail:centos8 /usr/lib/systemd/systemd
-   Connect to the container
-   $ podman exec -ti indimail bash
-   $ ps -ef
-
-2) Run the container with just indimail with a controlling terminal and bash shell
-   $ podman run -it --rm -h indimail.org --name indimail \
-     cprogrammer/indimail:centos8 bash
-   start indimail
-   $ /usr/libexec/indimail/svscanboot &
-   $ ps -ef
-
-3) Run the container with just indimail in detached mode and svscan running as PID 1
-   The containers have been configured with 5 queues as default and hence you will
-   see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn
-   $ podman run -d --rm -h indimail.org --name indimail \
-     cprogrammer/indimail:centos8
-   indimail.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
-   root           1       0  0 17:23 ?        00:00:00 /usr/sbin/svscan /service
-   root           2       1  0 17:23 ?        00:00:00 supervise log .svscan
-   root          15       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.587
-   root          16       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.587
-   qmaill        19       2  0 17:23 ?        00:00:00 /usr/sbin/multilog t /var/log/svc/svscan
-   root          32       1  0 17:23 ?        00:00:00 supervise qmail-send.25
-   root          33       1  0 17:23 ?        00:00:00 supervise log qmail-send.25
-   root          46       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.25
-   root          47       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.25
-   root          48       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.465
-   root          49       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.465
-   root          76       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.366
-   root          77       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.366
-   indimail     110      76  0 17:23 ?        00:00:00 /usr/bin/tcpserver -v -H -R -l indimail.org -x /etc/indimail/tcp/tcp.smtp.cdb -c variables/MAXDAEMONS -o -b 150 -u 555 -g 555 0 366 /usr/sbin/qmail-smtpd
-   root         175      88  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
-   qmailr       176      88  0 17:23 ?        00:00:00 qmail-rspawn
-   qmailq       177      88  0 17:23 ?        00:00:00 qmail-clean
-   qmails       338     335  0 17:23 ?        00:00:00 qmail-send
-   qmails       339     335  0 17:23 ?        00:00:00 qmail-send
-   qmails       340     335  0 17:23 ?        00:00:00 qmail-send
-   qmails       341     335  0 17:23 ?        00:00:00 qmail-send
-   qmails       342     335  0 17:23 ?        00:00:00 qmail-send
-   root         343     338  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
-   root         344     339  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
-   qmailr       345     338  0 17:23 ?        00:00:00 qmail-rspawn
-   qmailr       346     339  0 17:23 ?        00:00:00 qmail-rspawn
-   root         347     340  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
-   qmailq       348     338  0 17:23 ?        00:00:00 qmail-clean
-   qmailr       349     340  0 17:23 ?        00:00:00 qmail-rspawn
-   qmailq       350     339  0 17:23 ?        00:00:00 qmail-clean
-   qmailq       352     340  0 17:23 ?        00:00:00 qmail-clean
-   qmailq       354     338  0 17:23 ?        00:00:00 qmail-clean
-   qmailq       356     339  0 17:23 ?        00:00:00 qmail-clean
-   qmailq       357     340  0 17:23 ?        00:00:00 qmail-clean
-   root         358     342  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
-   qmailr       359     342  0 17:23 ?        00:00:00 qmail-rspawn
-   qmailq       360     342  0 17:23 ?        00:00:00 qmail-clean
-   qmailq       362     342  0 17:23 ?        00:00:00 qmail-clean
-   root         363     341  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
-   qmailr       364     341  0 17:23 ?        00:00:00 qmail-rspawn
-   qmailq       365     341  0 17:23 ?        00:00:00 qmail-clean
-   qmailq       367     341  0 17:23 ?        00:00:00 qmail-clean
-   root         505     481  0 17:29 pts/0    00:00:00 grep -E --color=auto svscan|qmail-send|qmail-smtpd|qmail-clean|spawn
-```
-
-You can list the image using the `podman images` command
+You can use the docker iamges or podman images to list the container images
 
 ```
 $ podman images
-REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
-docker.io/cprogrammer/indimail   centos8      e543dee69ab7   38 hours ago   1.03 GB
-docker.io/cprogrammer/indimail   centos7      fba3b42e0164   5 hours ago    2.9 GB
-docker.io/cprogrammer/indimail   fc33         a5266643441b   4 days ago     1.13 GB
+REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
+localhost/mycontainer            latest       7bcf4b2ff83e   53 seconds ago   1.16 GB
+docker.io/cprogrammer/indimail   centos8      e543dee69ab7   39 hours ago     1.03 GB
+docker.io/cprogrammer/indimail   centos7      fba3b42e0164   5 hours ago      2.9 GB
+docker.io/cprogrammer/indimail   fc31         a5266643441b   4 days ago       1.13 GB
 ```
 
 ### Start the podman container
 
 indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
 
-The below command will start svscan process
+The below command will start svscan process. In the earlier `podman images` command we listed the images that we have built. When we want to run a container, we need to pass the **IMAGE ID** to the docker or podman command. e.g. `fba3b42e0164` is the image id of the indimail container that we have for centos7.
 
 ```
 $ podman run -d -h indimail.org --name indimail fba3b42e0164
