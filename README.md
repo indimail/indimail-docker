@@ -32,15 +32,16 @@ $ git clone https://github.com/mbhangui/docker.git
 $ cd docker/indimail-mta/alpine
 $ for i in .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc; do cp ../../$i .; done
 
-# for building a docker container use
+for building a docker container use
+
 $ docker build -t localhost/indimail-mta:alpine .
 
-# for building a podman container use
+for building a podman container use
+
 $ podman build -t localhost/indimail-mta:alpine .
-```
+
 You can use the docker iamges or podman images to list the container images
 
-```
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
 localhost/mycontainer            latest       7bcf4b2ff83e   53 seconds ago   1.16 GB
