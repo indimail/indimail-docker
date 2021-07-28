@@ -40,7 +40,7 @@ for building a podman container use
 
 $ podman build -t localhost/indimail-mta:alpine .
 
-You can use the docker iamges or podman images to list the container images
+You can use the docker images or podman images command to list the container images
 
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
