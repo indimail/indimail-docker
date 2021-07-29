@@ -1,4 +1,4 @@
-name: build and push indimail-mta container image for centos8
+name: indimail-mta:centos8 container image
 
 on:
   push:

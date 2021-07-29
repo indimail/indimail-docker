@@ -1,4 +1,4 @@
-name: build and push indimail container image for centos7
+name: indimail:centos7 container image
 
 on:
   push:
