@@ -10,8 +10,6 @@ You have to decide the image that you want.
 * indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and all everything that the **indimail-mta** image does.
 * indimail-web - Like the **indimail** image with the addition of a web based email client based on [Roundcube Mail](https://roundcube.net/).
 
-[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-alpine.yml/badge.svg)]
-(https://github.com/mbhangui/indimail-mta/actions/workflows/indimail-mta-c-cpp.yml)
 Name|Docker Hub Repository Location
 ----|------------------------------
 indimail-mta|[indimail-mta Docker Hub](https://github.com/mbhangui/indimail-mta/pkgs/container/indimail-mta)
@@ -43,24 +41,25 @@ podman pull ghcr.io/mbhangui/indimail-web:tag
 
 Replace tag in the above command with one of the following
 
-tag|OS Distribution
-----|----------------------
-xenial|Ubuntu 16.04
-bionic|Ubuntu 18.04
-focal|Ubuntu 20.04
-hirsute|Ubuntu 21.04
-centos7|CentOS 7
-centos8|CentOS 8
-debian9|Debian 9
-debian10|Debian10
-fc33|Fedora Core 33
-fc34|Fedora Core 34
-Tumbleweed|openSUSE Tumbleweed
-Leap15.2|openSUSE Leap 15.2
-Leap15.3|openSUSE Leap 15.3
-oracle8|Orace Linux 8
-almalinux8|Alma Linux 8
-alpine|alpine Linux v3.14
+
+tag|OS Distribution|indimai-mta|indimail
+----|--------------|-----------|-------
+xenial|Ubuntu 16.04|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-xenial.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-xenial.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-xenial.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-xenial.yml)
+bionic|Ubuntu 18.04|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-bionic.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-bionic.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-bionic.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-bionic.yml)
+focal|Ubuntu 20.04|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-focal.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-focal.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-focal.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-focal.yml)
+hirsute|Ubuntu 21.04|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-hirsute.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-hirsute.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-hirsute.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-hirsute.yml)
+centos7|CentOS 7|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos7.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos7.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-centos7.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-centos7.yml)
+centos8|CentOS 8|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos8.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-centos8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-centos8.yml)
+debian9|Debian 9|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian9.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-debian9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-debian9.yml)
+debian10|Debian10|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian10.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian10.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-debian10.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-debian10.yml)
+fc33|Fedora Core 33|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-fc33.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-fc33.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-fc33.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-fc33.yml)
+fc34|Fedora Core 34|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-fc34.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-fc34.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-fc34.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-fc34.yml)
+Tumbleweed|openSUSE Tumbleweed|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-tumbleweed.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-tumbleweed.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-tumbleweed.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-tumbleweed.yml)
+Leap15.2|openSUSE Leap 15.2|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-leap15.2.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-leap15.2.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-leap15.2.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-leap15.2.yml)
+Leap15.3|openSUSE Leap 15.3|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-leap15.3.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-leap15.3.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-leap15.3.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-leap15.3.yml)
+oracle8|Orace Linux 8|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-oracle8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-oracle8.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-oracle8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-oracle8.yml)
+almalinux8|Alma Linux 8|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-almalinux8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-almalinux8.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-almalinux8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-almalinux8.yml)
+alpine|alpine Linux v3.14|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-alpine.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-alpine.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-alpine.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-alpine.yml)
 
 Let's say you want to use the **indimail** image and CentOS8
 
