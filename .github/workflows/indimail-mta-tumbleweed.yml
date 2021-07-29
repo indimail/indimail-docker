@@ -1,0 +1,28 @@
+name: indimail-mta:tumbleweed container image
+
+on:
+  push:
+    paths:
+      - '**/indimail-mta/tumbleweed'
+      - .github/workflows/indimail-mta-tumbleweed.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
+
+      - name: build
+        run: |
+          cp indimail-mta/tumbleweed/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:tumbleweed" .
+
+      - name: push
+        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:tumbleweed"
