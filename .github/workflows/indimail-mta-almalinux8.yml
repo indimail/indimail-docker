@@ -1,4 +1,4 @@
-name: build and push indimail-mta container image for almalinux8
+name: indimail-mta:almalinux8 container image
 
 on:
   push:
