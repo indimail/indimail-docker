@@ -1,6 +1,7 @@
 # docker build -f dockerfile.alpine -t cprogrammer/indimail-mta:alpine
 From alpine:latest
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:alpine
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root /usr/local/src \
@@ -113,6 +114,17 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd ../bogofilter-wordlist-x; \
 		./default.configure; \
 		make && make install-strip; \
+		# configure indimail-mta ###############################
+		cd /usr/local/src/indimail-mta/indimail-mta-x; \
+		./create_services --add-boot; \
+		( echo "/usr/sbin/svctool --config=recontrol"; \
+		 echo "cd /var/indimail/queue"; \
+		 echo "for i in queue*; do queue-fix -v \$i; done"; \
+		 echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
+		 echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
+		) > /service/.svscan/run; \
+		chmod +x /service/.svscan/run; \
+		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/src/tinydnssec/tinydnssec-x; \
@@ -138,17 +150,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		install -m 0644 curvedns.8 curvedns-keygen.8 /usr/share/man/man8; \
 		install -m 0600 curvedns.private.key /etc/indimail//curvedns.private.key; \
 		cd ..; ./dnssvc; \
-		# configure indimail-mta ###############################
-		cd /usr/local/src/indimail-mta/indimail-mta-x; \
-		./create_services --add-boot; \
-		( echo "/usr/sbin/svctool --config=recontrol"; \
-		 echo "cd /var/indimail/queue"; \
-		 echo "for i in queue*; do queue-fix -v \$i; done"; \
-		 echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
-		 echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
-		) > /service/.svscan/run; \
-		chmod +x /service/.svscan/run; \
-		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
 		rc-update add dcron; \
