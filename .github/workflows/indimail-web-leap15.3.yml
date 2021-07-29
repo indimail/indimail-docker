@@ -1,0 +1,28 @@
+name: indimail-web:leap15.3 container image
+
+on:
+  push:
+    paths:
+      - '**/webmail/leap15.3'
+      - .github/workflows/indimail-web-leap15.3.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
+
+      - name: build
+        run: |
+          cp webmail/leap15.3/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:leap15.3" .
+
+      - name: push
+        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:leap15.3"
