@@ -21,7 +21,7 @@ jobs:
 
       - name: build
         run: |
-          cp indimail-mta/centos8/Dockfile .
+          cp indimail-mta/centos8/Dockerfile .
           docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:centos8" .
 
       - name: push
