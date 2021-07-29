@@ -19,8 +19,6 @@ indimail-web|[indimail+Roundcube Docker Hub](https://github.com/mbhangui/indimai
 
 The following tags/images can be pulled by executing the commands
 
-NOTE: Docker no longer allows only paid accounts to connect to github. As I cannot afford to have pay a hefty amount to docker every month, I will no longer be updatding docker hub. You can build your own images using the Dockerfile in this repository. I will also update all my documents to remove reference to docker soon.
-
 **Docker**
 
 ```
@@ -40,7 +38,6 @@ podman pull ghcr.io/mbhangui/indimail-web:tag
 ```
 
 Replace tag in the above command with one of the following
-
 
 tag|OS Distribution|indimai-mta|indimail
 ----|--------------|-----------|-------
