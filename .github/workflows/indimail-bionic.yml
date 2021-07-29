@@ -1,4 +1,4 @@
-name: build and push indimail container image for bionic
+name: indimail:bionic container image
 
 on:
   push:
