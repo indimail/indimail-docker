@@ -1,0 +1,28 @@
+name: build and push indimail-mta container image for bionic
+
+on:
+  push:
+    paths:
+      - '**/indimail-mta/bionic'
+      - .github/workflows/indimail-mta-bionic.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
+
+      - name: build
+        run: |
+          cp indimail-mta/bionic/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:bionic" .
+
+      - name: push
+        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:bionic"
