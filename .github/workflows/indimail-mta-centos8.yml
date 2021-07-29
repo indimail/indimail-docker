@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '**/indimail-mta/centos8'
-      - .github/workflows/indimail-mta-centos8.yaml
+      - .github/workflows/indimail-mta-centos8.yml
       - '!**.md'
   workflow_dispatch:
 
