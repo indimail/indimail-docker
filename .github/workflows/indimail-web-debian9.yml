@@ -1,0 +1,28 @@
+name: indimail-web:debian9 container image
+
+on:
+  push:
+    paths:
+      - '**/webmail/debian9'
+      - .github/workflows/indimail-web-debian9.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
+
+      - name: build
+        run: |
+          cp webmail/debian9/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:debian9" .
+
+      - name: push
+        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:debian9"
