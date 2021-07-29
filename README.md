@@ -1,4 +1,4 @@
-# Dockerfile repository for indimail, indimail-mta
+# Dockerfile repository for automated builds.
 
 This repo contains repository for Dockerfiles used for building docker/podman images for [indimail-mta](https://github.com/mbhangui/indimail-mta), [indimail](https://github.com/mbhangui/indimail-virtualdomains) and [indimail](https://github.com/mbhangui/indimail-virtualdomains) with [roundcube](https://roundcube.net/) web frontend. Read this document on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works.
 
@@ -10,74 +10,162 @@ You have to decide the image that you want.
 * indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and all everything that the **indimail-mta** image does.
 * indimail-web - Like the **indimail** image with the addition of a web based email client based on [Roundcube Mail](https://roundcube.net/).
 
-
-### Building container images
-
-You need to have docker or podman installed. Installation of docker or podman is beyond the scope of this document. But you can refer to the official documents for installing docker or podman. Just google and you will know how to do that.
-
-The Dockerfile for each of the images is located in a separate subdirectory for each linux distro
-
-* [indimail-mta](https://github.com/mbhangui/docker/tree/master/indimail-mta)
-* [indimail](https://github.com/mbhangui/docker/tree/master/indimail)
-* [indimail+roundcube](https://github.com/mbhangui/docker/tree/master/webmail)
+[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-alpine.yml/badge.svg)]
+(https://github.com/mbhangui/indimail-mta/actions/workflows/indimail-mta-c-cpp.yml)
+Name|Docker Hub Repository Location
+----|------------------------------
+indimail-mta|[indimail-mta Docker Hub](https://github.com/mbhangui/indimail-mta/pkgs/container/indimail-mta)
+indimail|[indimail Docker Hub](https://github.com/mbhangui/indimail-virtualdomains/pkgs/container/indimail)
+indimail-web|[indimail+Roundcube Docker Hub](https://github.com/mbhangui/indimail-virtualdomains/pkgs/container/indimail-web)
 
 
-To build the image ensure that you create a build directory and copy the Docker file and .alias, .bash_profile, .bashrc, .exrc, .gfuncs, .glogout, .indent.pro, .vimrc
+The following tags/images can be pulled by executing the commands
+
+NOTE: Docker no longer allows only paid accounts to connect to github. As I cannot afford to have pay a hefty amount to docker every month, I will no longer be updatding docker hub. You can build your own images using the Dockerfile in this repository. I will also update all my documents to remove reference to docker soon.
+
+**Docker**
 
 ```
-$ mkdir -p /usr/local/src
-$ cd /usr/local/src
-# let us say you want to build the alpine image for indimail-mta
-$ git clone https://github.com/mbhangui/docker.git
-$ cd docker/indimail-mta/alpine
-$ for i in .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc; do cp ../../$i .; done
+docker pull ghcr.io/mbhangui/indimail-mta:tag
+docker pull ghcr.io/mbhangui/indimail:tag
+docker pull ghcr.io/mbhangui/indimail-web:tag
+```
 
-for building a docker container use
+or
 
-$ docker build -t localhost/indimail-mta:alpine .
+**podman**
 
-for building a podman container use
+```
+podman pull ghcr.io/mbhangui/indimail-mta:tag
+podman pull ghcr.io/mbhangui/indimail:tag
+podman pull ghcr.io/mbhangui/indimail-web:tag
+```
 
-$ podman build -t localhost/indimail-mta:alpine .
+Replace tag in the above command with one of the following
 
-You can use the docker images or podman images command to list the container images
+tag|OS Distribution
+----|----------------------
+xenial|Ubuntu 16.04
+bionic|Ubuntu 18.04
+focal|Ubuntu 20.04
+hirsute|Ubuntu 21.04
+centos7|CentOS 7
+centos8|CentOS 8
+debian9|Debian 9
+debian10|Debian10
+fc33|Fedora Core 33
+fc34|Fedora Core 34
+Tumbleweed|openSUSE Tumbleweed
+Leap15.2|openSUSE Leap 15.2
+Leap15.3|openSUSE Leap 15.3
+oracle8|Orace Linux 8
+almalinux8|Alma Linux 8
+alpine|alpine Linux v3.14
 
+Let's say you want to use the **indimail** image and CentOS8
+
+```
+$ podman pull ghcr.io/mbhangui/indimail:centos8
+Trying to pull ghcr.io/mbhangui/indimail:centos8...
+Getting image source signatures
+Copying blob 6910e5a164f7 skipped: already exists  
+Copying blob 9c29f394b0db done  
+Copying blob 6db186b8f3c7 [======>-------------------------------] 33.8MiB / 187.3MiB
+Copying blob 6db186b8f3c7 done
+Copying config e543dee69a done
+Writing manifest to image destination
+Storing signatures
+e543dee69ab797c3a496295c96228265c45f5d221718a24ed8d230c5d79f943f
+```
+
+You can combine the above in a single command. Below are 3 use cases of invocation.
+
+```
+1) Run the container in detached mode with systemd (init), just like a normal machine
+   $ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+      --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
+      -d --rm -h indimail.org --name indimail \
+      cprogrammer/indimail:centos8 /usr/lib/systemd/systemd
+   Connect to the container
+   $ podman exec -ti indimail bash
+   $ ps -ef
+
+2) Run the container with just indimail with a controlling terminal and bash shell
+   $ podman run -it --rm -h indimail.org --name indimail \
+     ghcr.io/mbhangui/indimail:centos8 bash
+   start indimail
+   $ /usr/libexec/indimail/svscanboot &
+   $ ps -ef
+
+3) Run the container with just indimail in detached mode and svscan running as PID 1
+   The containers have been configured with 5 queues as default and hence you will
+   see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn
+   $ podman run -d --rm -h indimail.org --name indimail \
+     ghcr.io/mbhangui/indimail:centos8
+   indimail.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
+   root           1       0  0 17:23 ?        00:00:00 /usr/sbin/svscan /service
+   root           2       1  0 17:23 ?        00:00:00 supervise log .svscan
+   root          15       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.587
+   root          16       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.587
+   qmaill        19       2  0 17:23 ?        00:00:00 /usr/sbin/multilog t /var/log/svc/svscan
+   root          32       1  0 17:23 ?        00:00:00 supervise qmail-send.25
+   root          33       1  0 17:23 ?        00:00:00 supervise log qmail-send.25
+   root          46       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.25
+   root          47       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.25
+   root          48       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.465
+   root          49       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.465
+   root          76       1  0 17:23 ?        00:00:00 supervise qmail-smtpd.366
+   root          77       1  0 17:23 ?        00:00:00 supervise log qmail-smtpd.366
+   indimail     110      76  0 17:23 ?        00:00:00 /usr/bin/tcpserver -v -H -R -l indimail.org -x /etc/indimail/tcp/tcp.smtp.cdb -c variables/MAXDAEMONS -o -b 150 -u 555 -g 555 0 366 /usr/sbin/qmail-smtpd
+   root         175      88  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       176      88  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       177      88  0 17:23 ?        00:00:00 qmail-clean
+   qmails       338     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       339     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       340     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       341     335  0 17:23 ?        00:00:00 qmail-send
+   qmails       342     335  0 17:23 ?        00:00:00 qmail-send
+   root         343     338  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   root         344     339  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       345     338  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailr       346     339  0 17:23 ?        00:00:00 qmail-rspawn
+   root         347     340  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailq       348     338  0 17:23 ?        00:00:00 qmail-clean
+   qmailr       349     340  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       350     339  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       352     340  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       354     338  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       356     339  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       357     340  0 17:23 ?        00:00:00 qmail-clean
+   root         358     342  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       359     342  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       360     342  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       362     342  0 17:23 ?        00:00:00 qmail-clean
+   root         363     341  0 17:23 ?        00:00:00 qmail-lspawn ./Maildir/
+   qmailr       364     341  0 17:23 ?        00:00:00 qmail-rspawn
+   qmailq       365     341  0 17:23 ?        00:00:00 qmail-clean
+   qmailq       367     341  0 17:23 ?        00:00:00 qmail-clean
+   root         505     481  0 17:29 pts/0    00:00:00 grep -E --color=auto svscan|qmail-send|qmail-smtpd|qmail-clean|spawn
+```
+
+You can list the image using the `podman images` command
+
+```
 $ podman images
-REPOSITORY                                 TAG         IMAGE ID      CREATED            SIZE
-localhost/indimail                         alpine      62f9d0d95427  About an hour ago  468 MB
-localhost/indimail-mta                     alpine      0dffb4b398af  15 hours ago       404 MB
-localhost/tinydnssec                       alpine      dc1c37c76a50  28 hours ago       97.2 MB
-localhost/indimail-mta                     leap15.3    899596f466a1  2 weeks ago        500 MB
-localhost/indimail-mta                     debian10    f3a8194282d7  3 weeks ago        306 MB
-registry.opensuse.org/opensuse/leap        15.3        accc3d285fe7  4 weeks ago        108 MB
-docker.io/library/almalinux                8           7a497d63e726  4 weeks ago        216 MB
-docker.io/library/debian                   10          7a4951775d15  5 weeks ago        119 MB
-registry.fedoraproject.org/fedora          34          abec9a7a7dc6  6 weeks ago        184 MB
-docker.io/library/almalinux                latest      11c550a4f6c5  8 weeks ago        216 MB
-docker.io/gentoo/stage3                    latest      e95526ecc92d  3 months ago       919 MB
-docker.io/library/archlinux                latest      3de742be9254  4 months ago       416 MB
-docker.io/library/debian                   8           3aaeab7a4777  4 months ago       135 MB
-k8s.gcr.io/pause                           3.5         ed210e3e4a5b  4 months ago       690 kB
-registry.opensuse.org/opensuse/tumbleweed  latest      cdd77ba4b087  4 months ago       94.7 MB
-docker.io/library/ubuntu                   xenial      8185511cd5ad  6 months ago       136 MB
-docker.io/library/oraclelinux              8           f4a1f2c861ca  6 months ago       436 MB
-docker.io/library/ubuntu                   focal       f643c72bc252  8 months ago       75.3 MB
-docker.io/library/ubuntu                   bionic      2c047404e52d  8 months ago       65.6 MB
-docker.io/library/fedora                   33          b3048463dcef  8 months ago       181 MB
-docker.io/opensuse/tumbleweed              latest      2eac6045a15c  8 months ago       93.4 MB
-docker.io/library/centos                   7           7e6257c9f8d8  11 months ago      211 MB
-docker.io/library/centos                   8           0d120b6ccaa8  11 months ago      222 MB
-docker.io/library/centos                   6           d0957ffdf8a2  2 years ago        202 MB
+REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
+ghcr.io/mbhangui/indimail        centos8      e543dee69ab7   38 hours ago   1.03 GB
+ghcr.io/mbhangui/indimail        centos7      fba3b42e0164   5 hours ago    2.9 GB
+ghcr.io/mbhangui/indimail        fc33         a5266643441b   4 days ago     1.13 GB
 ```
 
 ### Start the podman container
 
 indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
 
-The below command will start svscan process. In the earlier `podman images` command we listed the images that we have built. When we want to run a container, we need to pass the **IMAGE ID** to the docker or podman command. e.g. `62f9d0d95427` is the image id of the indimail container that we have for alpine.
+The below command will start svscan process
 
 ```
-$ podman run -d -h indimail.org --name indimail 62f9d0d95427
+$ podman run -d -h indimail.org --name indimail fba3b42e0164
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
 ```
 
@@ -91,9 +179,9 @@ docker-entrypoint: executing bash
 You can use --net host to map the container's network to the HOST
 
 ```
-$ docker run --net host -d -h indimail.org --name indimail 62f9d0d95427
+$ docker run --net host -d -h indimail.org --name indimail fba3b42e0164
 or
-$ podman run --net host -d -h indimail.org --name indimail 62f9d0d95427
+$ podman run --net host -d -h indimail.org --name indimail fba3b42e0164
 ```
 
 There are other cool things you can do with the docker/podman images. You can have the images have their own filesystem with the queue and the user's home directory. It is better to have them on the host running the containers.
@@ -114,10 +202,10 @@ $ podman volume create mail
 mail
 
 $ docker run --net host -d -h indimail.org --name indimail \
-    -v queue:/var/indimail/queue -v mail:/home 62f9d0d95427
+    -v queue:/var/indimail/queue -v mail:/home fba3b42e0164
 or
 $ podman run --net host -d -h indimail.org --name indimail \
-    -v queue:/var/indimail/queue -v mail:/home 62f9d0d95427
+    -v queue:/var/indimail/queue -v mail:/home fba3b42e0164
 ```
 
 If you do this way you will have to initialize the queue the first time.
@@ -163,7 +251,7 @@ $ podman volume inspect queue
           "Anonymous": false
      }
 ]
-$ cd /home/mbhangui/.local/share/containers/storage/volumes/queue/_data
+$ cd /home/mbhangui/.local/share/containers/storage/volumes/queue/\_data
 $ ls -l
 total 24
 drwxr-x--- 12 101003 101000 4096 Jul  6 09:37 nqueue
@@ -211,7 +299,7 @@ $ podman run -d -h indimail.org \
 ```
 $ podman ps
 CONTAINER ID  IMAGE                                   COMMAND   CREATED             STATUS                 PORTS  NAMES
-0deab2154ef8  docker.io/cprogrammer/indimail:centos8  indimail  About a minute ago  Up About a minute ago         indimail
+0deab2154ef8  ghcr.io/mbhangui/indimail:centos8  indimail  About a minute ago  Up About a minute ago         indimail
 ```
 
 ### Execute an interactive shell in the container
@@ -598,9 +686,9 @@ Storing signatures
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
 localhost/mycontainer            latest       7bcf4b2ff83e   53 seconds ago   1.16 GB
-docker.io/cprogrammer/indimail   centos8      e543dee69ab7   39 hours ago     1.03 GB
-docker.io/cprogrammer/indimail   centos7      fba3b42e0164   5 hours ago      2.9 GB
-docker.io/cprogrammer/indimail   fc31         a5266643441b   4 days ago       1.13 GB
+ghcr.io/mbhangui/indimail        centos8      e543dee69ab7   39 hours ago     1.03 GB
+ghcr.io/mbhangui/indimail        centos7      fba3b42e0164   5 hours ago      2.9 GB
+ghcr.io/mbhangui/indimail        fc31         a5266643441b   4 days ago       1.13 GB
 ```
 
 The original container is now longer needed to run. We can stop it and remove the image from memory
@@ -663,9 +751,92 @@ The Dockerfile for each of the images is located in a separate subdirectory for 
 * [indimail](https://github.com/mbhangui/docker/tree/master/indimail)
 * [indimail+roundcube](https://github.com/mbhangui/docker/tree/master/webmail)
 
+
+
+```
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+```
+
+To build the image use need to use the docker/podman build command .e.g.
+
+```
+$ docker build -t indimail:fc31 ./Dockerfile .
+or
+$ podman build -t indimail:fc31 ./Dockerfile .
+```
+### Building container images
+
+If may want to build the image yourself instead of using ghcr.io. All you need is the Dockerfile and the files .alias, .bash_profile, .bashrc, .exrc, .gfuncs, .glogout, .indent.pro, .vimrc.
+
+The Dockerfile for each of the images is located in a separate subdirectory for each linux distro
+
+* [indimail-mta](https://github.com/mbhangui/docker/tree/master/indimail-mta)
+* [indimail](https://github.com/mbhangui/docker/tree/master/indimail)
+* [indimail+roundcube](https://github.com/mbhangui/docker/tree/master/webmail)
+
+
+To build the image ensure that you create a build directory and copy Dockerfile and .alias, .bash_profile, .bashrc, .exrc, .gfuncs, .glogout, .indent.pro, .vimrc to the build directory
+
+```
+$ mkdir -p /usr/local/src
+$ cd /usr/local/src
+# let us say you want to build the alpine image for indimail-mta
+$ git clone https://github.com/mbhangui/docker.git
+$ cd docker
+$ cp indimail-mta/alpine/Dockerfile .
+
+for building a docker container use
+
+$ docker build -t localhost/indimail-mta:alpine .
+
+for building a podman container use
+
+$ podman build -t localhost/indimail-mta:alpine .
+
+You can use the docker images or podman images command to list the container images
+
+$ podman images
+REPOSITORY                                 TAG         IMAGE ID      CREATED         SIZE
+ghcr.io/mbhangui/indimail                  centos7     c2399eaad8d9  24 minutes ago  3.42 GB
+ghcr.io/mbhangui/indimail-mta              centos8     108c6e83242e  2 hours ago     717 MB
+ghcr.io/mbhangui/indimail-mta              hirsute     bf58434c3a76  3 hours ago     347 MB
+ghcr.io/mbhangui/indimail                  alpine      62f9d0d95427  15 hours ago    468 MB
+localhost/indimail                         alpine      62f9d0d95427  15 hours ago    468 MB
+ghcr.io/mbhangui/indimail-mta              alpine      0dffb4b398af  28 hours ago    404 MB
+localhost/indimail-mta                     alpine      0dffb4b398af  28 hours ago    404 MB
+ghcr.io/mbhangui/tinydnssec                alpine      dc1c37c76a50  41 hours ago    97.2 MB
+localhost/tinydnssec                       alpine      dc1c37c76a50  41 hours ago    97.2 MB
+registry.access.redhat.com/rhel7           latest      538460c14d75  2 weeks ago     216 MB
+localhost/indimail-mta                     tumbleweed  999a86c2bc61  2 weeks ago     413 MB
+localhost/indimail-mta                     leap15.3    899596f466a1  2 weeks ago     500 MB
+localhost/indimail-mta                     debian10    f3a8194282d7  3 weeks ago     306 MB
+registry.opensuse.org/opensuse/leap        15.3        accc3d285fe7  4 weeks ago     108 MB
+registry.opensuse.org/opensuse/leap        latest      accc3d285fe7  4 weeks ago     108 MB
+docker.io/library/almalinux                8           7a497d63e726  4 weeks ago     216 MB
+docker.io/library/debian                   10          7a4951775d15  5 weeks ago     119 MB
+docker.io/library/ubuntu                   hirsute     093da574621d  5 weeks ago     82.9 MB
+docker.io/library/alpine                   latest      d4ff818577bc  6 weeks ago     5.87 MB
+registry.fedoraproject.org/fedora          34          abec9a7a7dc6  6 weeks ago     184 MB
+docker.io/library/almalinux                latest      11c550a4f6c5  8 weeks ago     216 MB
+docker.io/gentoo/stage3                    latest      e95526ecc92d  3 months ago    919 MB
+docker.io/library/archlinux                latest      3de742be9254  4 months ago    416 MB
+docker.io/library/debian                   8           3aaeab7a4777  4 months ago    135 MB
+k8s.gcr.io/pause                           3.5         ed210e3e4a5b  4 months ago    690 kB
+registry.opensuse.org/opensuse/tumbleweed  latest      cdd77ba4b087  4 months ago    94.7 MB
+docker.io/library/ubuntu                   xenial      8185511cd5ad  6 months ago    136 MB
+docker.io/library/oraclelinux              8           f4a1f2c861ca  6 months ago    436 MB
+docker.io/library/centos                   8           300e315adb2f  7 months ago    217 MB
+docker.io/library/ubuntu                   focal       f643c72bc252  8 months ago    75.3 MB
+docker.io/library/ubuntu                   bionic      2c047404e52d  8 months ago    65.6 MB
+docker.io/library/fedora                   33          b3048463dcef  8 months ago    181 MB
+docker.io/opensuse/tumbleweed              latest      2eac6045a15c  8 months ago    93.4 MB
+docker.io/library/centos                   7           7e6257c9f8d8  11 months ago   211 MB
+docker.io/library/centos                   6           d0957ffdf8a2  2 years ago     202 MB
+```
+
 ## NOTE
 
-The images above have been installed without clam anti virus to keep the image size as low as possible. You may install and configure it using the below steps.
+The images above have been installed without clam anti-virus to keep the image size as low as possible. You may install and configure it using the below steps.
 
 ```
 $ sudo dnf -y install clamav clamav-update clamd # use apt-get for ubuntu/debian, zypper for openSUSE
