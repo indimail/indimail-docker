@@ -1,4 +1,4 @@
-name: build and push indimail container image for debian10
+name: indimail:debian10 container image
 
 on:
   push:
