@@ -1,6 +1,7 @@
 # docker build -f dockerfile.alpine -t cprogrammer/indimail:alpine
 From alpine:latest
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:alpine
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \

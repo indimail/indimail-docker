@@ -2,6 +2,7 @@
 # run dpkg-reconfigure tzdata after starting the container
 From ubuntu:focal
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:focal
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

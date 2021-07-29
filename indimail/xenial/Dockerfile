@@ -1,6 +1,7 @@
 # docker build -f dockerfile.xenial -t cprogrammer/indimail:xenial
 From ubuntu:xenial
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:xenial
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
