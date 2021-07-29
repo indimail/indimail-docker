@@ -1,6 +1,7 @@
 # docker build -f dockerfile.centos8 -t cprogrammer/indimail-mta:centos8
 FROM centos:8
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:centos8
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
