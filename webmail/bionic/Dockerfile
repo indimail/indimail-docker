@@ -1,7 +1,8 @@
-# docker build -f dockerfile.bionic -t cprogrammer/indimail:bionic
+# docker build -f dockerfile.bionic -t cprogrammer/indimail-web:bionic
 # run dpkg-reconfigure tzdata after starting the container
 From ubuntu:bionic
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:bionic
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

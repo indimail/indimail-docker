@@ -1,6 +1,7 @@
-# docker build -f dockerfile.fc33 -t cprogrammer/indimail:fc33
+# docker build -f dockerfile.fc33 -t cprogrammer/indimail-web:fc33
 FROM fedora:33
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:fc33
 
 RUN export HOSTNAME=indimail.org \
 	&& dnf -y install 'dnf-command(config-manager)' \

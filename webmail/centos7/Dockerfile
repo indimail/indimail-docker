@@ -1,6 +1,7 @@
-# docker build -f dockerfile.centos7 -t cprogrammer/indimail:centos7
+# docker build -f dockerfile.centos7 -t cprogrammer/indimail-web:centos7
 FROM centos:7
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:centos7
 
 # Freshen RUN yum update
 RUN export HOSTNAME=indimail.org \

@@ -1,7 +1,8 @@
-# docker build -f dockerfile.xenial -t cprogrammer/indimail:xenial
+# docker build -f dockerfile.xenial -t cprogrammer/indimail-web:xenial
 # run dpkg-reconfigure tzdata after starting the container
 From ubuntu:xenial
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:xenial
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

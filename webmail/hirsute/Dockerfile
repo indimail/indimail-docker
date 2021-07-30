@@ -1,7 +1,8 @@
-# docker build -f dockerfile.hirsute -t cprogrammer/indimail:hirsute
+# docker build -f dockerfile.hirsute -t cprogrammer/indimail-web:hirsute
 # run dpkg-reconfigure tzdata after starting the container
 From ubuntu:hirsute
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:hirsute
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

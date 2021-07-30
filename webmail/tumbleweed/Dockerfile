@@ -1,6 +1,7 @@
-# docker build -f dockerfile.tumbleweed -t cprogrammer/indimail:tumbleweed
+# docker build -f dockerfile.tumbleweed -t cprogrammer/indimail-web:tumbleweed
 FROM opensuse/tumbleweed
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:tumbleweed
 
 RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
