@@ -36,7 +36,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd /usr/local/src/indimail-mta/libsrs2-x; \
 		./default.configure; \
 		make -s && make -s install-strip; \
-		#indimail-mta #############################################
+		# indimail-mta ########################################
 		cd /usr/local/src/indimail-mta/indimail-mta-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
@@ -44,13 +44,13 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		./svctool --config=users; \
 		make install-strip; \
-		# daemontools #############################################
+		# daemontools #########################################
 		cd ../daemontools-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/ -g//' conf-cc; \
 		make && make install-strip; \
-		# ucspi-tcp #############################################
+		# ucspi-tcp ###########################################
 		cd ../ucspi-tcp-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
@@ -60,30 +60,30 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/sbin/svctool \
 			--config=cert --postmaster=postmaster@indimail.org \
 			--common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
-		# ezmlm-idx #############################################
+		# ezmlm-idx ############################################
 		cd /usr/local/src/ezmlm-idx/ezmlm-idx-x; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/^cc/cc -s/' conf-ldso; \
 		sed -i 's/ -g//' conf-cc; \
 		./default.configure; \
 		make && make install; \
-		#indimail #############################################
+		# indimail-virtualdomains ##############################
 		cd /usr/local/src/indimail-virtualdomains/indimail-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# pam-multi #############################################
+		# pam-multi ############################################
 		cd /usr/local/src/indimail-virtualdomains/pam-multi-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# nssd #############################################
+		# nssd #################################################
 		cd ../nssd-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# courier-imap #############################################
+		# courier-imap #########################################
 		cd ../courier-imap-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# fetchmail #############################################
+		# fetchmail ############################################
 		cd ../fetchmail-x; \
 		./default.configure; \
 		make && make install-strip; \
@@ -95,35 +95,35 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd ../procmail-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# mpack #############################################
+		# mpack ################################################
 		cd ../mpack-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# flash #############################################
+		# flash ################################################
 		cd ../flash-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# altermime #############################################
+		# altermime ############################################
 		cd ../altermime-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# ripmime #############################################
+		# ripmime ##############################################
 		cd ../ripmime-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# fortune #############################################
+		# fortune ##############################################
 		cd ../fortune-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# spam-filter #############################################
+		# indimail-spamfilter ##################################
 		cd ../indimail-spamfilter-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# bogofilter-wordlist #############################################
+		# bogofilter-wordlist ##################################
 		cd ../bogofilter-wordlist-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# configure indimail #############################################
+		# configure indimail-mta ###############################
 		cd /usr/local/src/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
 		( echo "/usr/sbin/svctool --config=recontrol"; \
@@ -134,7 +134,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		) > /service/.svscan/run; \
 		chmod +x /service/.svscan/run; \
 		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
-		# tinydnssec #############################################
+		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/src/tinydnssec/tinydnssec-x; \
 		./default.configure; \

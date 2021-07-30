@@ -26,15 +26,15 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd /usr/local/src/libqmail; \
 		./default.configure; \
 		make -s && make -s install-strip; \
-		# libdkim ##############################################
+		# libdkim #############################################
 		cd /usr/local/src/indimail-mta/libdkim-x; \
 		./default.configure; \
 		make -s && make -s install-strip; \
-		# libsrs2 ##############################################
+		# libsrs2 #############################################
 		cd /usr/local/src/indimail-mta/libsrs2-x; \
 		./default.configure; \
 		make -s && make -s install-strip; \
-		# indimail-mta #########################################
+		# indimail-mta ########################################
 		cd /usr/local/src/indimail-mta/indimail-mta-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
@@ -42,13 +42,13 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		./svctool --config=users; \
 		make install-strip; \
-		# daemontools ##########################################
+		# daemontools #########################################
 		cd ../daemontools-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/ -g//' conf-cc; \
 		make && make install-strip; \
-		# ucspi-tcp ############################################
+		# ucspi-tcp ###########################################
 		cd ../ucspi-tcp-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
@@ -94,7 +94,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd ../flash-x; \
 		./default.configure; \
 		make && make install-strip; \
-		# alertime #############################################
+		# altermime ############################################
 		cd ../altermime-x; \
 		./default.configure; \
 		make && make install-strip; \
@@ -118,10 +118,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd /usr/local/src/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot; \
 		( echo "/usr/sbin/svctool --config=recontrol"; \
-		 echo "cd /var/indimail/queue"; \
-		 echo "for i in queue*; do queue-fix -v \$i; done"; \
-		 echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
-		 echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
+		echo "cd /var/indimail/queue"; \
+		echo "for i in queue*; do queue-fix -v \$i; done"; \
+		echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
+		echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
 		) > /service/.svscan/run; \
 		chmod +x /service/.svscan/run; \
 		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
@@ -152,8 +152,8 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd ..; ./dnssvc; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
-		rc-update add dcron; \
-		rc-update add inetutils-syslogd; \
+		/sbin/rc-update add dcron; \
+		/sbin/rc-update add inetutils-syslogd; \
 		sed 's/ root / /g' /etc/indimail/cronlist.q |crontab -; \
 		sed -i '/^kern\|^lpr/d' /etc/syslog.conf; \
 		[ ! -f /etc/nsswitch.conf ] && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' > /etc/nsswitch.conf; \
