@@ -151,7 +151,7 @@ case $name in
     if [ " $name" = " devel" -o " $name" = " test" ] ; then
       systemd="bash"
       if [ -z "$extra_args" ] ; then
-      extra_args="-ti --rm"
+        extra_args="-ti --rm"
       fi
     fi
   ;;
@@ -173,7 +173,6 @@ if [ "$systemd" = "auto" ] ; then
     systemd=/usr/lib/systemd/systemd
     ;;
   esac
-  systemd="/sbin/init"
   if [ -z "$cap_args" ] ; then
     cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
     cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE "
