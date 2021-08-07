@@ -1,10 +1,11 @@
-name: indimail:debian9 container image
+name: docker:debian9 push script
 
 on:
   push:
     paths:
-      - '**/indimail/debian9'
-      - .github/workflows/indimail-debian9.yml
+      - '**/indimail-mta/debian9/**'
+      - '**/indimail/debian9/**'
+      - .github/workflows/docker-debian9.yml
       - '!**.md'
   workflow_dispatch:
 
@@ -13,16 +14,14 @@ jobs:
     name: build and push container image
     runs-on: ubuntu-latest
     steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-
       - name: login
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
-
-      - name: build
-        run: |
-          cp indimail/debian9/Dockerfile .
-          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail:debian9" .
+        run: echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
 
       - name: push
-        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail:debian9"
+        run: |
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail-mta:debian9"
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail:debian9"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:debian9" docker.io/cprogrammer/indimail-mta:debian9
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:debian9" docker.io/cprogrammer/indimail:debian9
+          docker push docker.io/cprogrammer/indimail-mta:debian9
+          docker push docker.io/cprogrammer/indimail:debian9
