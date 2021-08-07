@@ -1,11 +1,11 @@
-name: docker:alpine push script
+name: docker:gentoo push script
 
 on:
   push:
     paths:
-      - '**/indimail-mta/alpine/**'
-      - '**/indimail/alpine/**'
-      - .github/workflows/docker-alpine.yml
+      - '**/indimail-mta/gentoo/**'
+      - '**/indimail/gentoo/**'
+      - .github/workflows/docker-gentoo.yml
       - '!**.md'
   workflow_dispatch:
 
@@ -19,9 +19,9 @@ jobs:
 
       - name: push
         run: |
-          docker pull "ghcr.io/${{ github.repository_owner }}/indimail-mta:alpine"
-          docker pull "ghcr.io/${{ github.repository_owner }}/indimail:alpine"
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:alpine" docker.io/cprogrammer/indimail-mta:alpine
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:alpine" docker.io/cprogrammer/indimail:alpine
-          docker push docker.io/cprogrammer/indimail-mta:alpine
-          docker push docker.io/cprogrammer/indimail:alpine
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail-mta:gentoo"
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail:gentoo"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:gentoo" docker.io/cprogrammer/indimail-mta:gentoo
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:gentoo" docker.io/cprogrammer/indimail:gentoo
+          docker push docker.io/cprogrammer/indimail-mta:gentoo
+          docker push docker.io/cprogrammer/indimail:gentoo
