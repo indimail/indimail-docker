@@ -7,11 +7,10 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:archl
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root /usr/local/srctmp \
 	&& sed -i 's{usr/share/man/\*{{g' /etc/pacman.conf \
-	&& pacman-key --init \
 	&& pacman -Sy --noconfirm --needed \
-	&& pacman -S --noconfirm --needed archlinux-keyring \
-	&& pacman -S --noconfirm --refresh --sysupgrade \
-	&& pacman -Sy --noconfirm base-devel diffutils coreutils openssl \
+	&& pacman -S  --noconfirm --refresh --sysupgrade \
+	&& pacman -S  --noconfirm --needed archlinux-keyring \
+	&& pacman -Sy --noconfirm --needed base-devel diffutils coreutils openssl \
 		openldap mysql libidn2 wget gd man-db man-pages \
 		libsodium \
 	&& (set -e; \

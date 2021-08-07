@@ -1,10 +1,10 @@
-name: indimail:alpine container image
+name: indimail-web:alpine container image
 
 on:
   push:
     paths:
-      - '**/indimail/alpine/**'
-      - .github/workflows/indimail-alpine.yml
+      - '**/webmail/alpine'
+      - .github/workflows/indimail-web-alpine.yml
       - '!**.md'
   workflow_dispatch:
 
@@ -21,8 +21,8 @@ jobs:
 
       - name: build
         run: |
-          cp indimail/alpine/Dockerfile .
-          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail:alpine" .
+          cp webmail/alpine/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:alpine" .
 
       - name: push
-        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail:alpine"
+        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:alpine"

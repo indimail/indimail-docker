@@ -8,9 +8,9 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root \
 	&& sed -i 's{usr/share/man/\*{{g' /etc/pacman.conf \
 	&& pacman -Sy --noconfirm --needed \
-	&& pacman -S --noconfirm --needed archlinux-keyring \
-	&& pacman -S --noconfirm --refresh --sysupgrade \
-	&& pacman -Sy --noconfirm diffutils coreutils openssl \
+	&& pacman -S  --noconfirm --refresh --sysupgrade \
+	&& pacman -S  --noconfirm --needed archlinux-keyring \
+	&& pacman -Sy --noconfirm --needed diffutils coreutils openssl \
 		openldap mysql libidn2 wget gd man-db man-pages \
 		libsodium \
 	&& (set -e; \

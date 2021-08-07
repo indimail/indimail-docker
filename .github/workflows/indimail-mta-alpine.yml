@@ -3,7 +3,7 @@ name: indimail-mta:alpine container image
 on:
   push:
     paths:
-      - '**/indimail-mta/alpine'
+      - '**/indimail-mta/alpine/**'
       - .github/workflows/indimail-mta-alpine.yml
       - '!**.md'
   workflow_dispatch:
