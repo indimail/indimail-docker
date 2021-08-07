@@ -9,7 +9,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		pkgconfig openrc busybox-extras vim lsof strace \
 		mandoc man-pages mandoc-apropos util-linux \
 		openssh openssh-server apk-tools-doc openrc-doc \
-		openssl openssl-dev libev libev-dev \
+		openssl openssl-dev libev libev-dev libsodium libsodium-dev \
 		dcron dcron-openrc dcron-doc \
 		inetutils-syslogd inetutils-syslogd-openrc inetutils-syslogd-doc \
 	&& (cd /usr/local/src; \
@@ -47,16 +47,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		sh make-install.sh; \
 		cd ../curvedns-0.88; \
-		echo "./configure.nacl"; \
-		./configure.nacl; \
-		echo "./configure.curvedns"; \
-		./configure.curvedns; \
 		echo "building curvedns"; \
+		./default.configure; \
 		make; \
-		install -m 0755 -s curvedns /usr/bin; \
-		install -m 0755 -s curvedns-keygen /usr/sbin; \
-		install -m 0644 curvedns.8 curvedns-keygen.8 /usr/share/man/man8; \
-		install -m 0600 curvedns.private.key /etc/indimail//curvedns.private.key; \
+		make install-strip; \
 		cd ..; ./dnssvc; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
@@ -65,7 +59,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		minisvc --config=add-boot; \
 		sed -i '/^kern\|^lpr/d' /etc/syslog.conf; \
 	   ) \
-	&& apk del gcc g++ make git autoconf automake libtool openssl-dev libev-dev m4 \
+	&& apk del gcc g++ make git autoconf automake libtool openssl-dev libsodium-dev libev-dev m4 \
 	&& unset HOSTNAME \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/

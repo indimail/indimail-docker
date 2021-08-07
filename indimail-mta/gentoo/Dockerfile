@@ -17,6 +17,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& emerge -a --ask n sys-process/cronie \
 	&& emerge -a --ask n app-admin/rsyslog \
 	&& emerge -a --ask n dev-libs/libev \
+	&& emerge -a --ask n dev-libs/libsodium \
 	&& (cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
@@ -139,16 +140,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		sh make-install.sh; \
 		cd ../curvedns-0.88; \
-		echo "./configure.nacl"; \
-		./configure.nacl; \
-		echo "./configure.curvedns"; \
-		./configure.curvedns amd64; \
 		echo "building curvedns"; \
+		./default.configure; \
 		make; \
-		install -m 0755 -s curvedns /usr/bin; \
-		install -m 0755 -s curvedns-keygen /usr/sbin; \
-		install -m 0644 curvedns.8 curvedns-keygen.8 /usr/share/man/man8; \
-		install -m 0600 curvedns.private.key /etc/indimail/curvedns.private.key; \
+		make install-strip; \
 		cd ..; ./dnssvc; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \

@@ -149,7 +149,9 @@ case $name in
       fi
     fi
     if [ " $name" = " devel" -o " $name" = " test" ] ; then
-      systemd="bash"
+      if [ -z "$systemd" ] ; then
+        systemd="bash"
+      fi
       if [ -z "$extra_args" ] ; then
         extra_args="-ti --rm"
       fi
@@ -163,7 +165,7 @@ fi
 if [ "$systemd" = "auto" ] ; then
   tag=`$command images | grep  $imageid | awk '{print $2}'`
   case $tag in
-    xenial*|debian*|focal*|bionic*)
+    xenial*|debian*|focal*|bionic*|archlinux*)
     systemd=/lib/systemd/systemd
     ;;
     alpine*)
@@ -217,5 +219,5 @@ $command run -v $cgroup $extra_args \
   $host_arg $cap_args $port_args $vol_args \
   $imageid $systemd
 if [ $? -eq 0 -a $detached -eq 1 ] ; then
-	podman exec -ti $name bash
+  podman exec -ti $name bash
 fi

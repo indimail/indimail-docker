@@ -17,7 +17,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		musl-nscd musl-nscd-dev libidn libidn-dev libidn2 libidn2-dev \
 		pcre pcre-dev libtirpc libtirpc-dev ncurses-libs ncurses-dev \
 		linux-pam linux-pam-dev gdbm gdbm-dev db db-dev gsl gsl-dev \
-		mysql mysql-client libev libev-dev \
+		mysql mysql-client libev libev-dev libsodium libsodium-dev \
 	&& (cd /usr/local/src; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
@@ -148,16 +148,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		sh make-install.sh; \
 		cd ../curvedns-0.88; \
-		echo "./configure.nacl"; \
-		./configure.nacl; \
-		echo "./configure.curvedns"; \
-		./configure.curvedns; \
 		echo "building curvedns"; \
+		./default.configure; \
 		make; \
-		install -m 0755 -s curvedns /usr/bin; \
-		install -m 0755 -s curvedns-keygen /usr/sbin; \
-		install -m 0644 curvedns.8 curvedns-keygen.8 /usr/share/man/man8; \
-		install -m 0600 curvedns.private.key /etc/indimail//curvedns.private.key; \
+		make install-strip; \
 		cd ..; ./dnssvc; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
@@ -179,7 +173,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		openssl-dev fts-dev mysql-dev musl-nscd-dev \
 		libidn-dev libidn2-dev pcre-dev libtirpc-dev ncurses-dev \
 		linux-pam-dev gdbm-dev db-dev gsl-dev \
-		mysql-client libev-dev m4 \
+		mysql-client libev-dev libsodium-dev m4 \
 	&& unset HOSTNAME \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
