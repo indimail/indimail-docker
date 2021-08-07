@@ -1,0 +1,27 @@
+name: docker:hirsute push script
+
+on:
+  push:
+    paths:
+      - '**/indimail-mta/hirsute/**'
+      - '**/indimail/hirsute/**'
+      - .github/workflows/docker-hirsute.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: login
+        run: echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: push
+        run: |
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail-mta:hirsute"
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail:hirsute"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:hirsute" docker.io/cprogrammer/indimail-mta:hirsute
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:hirsute" docker.io/cprogrammer/indimail:hirsute
+          docker push docker.io/cprogrammer/indimail-mta:hirsute
+          docker push docker.io/cprogrammer/indimail:hirsute
