@@ -1,11 +1,11 @@
-name: docker:almalinux push script
+name: docker:almalinux8 push script
 
 on:
   push:
     paths:
-      - '**/indimail-mta/almalinux/**'
-      - '**/indimail/almalinux/**'
-      - .github/workflows/docker-almalinux.yml
+      - '**/indimail-mta/almalinux8/**'
+      - '**/indimail/almalinux8/**'
+      - .github/workflows/docker-almalinux8.yml
       - '!**.md'
   workflow_dispatch:
 
@@ -19,9 +19,9 @@ jobs:
 
       - name: push
         run: |
-          docker pull "ghcr.io/${{ github.repository_owner }}/indimail-mta:almalinux"
-          docker pull "ghcr.io/${{ github.repository_owner }}/indimail:almalinux"
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:almalinux" docker.io/cprogrammer/indimail-mta:almalinux
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:almalinux" docker.io/cprogrammer/indimail:almalinux
-          docker push docker.io/cprogrammer/indimail-mta:almalinux
-          docker push docker.io/cprogrammer/indimail:almalinux
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail-mta:almalinux8"
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail:almalinux8"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:almalinux8" docker.io/cprogrammer/indimail-mta:almalinux8
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:almalinux8" docker.io/cprogrammer/indimail:almalinux8
+          docker push docker.io/cprogrammer/indimail-mta:almalinux8
+          docker push docker.io/cprogrammer/indimail:almalinux8
