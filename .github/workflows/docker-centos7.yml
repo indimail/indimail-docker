@@ -1,0 +1,27 @@
+name: docker:centos7 push script
+
+on:
+  push:
+    paths:
+      - '**/indimail-mta/centos7/**'
+      - '**/indimail/centos7/**'
+      - .github/workflows/docker-centos7.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: login
+        run: echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: push
+        run: |
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail-mta:centos7"
+          docker pull "ghcr.io/${{ github.repository_owner }}/indimail:centos7"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:centos7" docker.io/cprogrammer/indimail-mta:centos7
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:centos7" docker.io/cprogrammer/indimail:centos7
+          docker push docker.io/cprogrammer/indimail-mta:centos7
+          docker push docker.io/cprogrammer/indimail:centos7
