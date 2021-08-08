@@ -150,6 +150,12 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		 echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
 		 echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
 		) >> /service/.svscan/run; \
+		sed -i \
+			-e '/f_kernel/d;/f_lpr/d;/f_mail/d;/f_news/d;/f_uucp/d;/f_ppp/d;/f_debug/d;/f_everything/d' \
+			-e '/d_kernel/d;/d_lpr/d;/d_mail/d;/d_news/d;/d_uucp/d;/d_ppp/d;/d_debug/d;/d_everything/d' \
+			-e '/console_all/d; /tty12/d; /d_console/d' \
+			/etc/syslog-ng/syslog-ng.conf; \
+		systemctl enable cronie.service syslog-ng@default.service; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& pacman -S --needed --noconfirm mailx \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
