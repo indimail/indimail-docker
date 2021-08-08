@@ -1,12 +1,6 @@
 name: docker:focal push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/focal/**'
-      - '**/indimail/focal/**'
-      - .github/workflows/docker-focal.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

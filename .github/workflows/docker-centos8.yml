@@ -1,12 +1,6 @@
 name: docker:centos8 push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/centos8/**'
-      - '**/indimail/centos8/**'
-      - .github/workflows/docker-centos8.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

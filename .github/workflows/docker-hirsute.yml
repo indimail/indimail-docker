@@ -1,12 +1,6 @@
 name: docker:hirsute push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/hirsute/**'
-      - '**/indimail/hirsute/**'
-      - .github/workflows/docker-hirsute.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

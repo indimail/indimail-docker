@@ -1,12 +1,6 @@
 name: docker:alpine push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/alpine/**'
-      - '**/indimail/alpine/**'
-      - .github/workflows/docker-alpine.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

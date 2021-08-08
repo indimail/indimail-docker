@@ -1,12 +1,6 @@
 name: docker:centos7 push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/centos7/**'
-      - '**/indimail/centos7/**'
-      - .github/workflows/docker-centos7.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

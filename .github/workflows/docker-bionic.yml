@@ -1,12 +1,6 @@
 name: docker:bionic push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/bionic/**'
-      - '**/indimail/bionic/**'
-      - .github/workflows/docker-bionic.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

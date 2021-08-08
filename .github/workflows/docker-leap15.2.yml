@@ -1,12 +1,6 @@
 name: docker:leap15.2 push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/leap15.2/**'
-      - '**/indimail/leap15.2/**'
-      - .github/workflows/docker-leap15.2.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

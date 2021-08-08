@@ -1,12 +1,6 @@
 name: docker:oracle8 push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/oracle8/**'
-      - '**/indimail/oracle8/**'
-      - .github/workflows/docker-oracle8.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

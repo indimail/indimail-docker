@@ -1,12 +1,6 @@
 name: docker:gentoo push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/gentoo/**'
-      - '**/indimail/gentoo/**'
-      - .github/workflows/docker-gentoo.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:

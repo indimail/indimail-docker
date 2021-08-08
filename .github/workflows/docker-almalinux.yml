@@ -1,12 +1,6 @@
 name: docker:almalinux8 push script
 
 on:
-  push:
-    paths:
-      - '**/indimail-mta/almalinux8/**'
-      - '**/indimail/almalinux8/**'
-      - .github/workflows/docker-almalinux8.yml
-      - '!**.md'
   workflow_dispatch:
 
 jobs:
