@@ -3,7 +3,7 @@ name: indimail:archlinux container image
 on:
   push:
     paths:
-      - '**/indimail/archlinux'
+      - '**/indimail/archlinux/**'
       - .github/workflows/indimail-archlinux.yml
       - '!**.md'
   workflow_dispatch:
