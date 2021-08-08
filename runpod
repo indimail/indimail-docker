@@ -191,10 +191,10 @@ if [ -z "$extra_args" ] ; then
   detached=1
   extra_args="-d --rm"
 fi
-if [ -z "$cgroup" ] ; then
-  cgroup="/sys/fs/cgroup:/sys/fs/cgroup:ro"
+if [ -n "$cgroup" -a "$cgroup" = "auto" ] ; then
+  cgroup="-v /sys/fs/cgroup:/sys/fs/cgroup:ro"
 fi
-echo "$command run -v $cgroup $extra_args"
+echo "$command run $cgroup $extra_args"
 echo "  --name $name"
 echo "  --device /dev/fuse"
 if [ -n "$host_arg" ] ; then
@@ -213,7 +213,7 @@ if [ -n "$vol_args" ] ; then
   echo "  $vol_args"
 fi
 echo "  $imageid $systemd"
-$command run -v $cgroup $extra_args \
+$command run $cgroup $extra_args \
   --name $name \
   --device /dev/fuse \
   $host_arg $cap_args $port_args $vol_args \
