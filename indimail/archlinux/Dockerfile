@@ -5,14 +5,16 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:archlinux
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp \
 	&& sed -i 's{usr/share/man/\*{{g' /etc/pacman.conf \
 	&& pacman -Sy --noconfirm --needed \
-	&& pacman -S  --noconfirm --refresh --sysupgrade \
 	&& pacman -S  --noconfirm --needed archlinux-keyring \
-	&& pacman -Sy --noconfirm --needed base-devel diffutils coreutils openssl \
-		openldap mysql libidn2 wget gd man-db man-pages \
-		libsodium \
+	&& pacman -S  --noconfirm --needed base-devel git diffutils coreutils \
+		openssl openssh openldap mysql libidn2 wget gd man-db man-pages \
+		binutils cronie net-tools strace lsof vim syslog-ng logrotate \
+		inetutils libidn libev libsodium \
+	&& pacman -S  --noconfirm --refresh --sysupgrade \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
@@ -20,36 +22,150 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		tar xf mrtg.tar.gz; \
 		cd mrtg-2.17.7; \
 		./configure --prefix=/usr; make && make install; \
-	   ) \
-	&& (set -e; \
-		(echo "[home_mbhangui_Arch]"; \
-		 echo "Server = https://download.opensuse.org/repositories/home:/mbhangui/Arch/\$arch"; \
-		 echo "SigLevel = Optional";) >> /etc/pacman.conf; \
-		key=$(curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/Arch/$(uname -m)/home_mbhangui_Arch.key); \
-		fingerprint=$(gpg --quiet --with-colons --import-options show-only --import --fingerprint <<< "${key}" | awk -F: '$1 == "fpr" { print $10 }'); \
-		pacman-key --init; \
-		pacman-key --add - <<< "${key}"; \
-		pacman-key --lsign-key "${fingerprint}"; \
-		pacman -Sy --noconfirm ) \
-	&& pacman -S --needed --noconfirm \
-		binutils cronie net-tools openssl openssh strace lsof vim \
-		mailx syslog-ng logrotate libidn \
-		indimail-mta logalert procmail indimail-access \
-		bogofilter-wordlist indimail-auth indimail-utils \
-		indimail ezmlm-idx tinydnssec \
-	&& pacman -S --noconfirm indimail-spamfilter \
-	&& echo "Creating self-signed certificate" \
-	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
-	&& (set -e; \
-		echo "/usr/sbin/svctool --config=recontrol"; \
-		echo "cd /var/indimail/queue"; \
-		echo "for i in queue*; do queue-fix -v \$i; done"; \
-		echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
-		echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
-		) > /service/.svscan/run \
-	&& chmod +x /service/.svscan/run \
-	&& /bin/rm -rf /usr/local/srctmp \
-	&& echo "1" > /service/.svscan/variables/WAIT_INITCMD \
+		cd /usr/local/srctmp; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
+		# libqmail #############################################
+		cd /usr/local/srctmp/libqmail; \
+		./default.configure; \
+		make -s && make -s install-strip; \
+		# libdkim ##############################################
+		cd /usr/local/srctmp/indimail-mta/libdkim-x; \
+		./default.configure; \
+		make -s && make -s install-strip; \
+		# libsrs2 ##############################################
+		cd /usr/local/srctmp/indimail-mta/libsrs2-x; \
+		./default.configure; \
+		make -s && make -s install-strip; \
+		# indimail-mta #########################################
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make; \
+		./svctool --config=users; \
+		make install-strip; \
+		# daemontools ##########################################
+		cd ../daemontools-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make && make install-strip; \
+		# ucspi-tcp ############################################
+		cd ../ucspi-tcp-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make && make install-strip; \
+		echo "Creating self-signed certificate"; \
+		/usr/sbin/svctool \
+			--config=cert --postmaster=postmaster@indimail.org \
+			--common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
+		# ezmlm-idx ############################################
+		cd /usr/local/src/ezmlm-idx/ezmlm-idx-x; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/^cc/cc -s/' conf-ldso; \
+		sed -i 's/ -g//' conf-cc; \
+		./default.configure; \
+		make && make install; \
+		# indimail-virtualdomains ##############################
+		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
+		./default.configure; \
+		make && make install-strip \
+		# pam-multi ############################################
+		cd /usr/local/srctmp/indimail-virtualdomains/pam-multi-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# nssd #################################################
+		cd ../nssd-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# courier-imap #########################################
+		cd ../courier-imap-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# fetchmail ############################################
+		cd ../fetchmail-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# logalert #############################################
+		cd ../logalert-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# procmail #############################################
+		cd ../procmail-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# mpack ################################################
+		cd ../mpack-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# flash ################################################
+		cd ../flash-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# alertime #############################################
+		cd ../altermime-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# ripmime ##############################################
+		cd ../ripmime-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# fortune ##############################################
+		cd ../fortune-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# indimail-spamfilter ##################################
+		cd ../indimail-spamfilter-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# bogofilter-wordlist ##################################
+		cd ../bogofilter-wordlist-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# configure indimail-mta ###############################
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
+		chmod +x /service/.svscan/run; \
+		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
+		# tinydnssec ###########################################
+		echo "building tinydnssec"; \
+		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make; \
+		/usr/bin/core_perl/pod2man -s 8 -c '' "tinydns-sign" >tinydns-sign.8; \
+		make install-strip; \
+		echo "building dq"; \
+		cd dq-20161210; \
+		make; \
+		sh make-install.sh; \
+		cd ../curvedns-0.88; \
+		echo "building curvedns"; \
+		./default.configure; \
+		make; \
+		make install-strip; \
+		cd ..; ./dnssvc; \
+		echo "adding podman/docker script to /service/.svscan/run"; \
+		( echo "/usr/sbin/svctool --config=recontrol"; \
+		 echo "cd /var/indimail/queue"; \
+		 echo "for i in queue*; do queue-fix -v \$i; done"; \
+		 echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
+		 echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
+		) >> /service/.svscan/run; \
+		) 2>&1 | tee -a /tmp/build.log \
+	&& pacman -S --needed --noconfirm mailx \
+	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
+		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
+		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
+		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
+		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
+	&& pacman -Rcns --noconfirm gcc libtool autoconf automake make git \
 	&& unset HOSTNAME \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
