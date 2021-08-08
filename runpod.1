@@ -41,7 +41,8 @@ indimail-mta, webmail, runpod will let the docker-entrypoint get executed.
 If the name test or devel, runpod will run bash in the container with a
 tty. If this is not specified, systemd will be loaded for
 debian, ubuntu, fedora, centos, almalinux, oraclelinux, opensuse images.
-For alpine linux bash will be loaded with a controlling terminal
+For alpine linux bash will be loaded with a controlling terminal. If
+systemd is empty, the default entry point for the container will be used.
 
 .TP
 \fB\-\-port\fR=\fIlport\fR:\fIrport\fR
