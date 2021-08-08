@@ -5,39 +5,40 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:alpin
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/src \
+	&& mkdir -p /root /usr/local/srctmp \
 	&& apk -U upgrade \
 	&& apk add bash gcc g++ make git autoconf automake libtool m4 sed \
 		pkgconfig openrc mailx busybox-extras vim lsof strace \
 		mandoc man-pages mandoc-apropos dcron dcron-openrc \
 		inetutils-syslogd inetutils-syslogd-openrc util-linux \
-		openssh openssh-server xmlto mrtg \
+		openssh openssh-server xmlto \
 		apk-tools-doc openrc-doc dcron-doc inetutils-syslogd-doc \
 		openssl openssl-dev fts fts-dev mariadb-connector-c mysql-dev \
 		musl-nscd musl-nscd-dev libidn libidn-dev libidn2 libidn2-dev \
 		pcre pcre-dev libtirpc libtirpc-dev ncurses-libs ncurses-dev \
 		linux-pam linux-pam-dev gdbm gdbm-dev db db-dev gsl gsl-dev \
-		mysql mysql-client libev libev-dev libsodium libsodium-dev \
-	&& (cd /usr/local/src; \
+		libev libev-dev libsodium libsodium-dev \
+		mysql mysql-client mrtg \
+	&& (cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		# libqmail #############################################
-		cd /usr/local/src/libqmail; \
+		cd /usr/local/srctmp/libqmail; \
 		./default.configure; \
 		make -s && make -s install-strip; \
 		# libdkim #############################################
-		cd /usr/local/src/indimail-mta/libdkim-x; \
+		cd /usr/local/srctmp/indimail-mta/libdkim-x; \
 		./default.configure; \
 		make -s && make -s install-strip; \
 		# libsrs2 #############################################
-		cd /usr/local/src/indimail-mta/libsrs2-x; \
+		cd /usr/local/srctmp/indimail-mta/libsrs2-x; \
 		./default.configure; \
 		make -s && make -s install-strip; \
 		# indimail-mta ########################################
-		cd /usr/local/src/indimail-mta/indimail-mta-x; \
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/ -g//' conf-cc; \
@@ -61,18 +62,18 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 			--config=cert --postmaster=postmaster@indimail.org \
 			--common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
 		# ezmlm-idx ############################################
-		cd /usr/local/src/ezmlm-idx/ezmlm-idx-x; \
+		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/^cc/cc -s/' conf-ldso; \
 		sed -i 's/ -g//' conf-cc; \
 		./default.configure; \
 		make && make install; \
 		# indimail-virtualdomains ##############################
-		cd /usr/local/src/indimail-virtualdomains/indimail-x; \
+		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
 		./default.configure; \
 		make && make install-strip; \
 		# pam-multi ############################################
-		cd /usr/local/src/indimail-virtualdomains/pam-multi-x; \
+		cd /usr/local/srctmp/indimail-virtualdomains/pam-multi-x; \
 		./default.configure; \
 		make && make install-strip; \
 		# nssd #################################################
@@ -124,7 +125,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		./default.configure; \
 		make && make install-strip; \
 		# configure indimail-mta ###############################
-		cd /usr/local/src/indimail-mta/indimail-mta-x; \
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
 		( echo "/usr/sbin/svctool --config=recontrol"; \
 		echo "cd /var/indimail/queue"; \
@@ -136,7 +137,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
-		cd /usr/local/src/tinydnssec/tinydnssec-x; \
+		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/ -g//' conf-cc; \
@@ -163,17 +164,16 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		sed -i '/^kern\|^lpr/d' /etc/syslog.conf; \
 		[ ! -f /etc/nsswitch.conf ] && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' > /etc/nsswitch.conf; \
 	   ) \
-	&& /bin/rm -rf /usr/local/src /usr/lib/libcourier-unicode.la /usr/lib/libeps.la \
-		/usr/lib/libindimail.la /usr/lib/libqmail.la /usr/lib/libdkim.la \
-		/usr/lib/libflash.la /usr/lib/libnss_nssd.la /usr/lib/libsrs2.la \
-		/usr/lib/libqmail.a /usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
+	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
+		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
+		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
+		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 		/lib/security/pam-multi.a \
 	&& apk del gcc g++ make git autoconf automake libtool \
-		openssl-dev fts-dev mysql-dev musl-nscd-dev \
-		libidn-dev libidn2-dev pcre-dev libtirpc-dev ncurses-dev \
-		linux-pam-dev gdbm-dev db-dev gsl-dev \
-		mysql-client libev-dev libsodium-dev m4 \
+		openssl-dev fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
+		pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
+		libev-dev libsodium-dev m4 \
 	&& unset HOSTNAME \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
