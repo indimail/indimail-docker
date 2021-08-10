@@ -28,6 +28,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/OpenRC/openrc.git; \
+		# openrc #############################################
+		cd /usr/local/srctmp/openrc; \
+		make && make install; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
 		./default.configure; \
@@ -163,7 +167,18 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 			-e '/d_kernel/d;/d_lpr/d;/d_mail/d;/d_news/d;/d_uucp/d;/d_ppp/d;/d_debug/d;/d_everything/d' \
 			-e '/console_all/d; /tty12/d; /d_console/d' \
 			/etc/syslog-ng/syslog-ng.conf; \
-		systemctl enable cronie.service syslog-ng@default.service; \
+		systemctl enable cronie.service syslog-ng@default.service sshd.service; \
+		/bin/rm -f /libexec/rc/sh/rc-cgroup.sh; \
+		mkdir /etc/runlevels/indimail; \
+		/bin/rm -rf /etc/runlevels/boot; \
+		/bin/rm -rf /etc/runlevels/sysinit; \
+		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/cronie    -O /etc/init.d/cronie ; \
+		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/syslog-ng -O /etc/init.d/syslog-ng ; \
+		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/sshd      -O /etc/init.d/sshd ; \
+		chmod +x /etc/init.d/cronie /etc/init.d/syslog-ng /etc/init.d/sshd; \
+		/sbin/rc-update add cronie indimail; \
+		/sbin/rc-update add syslog-ng indimail; \
+		/sbin/rc-update add sshd indimail; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& pacman -S --needed --noconfirm mailx \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
@@ -171,9 +186,11 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-	&& pacman -Rcns --noconfirm gcc libtool autoconf automake make git \
+	&& pacman -Rnss --noconfirm gcc autoconf automake make git \
 	&& unset HOSTNAME \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+VOLUME ["/sys/fs/cgroup"]
+VOLUME ["/run"]
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["indimail"]
