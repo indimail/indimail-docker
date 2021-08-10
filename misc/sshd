@@ -1,0 +1,18 @@
+#!/usr/bin/openrc-run
+
+command=/usr/bin/sshd
+description='ssh daemon'
+command_args="$SSHD_OPTS"
+pidfile=/run/sshd.pid
+required_files=/etc/ssh/sshd_config
+
+depend() {
+    use logger dns
+}
+
+start_pre() {
+    if [ -n "$SSHD_CONFDIR" -o -n "$SSHD_BINARY" -o -n "$SSHD_PIDFILE" ]; then
+        ewarn "SSHD_CONFDIR, SSHD_BINARY, and SSHD_PIDFILE are no longer supported"
+    fi
+    /usr/bin/ssh-keygen -A
+}
