@@ -1,17 +1,5 @@
 # Bourne Again SHell init file.
 #
-function logcat
-{
-ext=`date +%m-%Y`
-if [ ! -d $HOME/history ] ; then
-	mkdir -p $HOME/history
-fi
-index=$1
-dt=$2
-tm=$3
-shift 3
-echo "$dt $tm [$PWD] [$index]: $*" >> $HOME/history/.history.$ext
-}
 
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
@@ -23,7 +11,7 @@ fi
 # If running interactively, then:
 if [ "$PS1" ]; then
 	set noclobber
-	declare -x PROMPT_COMMAND='PS1="$HOSTNAME:($USER) $PWD >"; logcat $(history 1)'
+	declare -x PROMPT_COMMAND='PS1="$HOSTNAME:($USER) $PWD >"'
 	#
 	# Set readonly variables
 	#
