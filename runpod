@@ -192,7 +192,7 @@ if [ -z "$extra_args" ] ; then
   extra_args="-d --rm"
 fi
 if [ -n "$cgroup" -a "$cgroup" = "auto" ] ; then
-  cgroup="-v /sys/fs/cgroup:/sys/fs/cgroup:ro"
+  cgroup="-v /sys/fs/cgroup:/sys/fs/cgroup:rw"
 fi
 echo "$command run $cgroup $extra_args"
 echo "  --name $name"
@@ -201,7 +201,12 @@ if [ -n "$host_arg" ] ; then
   echo " $host_arg"
 fi
 if [ -n "$cap_args" ] ; then
-  echo " $cap_args"
+  echo $extra_args | grep "\--privileged" >/dev/null
+  if [ $? -eq 0 ] ; then
+    cap_args=""
+  else
+    echo " $cap_args"
+  fi
 fi
 if [ -z "$port_args" ] ; then
   if [ -n "$port_str" ] ; then
