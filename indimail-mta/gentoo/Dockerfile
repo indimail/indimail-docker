@@ -11,6 +11,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& emerge -a --ask n dev-db/mysql \
 	&& emerge -a --ask n openldap \
 	&& emerge -a --ask n openrc \
+	&& emerge -a --ask n openssh \
 	&& emerge -a --ask n net-dns/libidn \
 	&& emerge -a --ask n app-text/xmlto \
 	&& emerge -a --ask n sys-apps/init-system-helpers \
@@ -149,6 +150,11 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
 		rc-update add cronie; \
 		rc-update add rsyslog; \
+		rc-update add sshd; \
+		mkdir /etc/runlevels/indimail; \
+		rc-update add cronie indimail; \
+		rc-update add rsyslog indimail; \
+		rc-update add sshd indimail; \
 		sed -i '/imklog/ s/^#*/#/' /etc/rsyslog.conf; \
 		) \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \

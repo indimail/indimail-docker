@@ -10,7 +10,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		pkgconfig openrc mailx busybox-extras vim lsof strace \
 		mandoc man-pages mandoc-apropos dcron dcron-openrc \
 		inetutils-syslogd inetutils-syslogd-openrc util-linux \
-		openssh openssh-server xmlto \
+		openssh openssh-server openssh-server-common xmlto tzdata \
 		apk-tools-doc openrc-doc dcron-doc inetutils-syslogd-doc \
 		openssl openssl-dev fts fts-dev mariadb-connector-c mysql-dev \
 		musl-nscd musl-nscd-dev libidn libidn-dev libidn2 libidn2-dev \
@@ -148,6 +148,11 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
 		/sbin/rc-update add dcron; \
 		/sbin/rc-update add inetutils-syslogd; \
+		/sbin/rc-update add sshd; \
+		mkdir /etc/runlevels/indimail; \
+		/sbin/rc-update add dcron indimail; \
+		/sbin/rc-update add inetutils-syslogd indimail; \
+		/sbin/rc-update add sshd indimail; \
 		sed 's/ root / /g' /etc/indimail/cronlist.q |crontab -; \
 		sed -i '/^kern\|^lpr/d' /etc/syslog.conf; \
 		[ ! -f /etc/nsswitch.conf ] && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' > /etc/nsswitch.conf; \
@@ -158,6 +163,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 		/lib/security/pam-multi.a \
+	&& /bin/rm -rf /run/secrets \
 	&& apk del gcc g++ make git autoconf automake libtool \
 		openssl-dev fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
 		pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
