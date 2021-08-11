@@ -3,7 +3,7 @@ name: indimail:gentoo container image
 on:
   push:
     paths:
-      - '**/indimail/gentoo'
+      - '**/indimail/gentoo/**'
       - .github/workflows/indimail-gentoo.yml
       - '!**.md'
   workflow_dispatch:
