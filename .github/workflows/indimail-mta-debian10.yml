@@ -29,5 +29,5 @@ jobs:
       - name: push
         run: |
           docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:debian10"
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta::debian10" docker.io/cprogrammer/indimail-mta::debian10
-          docker push docker.io/cprogrammer/indimail-mta::debian10
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:debian10" docker.io/cprogrammer/indimail-mta:debian10
+          docker push docker.io/cprogrammer/indimail-mta:debian10
