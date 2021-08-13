@@ -148,9 +148,12 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd ..; ./dnssvc; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
-		rc-update add cronie; \
-		rc-update add rsyslog; \
-		rc-update add sshd; \
+		/bin/rm -rf /etc/runlevels/boot /etc/runleves/sysinit \
+			/etc/runlevels/nonetwork /etc/runlevels/shutdown/mount-ro; \
+		/bin/rm -f /lib/rc/sh/rc-cgroup.sh; \
+		rc-update add cronie default; \
+		rc-update add rsyslog default; \
+		rc-update add sshd default; \
 		mkdir /etc/runlevels/indimail; \
 		rc-update add cronie indimail; \
 		rc-update add rsyslog indimail; \
