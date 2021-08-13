@@ -3,7 +3,7 @@ name: indimail-web:centos7 container image
 on:
   push:
     paths:
-      - '**/webmail/centos7'
+      - '**/webmail/centos7/**'
       - .github/workflows/indimail-web-centos7.yml
       - '!**.md'
   workflow_dispatch:
@@ -25,4 +25,7 @@ jobs:
           docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:centos7" .
 
       - name: push
-        run: docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:centos7"
+        run: |
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:centos7"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:centos7" docker.io/cprogrammer/indimail-web:centos7
+          docker push docker.io/cprogrammer/indimail-web:centos7
