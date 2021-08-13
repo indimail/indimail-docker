@@ -168,7 +168,7 @@ if [ "$systemd" = "auto" ] ; then
     xenial*|debian*|focal*|bionic*|archlinux*)
     systemd=/lib/systemd/systemd
     ;;
-    alpine*)
+    alpine*|gentoo*)
     systemd="/sbin/init"
     ;;
     *)
