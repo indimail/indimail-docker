@@ -28,6 +28,6 @@ jobs:
 
       - name: push
         run: |
-          docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:xenial"
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:xenial" docker.io/cprogrammer/indimail-web:xenial
-          docker push docker.io/cprogrammer/indimail-web:xenial
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail:xenial"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:xenial" docker.io/cprogrammer/indimail:xenial
+          docker push docker.io/cprogrammer/indimail:xenial
