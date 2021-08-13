@@ -168,14 +168,18 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 			-e '/console_all/d; /tty12/d; /d_console/d' \
 			/etc/syslog-ng/syslog-ng.conf; \
 		systemctl enable cronie.service syslog-ng@default.service sshd.service; \
-		/bin/rm -f /libexec/rc/sh/rc-cgroup.sh; \
+		/bin/rm -rf /etc/runlevels/boot /etc/runlevels/sysinit \
+			/etc/runlevels/nonetwork; \
+		/bin/rm -f /libexec/rc/sh/rc-cgroup.sh /etc/runlevels/default/local \
+			/etc/runlevels/default/netmount /etc/runlevels/shutdown/mount-ro \
+			/etc/runlevels/shutdown/savecache; \
 		mkdir /etc/runlevels/indimail; \
-		/bin/rm -rf /etc/runlevels/boot; \
-		/bin/rm -rf /etc/runlevels/sysinit; \
 		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/cronie    -O /etc/init.d/cronie ; \
 		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/syslog-ng -O /etc/init.d/syslog-ng ; \
 		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/sshd      -O /etc/init.d/sshd ; \
-		chmod +x /etc/init.d/cronie /etc/init.d/syslog-ng /etc/init.d/sshd; \
+		/bin/cp /usr/share/indimail/boot/openrc /etc/init.d/svscan; \
+		chmod +x /etc/init.d/cronie /etc/init.d/syslog-ng /etc/init.d/sshd \
+			/etc/init.d/svscan; \
 		/sbin/rc-update add cronie indimail; \
 		/sbin/rc-update add syslog-ng indimail; \
 		/sbin/rc-update add sshd indimail; \
