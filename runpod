@@ -111,7 +111,7 @@ done
 
 port_str=""
 case $name in
-  indimail|indimail-mta|webmail|devel|svscan|test)
+  indimail|indimail-mta|webmail|devel|svscan|test|mail)
     if [ -z "$port_args" ] ; then
       case $name in
         indimail|indimail-mta|webmail)
@@ -144,7 +144,7 @@ case $name in
       if [ -d /home/$command/mail ] ; then
         vol_args="$vol_args-v /home/$command/mail:/home/mail "
       fi
-      if [ -d /usr/local/src ] ; then
+      if [ " $name" = " devel" -a  -d /usr/local/src ] ; then
         vol_args="$vol_args-v /usr/local/src:/usr/local/src"
       fi
     fi
@@ -156,6 +156,14 @@ case $name in
         extra_args="-ti --rm"
       fi
     fi
+    if [ " $name" = " mail" ] ; then
+      if [ -z "$systemd" ] ; then
+        systemd="svscan"
+      fi
+      if [ -z "$extra_args" ] ; then
+        extra_args="-d --rm"
+      fi
+	fi
   ;;
 esac
 
@@ -165,7 +173,7 @@ fi
 if [ "$systemd" = "auto" ] ; then
   tag=`$command images | grep  $imageid | awk '{print $2}'`
   case $tag in
-    xenial*|debian*|focal*|bionic*|archlinux*)
+    xenial*|debian*|focal*|bionic*|archlinux*|ubi*)
     systemd=/lib/systemd/systemd
     ;;
     alpine*|gentoo*)
