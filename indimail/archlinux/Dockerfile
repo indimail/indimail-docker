@@ -69,7 +69,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 			--config=cert --postmaster=postmaster@indimail.org \
 			--common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
 		# ezmlm-idx ############################################
-		cd /usr/local/src/ezmlm-idx/ezmlm-idx-x; \
+		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/^cc/cc -s/' conf-ldso; \
 		sed -i 's/ -g//' conf-cc; \
