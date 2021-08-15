@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:ubi8
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
 	&& dnf config-manager --set-enabled ubi-8-baseos-source ubi-8-appstream-source \
 	&& dnf -y install \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
@@ -184,7 +184,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 	&& dnf -y erase gcc autoconf automake make git \
 		xmlto docbook-dtds sgml-common docbook-style-xsl \
-	&& unset HOSTNAME \
+	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
