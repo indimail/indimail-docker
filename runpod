@@ -162,8 +162,9 @@ case $name in
       fi
       if [ -z "$extra_args" ] ; then
         extra_args="-d --rm"
+        detached=1
       fi
-	fi
+    fi
   ;;
 esac
 
