@@ -4,7 +4,8 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:tumbleweed
 
 RUN export HOSTNAME=indimail.org \
-	&& mkdir -p /root \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& mkdir -p /root /run/mysqld \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
@@ -45,7 +46,7 @@ RUN export HOSTNAME=indimail.org \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl disable sshd \
-	&& unset HOSTNAME \
+	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
