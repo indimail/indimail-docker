@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:archl
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
 	&& sed -i 's{usr/share/man/\*{{g' /etc/pacman.conf \
 	&& pacman -Sy --noconfirm --needed \
 	&& pacman -S  --noconfirm --needed archlinux-keyring \
@@ -191,7 +191,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 	&& pacman -Rnss --noconfirm gcc autoconf automake make git \
-	&& unset HOSTNAME \
+	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
