@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:alpin
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
 	&& apk -U upgrade \
 	&& apk add bash gcc g++ make git autoconf automake libtool m4 sed \
 		pkgconfig openrc mailx busybox-extras vim lsof strace \
@@ -179,12 +179,11 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 		/lib/security/pam-multi.a \
-	&& /bin/rm -rf /run/indimail /run/mysqld /run/secrets \
 	&& apk del gcc g++ make git autoconf automake libtool \
 		openssl-dev fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
 		pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
 		libev-dev libsodium-dev m4 \
-	&& unset HOSTNAME \
+	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
