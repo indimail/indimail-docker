@@ -6,7 +6,8 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:hirsu
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
-	&& mkdir -p /root \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& mkdir -p /root /run/mysqld \
 	&& apt-get -y update \
 	&& apt-get -y install curl gnupg2 apt-utils \
 	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_21.04/Release.key | \
@@ -47,7 +48,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
-	&& unset HOSTNAME \
+	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
