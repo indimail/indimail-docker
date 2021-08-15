@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:gento
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
 	&& emaint -ay sync \
 	&& emerge-webrsync \
 	&& emerge -a --ask n dev-vcs/git \
@@ -175,7 +175,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-	&& unset HOSTNAME \
+	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
