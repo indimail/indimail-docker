@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:archl
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
+	&& mkdir -p /root /usr/local/srctmp \
 	&& sed -i 's{usr/share/man/\*{{g' /etc/pacman.conf \
 	&& pacman -Sy --noconfirm --needed \
 	&& pacman -S  --noconfirm --needed archlinux-keyring \

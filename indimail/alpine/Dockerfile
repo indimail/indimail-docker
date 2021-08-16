@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:alpin
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
+	&& mkdir -p /root /usr/local/srctmp \
 	&& apk -U upgrade \
 	&& apk add bash gcc g++ make git autoconf automake libtool m4 sed \
 		pkgconfig openrc mailx busybox-extras vim lsof strace \
