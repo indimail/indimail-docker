@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:ubi8
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
+	&& mkdir -p /root /usr/local/srctmp \
 	&& dnf config-manager --set-enabled ubi-8-baseos-source ubi-8-appstream-source \
 	&& dnf -y install \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \

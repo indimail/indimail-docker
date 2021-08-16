@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:gento
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp /run/mysqld \
+	&& mkdir -p /root /usr/local/srctmp \
 	&& emaint -ay sync \
 	&& emerge-webrsync \
 	&& emerge -a --ask n dev-vcs/git \
