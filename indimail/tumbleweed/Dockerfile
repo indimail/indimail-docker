@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:tumbl
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /run/mysqld \
+	&& mkdir -p /root \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
