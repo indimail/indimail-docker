@@ -8,7 +8,7 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager \
 		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_34/home:mbhangui.repo \
-	&& mkdir -p /root /run/mysqld \
+	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \
 		gnupg2 \
