@@ -147,8 +147,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
-		chmod +x /service/.svscan/run; \
-		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
@@ -168,13 +166,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		echo "adding podman/docker script to /service/.svscan/run"; \
-		( echo "/usr/sbin/svctool --config=recontrol"; \
-		 echo "cd /var/indimail/queue"; \
-		 echo "for i in queue*; do queue-fix -v \$i; done"; \
-		 echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
-		 echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
-		) >> /service/.svscan/run; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& dnf -y install mailx \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \

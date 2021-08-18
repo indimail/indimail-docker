@@ -117,14 +117,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot; \
-		( echo "/usr/sbin/svctool --config=recontrol"; \
-		echo "cd /var/indimail/queue"; \
-		echo "for i in queue*; do queue-fix -v \$i; done"; \
-		echo "for i in slowq nqueue; do if [ -d \$i ] ; then queue-fix \$i; fi; done"; \
-		echo "for i in qmta; do if [ -d \$i ] ; then queue-fix -mv \$i; fi; done"; \
-		) > /service/.svscan/run; \
-		chmod +x /service/.svscan/run; \
-		echo "1" > /service/.svscan/variables/WAIT_INITCMD; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
