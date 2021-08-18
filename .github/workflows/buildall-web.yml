@@ -18,7 +18,7 @@ jobs:
           for i in almalinux8 bionic centos7 centos8 debian10 debian8 debian9 fc33 \
             fc34 focal hirsute leap15.2 leap15.3 oracle8 tumbleweed xenial
           do
-            cp indimail-web/$i/Dockerfile .
+            cp webmail/$i/Dockerfile .
             docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$i" .
             docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:$i"
             docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$i" docker.io/cprogrammer/indimail:almalinux8
