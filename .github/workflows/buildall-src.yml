@@ -1,4 +1,4 @@
-name: docker:build-all push script
+name: docker:buildsrc-all push script
 
 on:
   workflow_dispatch:
@@ -15,10 +15,7 @@ jobs:
 
       - name: build
         run: |
-          cp indimail/almalinux8/Dockerfile .
-          for i in almalinux8 alpine archlinux bionic centos7 centos8 debian10 \
-            debian8 debian9 fc33 fc34 focal gentoo hirsute leap15.2 leap15.3 \
-            leap42.3 oracle8 tumbleweed ubi8 xenial
+          for i in alpine archlinux gentoo ubi8
           do
             for j in indimail indimail-mta
             do
