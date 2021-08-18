@@ -1,4 +1,4 @@
-name: docker:almalinux8 push script
+name: docker:build-all push script
 
 on:
   workflow_dispatch:
