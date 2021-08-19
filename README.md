@@ -887,4 +887,5 @@ There is also a [Project Tracker](http://sourceforge.net/tracker/?group_id=23068
 3. [Using volumes with rootless podman, explained](https://www.tutorialworks.com/podman-rootless-volumes/)
 4. [Podman User Guid](https://docs.oracle.com/en/operating-systems/oracle-linux/podman/index.html)
 5. [Managing Containers](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/index)
-6. [Demystifying the Open Container Initiative (OCI) Specifications](https://www.docker.com/blog/demystifying-open-container-initiative-oci-specifications/)
+6. [A Practical Introduction to Container Terminology](https://developers.redhat.com/blog/2018/02/22/container-terminology-practical-introduction)
+7. [Demystifying the Open Container Initiative (OCI) Specifications](https://www.docker.com/blog/demystifying-open-container-initiative-oci-specifications/)
