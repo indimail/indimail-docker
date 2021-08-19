@@ -2,7 +2,7 @@
 
 This repo contains repository for Dockerfiles used for building docker/podman images for [indimail-mta](https://github.com/mbhangui/indimail-mta), [indimail](https://github.com/mbhangui/indimail-virtualdomains) and [indimail](https://github.com/mbhangui/indimail-virtualdomains) with [roundcube](https://roundcube.net/) web frontend. Read this document on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works.
 
-You can use either docker or podman. One of the downsides of Docker is it has a central daemon that runs as the root user, and this has security implications. But this is where Podman comes in handy. Podman is a [daemonless container engine](https://podman.io/) for developing, managing, and running OCI Containers on your Linux system in [root or rootless](https://www.tutorialworks.com/podman-rootless-volumes/) mode. The complete set of instructions for installing podman is given [here](https://podman.io/getting-started/installation.html). If you decide to use docker, the complet set of instructions for installing docker is given [here](https://docs.docker.com/engine/install/).
+You can use either docker or podman. One of the downsides of Docker is it has a central daemon that runs as the root user, and this has security implications. But this is where Podman comes in handy. Podman is a [daemonless container engine](https://podman.io/) for developing, managing, and running [OCI](https://opencontainers.org) Containers on your Linux system in [root or rootless](https://www.tutorialworks.com/podman-rootless-volumes/) mode. The complete set of instructions for installing podman is given [here](https://podman.io/getting-started/installation.html). If you decide to use docker, the complet set of instructions for installing docker is given [here](https://docs.docker.com/engine/install/).
 
 You have to decide the image that you want.
 
@@ -887,3 +887,4 @@ There is also a [Project Tracker](http://sourceforge.net/tracker/?group_id=23068
 3. [Using volumes with rootless podman, explained](https://www.tutorialworks.com/podman-rootless-volumes/)
 4. [Podman User Guid](https://docs.oracle.com/en/operating-systems/oracle-linux/podman/index.html)
 5. [Managing Containers](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux_atomic_host/7/html/managing_containers/index)
+6. [Demystifying the Open Container Initiative (OCI) Specifications](https://www.docker.com/blog/demystifying-open-container-initiative-oci-specifications/)
