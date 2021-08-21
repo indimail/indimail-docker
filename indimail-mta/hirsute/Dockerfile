@@ -7,6 +7,8 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:h
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root \
+	&& sed -i 's:^path-exclude=/usr/share/man:#path-exclude=/usr/share/man:' \
+		/etc/dpkg/dpkg.cfg.d/excludes \
 	&& apt-get -y update \
 	&& apt-get -y install curl gnupg2 apt-utils \
 	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_21.04/Release.key | \
