@@ -17,6 +17,7 @@ RUN export HOSTNAME=indimail.org \
 		cronie \
 		mailx \
 		man-db \
+		man-pages \
 		net-tools \
 		openssl \
 		openssh-clients \

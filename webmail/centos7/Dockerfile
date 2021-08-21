@@ -22,6 +22,7 @@ RUN export HOSTNAME=indimail.org \
 		cronie \
 		mailx \
 		man-db \
+		man-pages \
 		mrtg \
 		net-tools \
 		openssl \

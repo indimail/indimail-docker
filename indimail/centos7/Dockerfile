@@ -7,6 +7,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:cento
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
+	&& sed -i '/tsflags=nodocs/d' /etc/yum.conf \
 	&& yum -y install \
 		deltarpm \
 	&& yum -y update \
@@ -18,6 +19,7 @@ RUN export HOSTNAME=indimail.org \
 		cronie \
 		mailx \
 		man-db \
+		man-pages \
 		net-tools \
 		openssl \
 		openssh-clients \
