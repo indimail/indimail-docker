@@ -7,6 +7,8 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:debia
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
+	&& sed -i 's:^path-exclude=/usr/share/man:#path-exclude=/usr/share/man:' \
+		/etc/dpkg/dpkg.cfg.d/excludes \
 	&& apt-get -y update \
 	&& apt-get -y install wget gnupg2 apt-utils \
 	&& wget -nv https://download.opensuse.org/repositories/home:mbhangui/Debian_9.0/Release.key -O - | apt-key add - \
