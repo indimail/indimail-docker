@@ -5,9 +5,11 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:t
 
 RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
+	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
+		man-pages \
 		binutils \
 		openssl \
 		vim \
