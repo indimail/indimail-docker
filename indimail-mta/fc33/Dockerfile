@@ -4,6 +4,7 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fc33
 
 RUN export HOSTNAME=indimail.org \
+	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager \
 		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_33/home:mbhangui.repo \
@@ -17,6 +18,7 @@ RUN export HOSTNAME=indimail.org \
 		less \
 		mailx \
 		man-db \
+		man-pages \
 		net-tools \
 		openssl \
 		openssh-clients \
