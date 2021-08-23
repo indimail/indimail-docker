@@ -144,8 +144,8 @@ RUN export HOSTNAME=indimail.org \
 		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-	&& pacman -Rnss --noconfirm gcc autoconf automake make git mrtg \
-	&& /bin/rm -rf /run \
+	&& pacman -Rnss --noconfirm gcc autoconf automake make git \
+	&& /bin/rm -rf /run || true \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]

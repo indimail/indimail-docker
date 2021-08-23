@@ -13,6 +13,9 @@ RUN export HOSTNAME=indimail.org \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/OpenRC/openrc.git; \
+		# mrtg ###############################################
+		cd /usr/local/srctmp/mrtg-2.17.7; \
+		make && make install; \
 		# openrc #############################################
 		cd /usr/local/srctmp/openrc; \
 		make && make install; \
@@ -153,7 +156,7 @@ RUN export HOSTNAME=indimail.org \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 	&& pacman -Rnss --noconfirm gcc autoconf automake make git \
-	&& /bin/rm -rf /run \
+	&& /bin/rm -rf /run || true \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]

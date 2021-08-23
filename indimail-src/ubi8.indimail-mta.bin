@@ -11,6 +11,9 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
+		# mrtg ###############################################
+		cd /usr/local/srctmp/mrtg-2.17.7; \
+		make && make install; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
 		./default.configure; \
@@ -121,7 +124,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 	&& dnf -y erase gcc autoconf automake make git \
 		xmlto docbook-dtds sgml-common docbook-style-xsl \
-	&& /bin/rm -rf /run \
+	&& /bin/rm -rf /run || true \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
