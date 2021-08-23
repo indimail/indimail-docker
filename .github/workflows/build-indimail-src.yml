@@ -17,10 +17,10 @@ jobs:
 
       - name: build
         run: |
-          for i in alpine archlinux gentoo ubi8
+          for i in alpine archlinux ubi8 gentoo
           do
             cp indimail-src/$i.src Dockerfile
-            docker build --tag "docker.io/cprogrammer/srcbuild:$i" .
-            docker push docker.io/cprogrammer/srcbuild:$i
+            docker build --tag "docker.io/cprogrammer/indimail-src:$i" .
+            docker push docker.io/cprogrammer/indimail-src:$i
             /bin/rm -f Dockerfile
           done
