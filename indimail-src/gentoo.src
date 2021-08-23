@@ -1,0 +1,34 @@
+# docker build -f dockerfile.gentoo -t cprogrammer/indimail-src:gentoo
+From gentoo/stage3:latest
+MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:gentoo
+
+RUN mkdir -p /root /usr/local/srctmp \
+	&& emaint -ay sync \
+	&& emerge-webrsync \
+	&& emerge -a --ask n dev-vcs/git \
+	&& emerge -a --ask n dev-db/mysql \
+	&& emerge -a --ask n openldap \
+	&& emerge -a --ask n openrc \
+	&& emerge -a --ask n openssh \
+	&& emerge -a --ask n net-dns/libidn \
+	&& emerge -a --ask n app-text/xmlto \
+	&& emerge -a --ask n sys-apps/init-system-helpers \
+	&& emerge -a --ask n net-analyzer/mrtg \
+	&& emerge -a --ask n sys-process/cronie \
+	&& emerge -a --ask n app-admin/rsyslog \
+	&& emerge -a --ask n dev-libs/libev \
+	&& emerge -a --ask n dev-libs/libsodium \
+	&& (cd /usr/local/srctmp; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		# courier-imap #########################################
+		cd indimail-virtualdomains/courier-imap-x; \
+		./default.configure; \
+		# fetchmail ############################################
+		cd ../fetchmail-x; \
+		./default.configure; \
+		# bogofilter-wordlist ##################################
+		cd ../bogofilter-wordlist-x; \
+		./default.configure; \
+		) 2>&1 | tee -a /tmp/build.log \
+	&& echo "Build Completed" 

@@ -1,0 +1,26 @@
+name: build-indimail-src push script
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push source images
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          for i in alpine archlinux gentoo ubi8
+          do
+            cp indimail-src/$i.src Dockerfile
+            docker build --tag "docker.io/cprogrammer/srcbuild:$i" .
+            docker push docker.io/cprogrammer/srcbuild:$i
+            /bin/rm -f Dockerfile
+          done

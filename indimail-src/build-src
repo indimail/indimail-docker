@@ -1,0 +1,20 @@
+#!/bin/sh
+if [ $(basename $PWD) != "indimail-src" ] ; then
+	echo "Not in indimail-src" 1>&2
+	exit 1
+fi
+cd ..
+for i in `ls indimail-src/*.src`
+do
+	echo -n "$i: Continue (Y/N) - "
+	read key
+	if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
+		continue
+	fi
+	cp $i ./Dockerfile
+	tag=$(basename $i | cut -d. -f1)
+	echo "Buiding cprogrammer/indimail-src:$tag"
+	docker build -t cprogrammer/indimail-src:$tag .
+	docker push cprogrammer/indimail-src/$tag
+	/bin/rm -f Dockerfile
+done

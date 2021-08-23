@@ -1,4 +1,4 @@
-name: docker:buildbin-all push script
+name: buildall-bin push script
 
 on:
   workflow_dispatch:

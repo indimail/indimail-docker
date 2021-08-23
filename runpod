@@ -179,7 +179,6 @@ do
 		echo "command should be podman or docker" 1>&2
 		usage 1
 	fi
-	command="exec $command"
 	;;
 
 	-i | --id)

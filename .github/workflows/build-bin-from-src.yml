@@ -1,11 +1,11 @@
-name: buildall-src push script
+name: build-bin-from-src push script
 
 on:
   workflow_dispatch:
 
 jobs:
   build_and_push:
-    name: build and push container image
+    name: build and push source images
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
@@ -22,10 +22,11 @@ jobs:
           do
             for j in indimail indimail-mta
             do
-              cp $j/$i/Dockerfile .
+              cp indimail-src/$i.$j.bin Dockerfile
               docker build --tag "ghcr.io/${{ github.repository_owner }}/$j:$i" .
               docker push "ghcr.io/${{ github.repository_owner }}/$j:$i"
               docker image tag "ghcr.io/${{ github.repository_owner }}/$j:$i" docker.io/cprogrammer/$j:$i
               docker push docker.io/cprogrammer/$j:$i
+              /bin/rm -f Dockerfile
             done
           done

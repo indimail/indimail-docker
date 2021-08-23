@@ -1,4 +1,4 @@
-name: docker:buildweb-all push script
+name: buildall-web push script
 
 on:
   workflow_dispatch:
