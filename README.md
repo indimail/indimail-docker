@@ -36,7 +36,9 @@ podman pull ghcr.io/mbhangui/indimail-mta:tag
 podman pull ghcr.io/mbhangui/indimail:tag
 podman pull ghcr.io/mbhangui/indimail-web:tag
 ```
-Replace tag in the above command with one of the following
+Replace tag in the above command with one of the following from the below table
+
+**Runtime Container images built from indimail, indimail-mta packages from [Open Build Service](https://build.opensuse.org)**
 
 tag|OS Distribution|indimai-mta|indimail|webmail
 ----|--------------|-----------|--------|-------
@@ -58,6 +60,13 @@ ubi8|Redhat ubi8|[![ghcr build status](https://github.com/mbhangui/docker/action
 alpine|alpine Linux v3.14|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-alpine.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-alpine.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-alpine.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-alpine.yml)|TODO
 gentoo|Gentoo|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-gentoo.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-gentoo.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-gentoo.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-gentoo.yml)|TODO
 archlinux|Arch Linux|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-archlinux.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-archlinux.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-archlinux.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-archlinux.yml)|TODO
+
+**Runtime Container images built from Source**
+
+Distributions like alpine, gentoo, archlinux and ubi8 are not supported on the [Open Build Service](https://build.opensuse.org). The runtime images are built using Dockerfiles that pull the source from github, compile and install them. To reduce the build time, these are built in two steps.
+1. Build an intermediate image with all source packages installed in the image. The base image comes from the OS distribution images. This image takes very long to build (1.5 hours for gentoo) build and is refreshed on a need basis. [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/build-indimail-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/build-indimail-src.yml)
+2. Build the final image by pulling the indimail, indimail-mta source. The base image built and pushed in step 1, comes from [indimil-src](https://hub.docker.com/repository/docker/cprogrammer/indimail-src). [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/build-bin-from-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/build-bin-from-src.yml)
+
 
 Let's say you want to use the **indimail** image and CentOS8
 
