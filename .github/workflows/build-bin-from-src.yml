@@ -1,3 +1,7 @@
+# This script builds runtime images created by build-indimail-src.yml
+# the images are common for both indimail and indimail-mta
+# the images have all packages required by indimail, indimail-mta installed and compiled
+# using these images instead of the base images reduces build times
 name: build-bin-from-src push script
 
 on:

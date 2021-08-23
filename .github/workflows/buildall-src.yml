@@ -1,3 +1,10 @@
+# This script builds final runtime image from indimail-docker/indimail, indimail-docker/indimail-mta
+# The buildtime is high because it does few things
+# Download base contianer
+# install devel and lib packages for indimail, indimail-mta
+# (on gentoo, each and every package is built and compiled from
+# source. The MySQL, cmake packages contribute to the max build time)
+# build indimail, indimail-mta
 name: buildall-src push script
 
 on:
