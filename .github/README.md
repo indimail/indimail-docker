@@ -1,5 +1,7 @@
 # Build Scripts
 
+These are the main scripts for building docker/podman images for indimail, indimail-mta, indimail-web. They build and push the images to [hub.docker.com](https://hub.docker.com/u/cprogrammer)
+
 Name|Purpuse
 ----|-------
 buildall-bin.yml|Build deployable indimail/indimail-mta docker/podman images by installing rpm/deb from open build service
