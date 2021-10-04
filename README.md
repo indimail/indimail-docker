@@ -7,7 +7,7 @@ You can use either docker or podman. One of the downsides of Docker is it has a 
 You have to decide the image that you want.
 
 * indimail-mta - for a minimal server that gives you a MTA. This server can receive mails from the internet and send mails to users within the same server or to the internet.
-* indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and all everything that the **indimail-mta** image does.
+* indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and do everything that the **indimail-mta** image does.
 * indimail-web - Like the **indimail** image with the addition of a web based email client based on [Roundcube Mail](https://roundcube.net/).
 
 Name|Docker Repository Location
@@ -36,7 +36,7 @@ podman pull ghcr.io/mbhangui/indimail-mta:tag
 podman pull ghcr.io/mbhangui/indimail:tag
 podman pull ghcr.io/mbhangui/indimail-web:tag
 ```
-Replace tag in the above command with one of the following from the below table
+Replace tag in the above command with one of the following tags from the below tables (built from Open Build Service or from github sources).
 
 **Runtime Container images built from indimail, indimail-mta packages from [Open Build Service](https://build.opensuse.org)**
 
@@ -85,7 +85,43 @@ Storing signatures
 e543dee69ab797c3a496295c96228265c45f5d221718a24ed8d230c5d79f943f
 ```
 
-You can combine the above in a single command. Below are 3 use cases of invocation.
+You can list the image using the `podman images` command
+
+```
+$ podman images
+REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
+ghcr.io/mbhangui/indimail        centos8      e543dee69ab7   38 hours ago   1.03 GB
+ghcr.io/mbhangui/indimail        centos7      fba3b42e0164   5 hours ago    2.9 GB
+ghcr.io/mbhangui/indimail        fc33         a5266643441b   4 days ago     1.13 GB
+```
+
+### Start the podman container
+
+indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
+
+The below command will start svscan process
+
+```
+$ podman run -d -h indimail.org --name indimail fba3b42e0164
+08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
+```
+
+The below command will execute bash instead of the default svscan process in the docker-entrypoint.
+
+```
+$ podman run -it --h indimail.org --name=indimail 4fce1055b1e7 bash
+docker-entrypoint: executing bash
+```
+
+You can use --net host to map the container's network to the HOST
+
+```
+$ docker run --net host -d -h indimail.org --name indimail fba3b42e0164
+or
+$ podman run --net host -d -h indimail.org --name indimail fba3b42e0164
+```
+
+You can combine the pull and run in a single command. Below are 3 use cases of invocation.
 
 ```
 1) Run the container in detached mode with systemd (init), just like a normal machine
@@ -93,22 +129,28 @@ You can combine the above in a single command. Below are 3 use cases of invocati
       --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
       -d --rm -h indimail.org --name indimail \
       cprogrammer/indimail:centos8 /usr/lib/systemd/systemd
+
    Connect to the container
+   ------------------------
    $ podman exec -ti indimail bash
    $ ps -ef
 
 2) Run the container with just indimail with a controlling terminal and bash shell
    $ podman run -it --rm -h indimail.org --name indimail \
      ghcr.io/mbhangui/indimail:centos8 bash
+
    start indimail
+   --------------
    $ /usr/libexec/indimail/svscanboot &
    $ ps -ef
 
 3) Run the container with just indimail in detached mode and svscan running as PID 1
    The containers have been configured with 5 queues as default and hence you will
    see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn
+
    $ podman run -d --rm -h indimail.org --name indimail \
      ghcr.io/mbhangui/indimail:centos8
+
    indimail.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
    root           1       0  0 17:23 ?        00:00:00 /usr/sbin/svscan /service
    root           2       1  0 17:23 ?        00:00:00 supervise log .svscan
@@ -153,42 +195,6 @@ You can combine the above in a single command. Below are 3 use cases of invocati
    qmailq       365     341  0 17:23 ?        00:00:00 qmail-clean
    qmailq       367     341  0 17:23 ?        00:00:00 qmail-clean
    root         505     481  0 17:29 pts/0    00:00:00 grep -E --color=auto svscan|qmail-send|qmail-smtpd|qmail-clean|spawn
-```
-
-You can list the image using the `podman images` command
-
-```
-$ podman images
-REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
-ghcr.io/mbhangui/indimail        centos8      e543dee69ab7   38 hours ago   1.03 GB
-ghcr.io/mbhangui/indimail        centos7      fba3b42e0164   5 hours ago    2.9 GB
-ghcr.io/mbhangui/indimail        fc33         a5266643441b   4 days ago     1.13 GB
-```
-
-### Start the podman container
-
-indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
-
-The below command will start svscan process
-
-```
-$ podman run -d -h indimail.org --name indimail fba3b42e0164
-08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
-```
-
-The below command will execute bash instead of the default svscan process in the docker-entrypoint.
-
-```
-$ podman run -it --h indimail.org --name=indimail 4fce1055b1e7 bash
-docker-entrypoint: executing bash
-```
-
-You can use --net host to map the container's network to the HOST
-
-```
-$ docker run --net host -d -h indimail.org --name indimail fba3b42e0164
-or
-$ podman run --net host -d -h indimail.org --name indimail fba3b42e0164
 ```
 
 There are other cool things you can do with the docker/podman images. You can have the images have their own filesystem with the queue and the user's home directory. It is better to have them on the host running the containers.
