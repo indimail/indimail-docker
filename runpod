@@ -245,8 +245,10 @@ fi
 if [ -z "$port_args" ] ; then
   if [ -n "$port_str" ] ; then
     port_args=$port_str
-    echo " $port_args"
   fi
+fi
+if [ -n "$port_str" ] ; then
+  echo " $port_args"
 fi
 if [ -n "$vol_args" ] ; then
   echo "  $vol_args"
@@ -258,6 +260,11 @@ $command run $cgroup $extra_args \
   --device /dev/fuse \
   $host_arg $cap_args $port_args $vol_args \
   $imageid $*
-if [ $? -eq 0 -a $detached -eq 1 ] ; then
-  $command exec -ti $name bash
+if [ $? -eq 0 ] ; then
+  if [ a $detached -eq 1 ] ; then
+    $command exec -ti $name bash
+  fi
+else
+  echo "Removing container id $name" 1>&2
+  podman rm $name
 fi
