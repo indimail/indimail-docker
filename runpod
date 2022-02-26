@@ -261,7 +261,7 @@ $command run $cgroup $extra_args \
   $host_arg $cap_args $port_args $vol_args \
   $imageid $*
 if [ $? -eq 0 ] ; then
-  if [ a $detached -eq 1 ] ; then
+  if [ $detached -eq 1 ] ; then
     $command exec -ti $name bash
   fi
 else
