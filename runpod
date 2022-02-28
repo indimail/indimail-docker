@@ -73,6 +73,7 @@ set_defaults()
 		if [ -z "$cap_args" ] ; then
 			cap_args="$cap_args--cap-add SYS_PTRACE --cap-add SYS_ADMIN "
 			cap_args="$cap_args--cap-add IPC_LOCK   --cap-add SYS_RESOURCE "
+			cap_args="$cap_args--cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW "
 		else
 			echo $cap_args|grep SYS_ADMIN > /dev/null
 			if [ $? -ne 0 ] ; then
@@ -229,7 +230,7 @@ if [ -n "$systemd" ] ; then
 	set "$systemd"
 fi
 echo "$command run $cgroup $extra_args"
-echo "  --name $name"
+echo "  --publish-all --name $name"
 echo "  --device /dev/fuse"
 if [ -n "$host_arg" ] ; then
   echo " $host_arg"
@@ -256,7 +257,7 @@ fi
 echo "  $imageid $*"
 
 $command run $cgroup $extra_args \
-  --name $name \
+  --publish-all --name $name \
   --device /dev/fuse \
   $host_arg $cap_args $port_args $vol_args \
   $imageid $*
