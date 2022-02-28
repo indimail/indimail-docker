@@ -233,14 +233,14 @@ echo "$command run $cgroup $extra_args"
 echo "  --publish-all --name $name"
 echo "  --device /dev/fuse"
 if [ -n "$host_arg" ] ; then
-  echo " $host_arg"
+  echo "  $host_arg"
 fi
 if [ -n "$cap_args" ] ; then
   echo $extra_args | grep "\--privileged" >/dev/null
   if [ $? -eq 0 ] ; then
     cap_args=""
   else
-    echo " $cap_args"
+    echo "  $cap_args"
   fi
 fi
 if [ -z "$port_args" ] ; then
@@ -248,8 +248,8 @@ if [ -z "$port_args" ] ; then
     port_args=$port_str
   fi
 fi
-if [ -n "$port_str" ] ; then
-  echo " $port_args"
+if [ -n "$port_args" ] ; then
+  echo "  $port_args"
 fi
 if [ -n "$vol_args" ] ; then
   echo "  $vol_args"
