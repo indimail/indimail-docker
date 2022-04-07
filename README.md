@@ -62,7 +62,7 @@ almalinux8|Alma Linux 8|[![ghcr build status](https://github.com/mbhangui/docker
 
 Distributions like alpine, gentoo, archlinux and ubi8 are not supported on the [Open Build Service](https://build.opensuse.org). The runtime images are built using Dockerfiles that pull the source from github, compile and install them. To reduce the build time, these are built in two steps.
 1. Build an intermediate image with all source packages installed in the image. The base image comes from the OS distribution images. This image takes very long to build (1.5 hours for gentoo) and is refreshed on a need basis. [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/build-indimail-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/build-indimail-src.yml)
-2. Build the final image by pulling the base images built and pushed in step 1. The dockerfiles come from [indimil-src](https://hub.docker.com/repository/docker/cprogrammer/indimail-src). [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/build-bin-from-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/build-bin-from-src.yml)
+2. Build the final image by pulling the base images built and pushed in step 1. The dockerfiles come from [indimail-src](https://hub.docker.com/repository/docker/cprogrammer/indimail-src). [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/build-bin-from-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/build-bin-from-src.yml)
 
 tag|OS Distribution|indimai-mta|indimail|webmail
 ----|--------------|-----------|--------|-------
