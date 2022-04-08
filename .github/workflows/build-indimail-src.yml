@@ -1,8 +1,8 @@
-# This script builds intermediate image from indimail-docker/indimail-src
-# the images are common for both indimail and indimail-mta
-# the images have all packages required by indimail, indimail-mta installed and compiled
-# using these images instead of the base images reduces build times
-# the images built here are used by build-bin-from-src.yml to build final runtime images
+# This script builds intermediate image from indimail-docker/indimail-src.
+# The images are common for both indimail and indimail-mta.
+# The images have all packages required by indimail, indimail-mta compiled and installed.
+# Using these images instead of the base images reduces build times.
+# The images built here are used by build-bin-from-src.yml to build final runtime images.
 name: build-indimail-src push script
 
 on:
