@@ -62,7 +62,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		ircube \
 	&& update-alternatives --config mta \
 	&& a2enmod proxy_fcgi setenvif \
-	&& a2enconf php7.4-fpm \
+	&& a2enconf php8.1-fpm \
 	&& systemctl enable apache2 \
 	&& wget -nv \
 		https://github.com/roundcube/roundcubemail/releases/download/1.4.11/roundcubemail-1.4.11-complete.tar.gz \
