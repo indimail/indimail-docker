@@ -43,6 +43,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		./configure --prefix=/usr; make && make install; \
 		cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		git clone git://linux-nfs.org/~steved/libtirpc; \
 		# courier-imap-x #######################################
 		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
 		./default.configure; \
@@ -52,5 +53,10 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		# bogofilter-wordlist ##################################
 		cd ../bogofilter-wordlist-x; \
 		./default.configure; \
+		# libtirpc
+		cd ../../libtirpc; \
+		./bootstrap; \
+		./configure --prefix=/usr; \
+		make; make install-strip; \
 		) 2>&1 | tee -a /tmp/build.log \
 	&& echo "Build Completed" 
