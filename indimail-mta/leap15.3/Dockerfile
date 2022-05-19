@@ -27,7 +27,7 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		patch \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.3/home:mbhangui.repo \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Leap_15.3/server:database.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/15.3/server:database.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail-mta \
