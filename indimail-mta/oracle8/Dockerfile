@@ -10,7 +10,7 @@ RUN export HOSTNAME=indimail.org \
 		drpm \
 	&& dnf -y update \
 	&& dnf -y module disable mysql \
-	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \
+	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 	&& dnf -y install \
 		gnupg2 \
 		binutils \
