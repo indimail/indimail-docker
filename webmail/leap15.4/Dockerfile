@@ -30,7 +30,7 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/server:database/15.4/server:database.repo \
 	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:monitoring/openSUSE_Leap_15.4/server:monitoring.repo \
+		https://download.opensuse.org/repositories/server:monitoring/15.4/server:monitoring.repo \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/server:php:applications/openSUSE_Leap_15.4/server:php:applications.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
