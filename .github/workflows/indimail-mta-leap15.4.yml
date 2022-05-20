@@ -1,0 +1,33 @@
+name: indimail-mta:leap15.4 container image
+
+on:
+  push:
+    paths:
+      - '**/indimail-mta/leap15.4/**'
+      - .github/workflows/indimail-mta-leap15.4.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          cp indimail-mta/leap15.4/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:leap15.4" .
+
+      - name: push
+        run: |
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:leap15.4"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:leap15.4" docker.io/cprogrammer/indimail-mta:leap15.4
+          docker push docker.io/cprogrammer/indimail-mta:leap15.4
