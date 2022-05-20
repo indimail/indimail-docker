@@ -1,7 +1,7 @@
-# docker build -f dockerfile.centos7 -t cprogrammer/indimail-web:centos8
-FROM centos:8
+# docker build -f dockerfile.stream8 -t cprogrammer/indimail-web:stream8
+FROM tgagor/centos:stream8
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:centos8
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:stream8
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
@@ -10,7 +10,7 @@ RUN export HOSTNAME=indimail.org \
 		'dnf-command(config-manager)' \
 		epel-release \
 		http://rpms.remirepo.net/enterprise/remi-release-8.rpm \
-		https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \
+		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 		dnf-utils \
 		drpm \
 	&& dnf -y module reset php \

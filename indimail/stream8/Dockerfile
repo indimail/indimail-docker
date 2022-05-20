@@ -1,7 +1,7 @@
-# docker build -f dockerfile.centos8 -t cprogrammer/indimail:centos8
-FROM centos:8
+# docker build -f dockerfile.stream8 -t cprogrammer/indimail:stream8
+FROM tgagor/centos:stream8
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:centos8
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:stream8
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
@@ -13,7 +13,7 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y update \
 	&& dnf config-manager --set-enabled powertools \
 	&& dnf -y module disable mysql \
-	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm \
+	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 	&& dnf -y install \
 		gnupg2 \
 		binutils \
