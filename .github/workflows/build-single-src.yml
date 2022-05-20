@@ -1,0 +1,40 @@
+# This script builds final runtime image from indimail-docker/indimail, indimail-docker/indimail-mta
+# The buildtime is high because it does few things
+# Download base contianer
+# install devel and lib packages for indimail, indimail-mta
+# (on gentoo, each and every package is built and compiled from
+# source. The MySQL, cmake packages contribute to the max build time)
+# build indimail, indimail-mta
+name: buildall-src push script
+
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      srcName:
+        # Friendly description to be shown in the UI instead of 'name'
+        source Name: 'src name'
+        # Input has to be provided for the workflow to run
+        required: true
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          if [ -f indimail-src/"${{ github.event.inputs.srcName }}".src ] ; then
+            echo "Using indimail-src/"${{ github.event.inputs.srcName }}".src for build" 
+            cp indimail-src/"${{ github.event.inputs.srcName }}".src Dockerfile
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+            echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+            docker build --tag "docker.io/cprogrammer/indimail-src:$i" .
+            docker push docker.io/cprogrammer/indimail-src:$i
+            /bin/rm -f Dockerfile
+          else
+            echo "indimail-src/"${{ github.event.inputs.srcName }}".src not found" 
+          fi
