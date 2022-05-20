@@ -5,7 +5,7 @@
 # (on gentoo, each and every package is built and compiled from
 # source. The MySQL, cmake packages contribute to the max build time)
 # build indimail, indimail-mta
-name: buildall-src push script
+name: build-single-src push script
 
 on:
   workflow_dispatch:
