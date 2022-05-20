@@ -32,7 +32,7 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/server:monitoring/15.4/server:monitoring.repo \
 	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:php:applications/openSUSE_Leap_15.4/server:php:applications.repo \
+		https://download.opensuse.org/repositories/server:php:applications/15.4/server:php:applications.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& sed -i -e 's{rpm.install.excludedocs = yes{rpm.install.excludedocs = no{' /etc/zypp/zypp.conf \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
