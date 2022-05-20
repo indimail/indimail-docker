@@ -1,0 +1,44 @@
+# docker build -f dockerfile.stream9 -t cprogrammer/indimail-src:stream9
+FROM quay.io/centos/centos:stream9 
+MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:stream9
+
+RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& mkdir -p /root /usr/local/srctmp \
+	&& dnf install 'dnf-command(config-manager)' \
+	&& dnf config-manager --set-enabled crb \
+	&& dnf -y install \
+		https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
+		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
+		mysql-community-server mysql-devel gettext-devel \
+		openssl-devel openldap-devel ncurses-devel gd-devel pcre-devel \
+		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
+		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
+		file sed wget bzip2 \
+	&& (set -e; \
+		cd /usr/local/srctmp; \
+		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg-2.17.10.tar.gz \
+			-O /usr/local/srctmp/mrtg-2.17.10.tar.gz; \
+		tar xf mrtg-2.17.10.tar.gz; \
+		cd mrtg-2.17.10; \
+		./configure --prefix=/usr; make && make install; \
+		cd /usr/local/srctmp; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		git clone git://linux-nfs.org/~steved/libtirpc; \
+		# courier-imap-x #######################################
+		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
+		./default.configure; \
+		# fetchmail ############################################
+		cd ../fetchmail-x; \
+		./default.configure; \
+		# bogofilter-wordlist ##################################
+		cd ../bogofilter-wordlist-x; \
+		./default.configure; \
+		# libtirpc
+		cd ../../libtirpc; \
+		./bootstrap; \
+		./configure --prefix=/usr; \
+		make; make install-strip; \
+		) 2>&1 | tee -a /tmp/build.log \
+	&& echo "Build Completed" 
