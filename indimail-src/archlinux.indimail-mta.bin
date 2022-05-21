@@ -1,7 +1,7 @@
-# docker build -f dockerfile.archlinux -t cprogrammer/indimail:archlinux
+# docker build -f dockerfile.archlinux -t cprogrammer/indimail-mta:archlinux
 FROM cprogrammer/indimail-src:archlinux
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:archlinux
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:archlinux
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
@@ -147,4 +147,4 @@ COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /roo
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["indimail"]
+CMD ["indimail-mta"]

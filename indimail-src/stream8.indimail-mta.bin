@@ -1,7 +1,7 @@
-# docker build -f dockerfile.stream8 -t cprogrammer/indimail:stream8
+# docker build -f dockerfile.stream8 -t cprogrammer/indimail-mta:stream8
 FROM cprogrammer/indimail-src:stream8
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:stream8
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:stream8
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
@@ -127,4 +127,4 @@ COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /roo
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["indimail"]
+CMD ["indimail-mta"]

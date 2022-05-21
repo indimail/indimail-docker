@@ -1,7 +1,7 @@
-# docker build -f dockerfile.gentoo -t cprogrammer/indimail:gentoo
+# docker build -f dockerfile.gentoo -t cprogrammer/indimail-mta:gentoo
 FROM cprogrammer/indimail-src:gentoo
 MAINTAINER cprogrammer 0 B
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:gentoo
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:gentoo
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
@@ -120,4 +120,4 @@ RUN export HOSTNAME=indimail.org \
 	&&  echo "Build Completed"
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["indimail"] 227 MB FROM localhost/indimail-src:gentoo
+CMD ["indimail-mta"]

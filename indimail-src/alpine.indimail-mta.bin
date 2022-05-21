@@ -1,7 +1,7 @@
-# docker build -f dockerfile.alpine -t cprogrammer/indimail:alpine
+# docker build -f dockerfile.alpine -t cprogrammer/indimail-mta:alpine
 FROM cprogrammer/indimail-src:alpine
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:alpine
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:alpine
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
@@ -145,7 +145,7 @@ RUN export HOSTNAME=indimail.org \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 		/lib/security/pam-multi.a \
-	&& apk del gcc g++ make git autoconf automake libtool mrtg \
+	&& apk del gcc g++ make git autoconf automake libtool \
 		openssl-dev fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
 		pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
 		libev-dev libsodium-dev m4 \
@@ -153,4 +153,4 @@ RUN export HOSTNAME=indimail.org \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["indimail"]
+CMD ["indimail-mta"]
