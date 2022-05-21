@@ -116,7 +116,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make install-strip; \
 		cd ..; ./dnssvc; \
 		) 2>&1 | tee -a /tmp/build.log \
-	&& dnf -y install mailx \
+	&& dnf -y install s-nail \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
 		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
