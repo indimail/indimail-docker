@@ -46,8 +46,8 @@ bionic|Ubuntu 18.04|[![ghcr build status](https://github.com/mbhangui/docker/act
 focal|Ubuntu 20.04|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-focal.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-focal.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-focal.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-focal.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-focal.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-focal.yml)
 hirsute|Ubuntu 21.04|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-hirsute.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-hirsute.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-hirsute.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-hirsute.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-hirsute.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-hirsute.yml)
 jammy|Ubuntu 22.04|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-jammy.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-jammy.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-jammy.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-jammy.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-jammy.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-jammy.yml)
-centos7|CentOS 7|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos7.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos7.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-centos7.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-centos7.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-centos7.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-centos7.yml)
-centos8|CentOS 8|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-centos8.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-centos8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-centos8.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-centos8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-centos8.yml)
+stream8|CentOS Stream 8|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-stream8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-stream8.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-stream8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-stream8.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-stream8.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-stream8.yml)
+stream9|CentOS Stream 9|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-stream9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-stream9.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-stream9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-stream9.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-stream9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-stream9.yml)
 debian9|Debian 9|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian9.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-debian9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-debian9.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-debian9.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-debian9.yml)
 debian10|Debian10|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian10.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian10.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-debian10.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-debian10.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-debian10.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-debian10.yml)
 debian11|Debian11|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian11.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-mta-debian11.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-debian11.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-debian11.yml)|[![ghcr build status](https://github.com/mbhangui/docker/actions/workflows/indimail-web-debian11.yml/badge.svg)](https://github.com/mbhangui/docker/actions/workflows/indimail-web-debian11.yml)
@@ -77,8 +77,8 @@ archlinux|Arch Linux|[![ghcr build status](https://github.com/mbhangui/docker/ac
 Let's say you want to use the **indimail** image and CentOS8
 
 ```
-$ podman pull ghcr.io/mbhangui/indimail:centos8
-Trying to pull ghcr.io/mbhangui/indimail:centos8...
+$ podman pull ghcr.io/mbhangui/indimail:stream8
+Trying to pull ghcr.io/mbhangui/indimail:stream8...
 Getting image source signatures
 Copying blob 6910e5a164f7 skipped: already exists  
 Copying blob 9c29f394b0db done  
@@ -95,8 +95,7 @@ You can list the image using the `podman images` command
 ```
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
-ghcr.io/mbhangui/indimail        centos8      e543dee69ab7   38 hours ago   1.03 GB
-ghcr.io/mbhangui/indimail        centos7      fba3b42e0164   5 hours ago    2.9 GB
+ghcr.io/mbhangui/indimail        stream8      e543dee69ab7   38 hours ago   1.03 GB
 ghcr.io/mbhangui/indimail        fc33         a5266643441b   4 days ago     1.13 GB
 ```
 
@@ -133,7 +132,7 @@ You can combine the pull and run in a single command. Below are 3 use cases of i
    $ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
       --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
       -d --rm -h indimail.org --name indimail \
-      cprogrammer/indimail:centos8 /usr/lib/systemd/systemd
+      cprogrammer/indimail:stream8 /usr/lib/systemd/systemd
 
    Connect to the container
    ------------------------
@@ -142,7 +141,7 @@ You can combine the pull and run in a single command. Below are 3 use cases of i
 
 2) Run the container with just indimail with a controlling terminal and bash shell
    $ podman run -it --rm -h indimail.org --name indimail \
-     ghcr.io/mbhangui/indimail:centos8 bash
+     ghcr.io/mbhangui/indimail:stream8 bash
 
    start indimail
    --------------
@@ -154,7 +153,7 @@ You can combine the pull and run in a single command. Below are 3 use cases of i
    see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn
 
    $ podman run -d --rm -h indimail.org --name indimail \
-     ghcr.io/mbhangui/indimail:centos8
+     ghcr.io/mbhangui/indimail:stream8
 
    indimail.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
    root           1       0  0 17:23 ?        00:00:00 /usr/sbin/svscan /service
@@ -317,7 +316,7 @@ $ podman run -d -h indimail.org \
 ```
 $ podman ps
 CONTAINER ID  IMAGE                                   COMMAND   CREATED             STATUS                 PORTS  NAMES
-0deab2154ef8  ghcr.io/mbhangui/indimail:centos8  indimail  About a minute ago  Up About a minute ago         indimail
+0deab2154ef8  ghcr.io/mbhangui/indimail:stream8  indimail  About a minute ago  Up About a minute ago         indimail
 ```
 
 ### Execute an interactive shell in the container
@@ -704,8 +703,7 @@ Storing signatures
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
 localhost/mycontainer            latest       7bcf4b2ff83e   53 seconds ago   1.16 GB
-ghcr.io/mbhangui/indimail        centos8      e543dee69ab7   39 hours ago     1.03 GB
-ghcr.io/mbhangui/indimail        centos7      fba3b42e0164   5 hours ago      2.9 GB
+ghcr.io/mbhangui/indimail        stream8      e543dee69ab7   39 hours ago     1.03 GB
 ghcr.io/mbhangui/indimail        fc31         a5266643441b   4 days ago       1.13 GB
 ```
 
@@ -815,8 +813,7 @@ You can use the docker images or podman images command to list the container ima
 
 $ podman images
 REPOSITORY                                 TAG         IMAGE ID      CREATED         SIZE
-ghcr.io/mbhangui/indimail                  centos7     c2399eaad8d9  24 minutes ago  3.42 GB
-ghcr.io/mbhangui/indimail-mta              centos8     108c6e83242e  2 hours ago     717 MB
+ghcr.io/mbhangui/indimail-mta              stream8     108c6e83242e  2 hours ago     717 MB
 ghcr.io/mbhangui/indimail-mta              hirsute     bf58434c3a76  3 hours ago     347 MB
 ghcr.io/mbhangui/indimail                  alpine      62f9d0d95427  15 hours ago    468 MB
 localhost/indimail                         alpine      62f9d0d95427  15 hours ago    468 MB
@@ -842,13 +839,10 @@ docker.io/library/debian                   8           3aaeab7a4777  4 months ag
 k8s.gcr.io/pause                           3.5         ed210e3e4a5b  4 months ago    690 kB
 registry.opensuse.org/opensuse/tumbleweed  latest      cdd77ba4b087  4 months ago    94.7 MB
 docker.io/library/oraclelinux              8           f4a1f2c861ca  6 months ago    436 MB
-docker.io/library/centos                   8           300e315adb2f  7 months ago    217 MB
 docker.io/library/ubuntu                   focal       f643c72bc252  8 months ago    75.3 MB
 docker.io/library/ubuntu                   bionic      2c047404e52d  8 months ago    65.6 MB
 docker.io/library/fedora                   33          b3048463dcef  8 months ago    181 MB
 docker.io/opensuse/tumbleweed              latest      2eac6045a15c  8 months ago    93.4 MB
-docker.io/library/centos                   7           7e6257c9f8d8  11 months ago   211 MB
-docker.io/library/centos                   6           d0957ffdf8a2  2 years ago     202 MB
 ```
 
 ## NOTE
