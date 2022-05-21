@@ -19,10 +19,10 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
-		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg-2.17.10.tar.gz \
-			-O /usr/local/srctmp/mrtg-2.17.10.tar.gz; \
-		tar xf mrtg-2.17.10.tar.gz; \
-		cd mrtg-2.17.10; \
+		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
+			-O /usr/local/srctmp/mrtg.tar.gz; \
+		tar xf mrtg.tar.gz && /bin/rm -f mrtg.tar.gz; \
+		cd mrtg-*; \
 		./configure --prefix=/usr; make && make install; \
 		cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
