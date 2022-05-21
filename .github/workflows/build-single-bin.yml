@@ -26,8 +26,9 @@ jobs:
             cp indimail-src/"${{ github.event.inputs.binName }}".bin Dockerfile
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
             echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
-            docker build --tag "docker.io/cprogrammer/indimail-src:${{ github.event.inputs.binName }}" .
-            docker push docker.io/cprogrammer/indimail-src:${{ github.event.inputs.binName }}
+            tag_prefix=$(echo ${{ github.event.inputs.binName }}|cut -d. -f2)
+            docker build --tag "docker.io/cprogrammer/$tag_prefix:${{ github.event.inputs.binName }}" .
+            docker push docker.io/cprogrammer/$tag_prefix:${{ github.event.inputs.binName }}
             /bin/rm -f Dockerfile
           else
             echo "indimail-src/"${{ github.event.inputs.binName }}".bin not found" 
