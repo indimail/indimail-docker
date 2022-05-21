@@ -8,10 +8,6 @@ RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root /usr/local/srctmp \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/OpenRC/openrc.git; \
 		# openrc #############################################
 		cd /usr/local/srctmp/openrc; \
 		make && make install; \

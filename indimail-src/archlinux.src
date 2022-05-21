@@ -20,6 +20,11 @@ RUN mkdir -p /root /usr/local/srctmp \
 		cd mrtg-*; \
 		./configure --prefix=/usr; make && make install; \
 		cd /usr/local/srctmp; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/OpenRC/openrc.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
 		# courier-imap #########################################
 		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \

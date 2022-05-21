@@ -8,11 +8,6 @@ RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root /usr/local/srctmp \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/OpenRC/openrc.git; \
 		# mrtg ###############################################
 		cd /usr/local/srctmp/mrtg-2.17.7; \
 		make && make install; \
