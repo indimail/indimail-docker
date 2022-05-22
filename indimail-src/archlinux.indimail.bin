@@ -155,7 +155,7 @@ RUN export HOSTNAME=indimail.org \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 	&& pacman -Rnss --noconfirm gcc autoconf automake make git \
-	&& /bin/rm -rf /run || true \
+	&& /bin/rm -rf /run/* || true \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]

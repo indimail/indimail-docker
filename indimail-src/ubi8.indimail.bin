@@ -143,7 +143,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 	&& dnf -y erase gcc autoconf automake make git \
 		xmlto docbook-dtds sgml-common docbook-style-xsl \
-	&& /bin/rm -rf /run || true \
+	&& /bin/rm -rf /run/* || true \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
