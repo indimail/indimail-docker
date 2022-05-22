@@ -10,9 +10,11 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd /usr/local/srctmp; \
 		# mrtg ###############################################
 		cd /usr/local/srctmp/mrtg-2.17.10; \
+		git pull; \
 		make && make install; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
+		git pull; \
 		./default.configure; \
 		make -s && make -s install-strip; \
 		# libdkim ##############################################
@@ -96,6 +98,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
+		git pull; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/ -g//' conf-cc; \

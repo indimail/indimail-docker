@@ -16,10 +16,12 @@ RUN export HOSTNAME=indimail.org \
 		make && make install; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
+		git pull; \
 		./default.configure; \
 		make -s && make -s install-strip; \
 		# libdkim ##############################################
 		cd /usr/local/srctmp/indimail-mta/libdkim-x; \
+		git pull; \
 		./default.configure; \
 		make -s && make -s install-strip; \
 		# libsrs2 ##############################################
@@ -52,6 +54,7 @@ RUN export HOSTNAME=indimail.org \
 			--common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
 		# ezmlm-idx ############################################
 		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
+		git pull; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/^cc/cc -s/' conf-ldso; \
 		sed -i 's/ -g//' conf-cc; \
@@ -106,6 +109,7 @@ RUN export HOSTNAME=indimail.org \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
+		git pull; \
 		./default.configure; \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/ -g//' conf-cc; \
