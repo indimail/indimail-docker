@@ -1,0 +1,33 @@
+name: indimail-mta:archlinux container image
+
+on:
+  push:
+    paths:
+      - '**/indimail-src/archlinux.indimail-mta.bin'
+      - .github/workflows/indimail-mta-alpine.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          cp indimail-src/archlinux.indimail-mta.bin Dockerfile
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:archlinux" .
+
+      - name: push
+        run: |
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:archlinux"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:archlinux" docker.io/cprogrammer/indimail-mta:archlinux
+          docker push docker.io/cprogrammer/indimail-mta:archlinux
