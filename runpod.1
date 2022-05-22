@@ -14,6 +14,7 @@ Use this option to specify image id
 \fB\-\-name\fR=\fIname\fR
 Use this option to specify name for the running image. \fIname\fR has
 special significance if name is either of indimail, indimail-mta, webmail
+which causes following ports to be mapped
 
 .EX
 2025 -> 25, 2106 -> 106, 2110 -> 110  2143 -> 143, 2209 -> 209,
@@ -22,8 +23,8 @@ special significance if name is either of indimail, indimail-mta, webmail
 8080 -> 80
 .EE
 
-If the \fIname\fR is test or svscan, the command that will be excuted will
-be bash.
+If the \fIname\fR is test or svscan, the command that will be executed will
+be bash. If the \fIname\fR is svscan, entrypoint will be executed
 
 .TP
 \fB\-\-capability\fR=\fIcap\fI
