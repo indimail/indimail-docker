@@ -12,7 +12,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
 		mysql-community-server mysql-devel gettext-devel \
-		openssl-devel openldap-devel ncurses-devel gd-devel pcre-devel \
+		openssl-devel openldap-devel ncurses-devel gd-devel pcre-devel pcre2-devel \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
 		file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \

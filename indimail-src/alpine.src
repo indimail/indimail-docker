@@ -13,9 +13,9 @@ RUN mkdir -p /root /usr/local/srctmp \
 		apk-tools-doc openrc-doc dcron-doc inetutils-syslogd-doc \
 		openssl openssl-dev fts fts-dev mariadb-connector-c mysql-dev \
 		musl-nscd musl-nscd-dev libidn libidn-dev libidn2 libidn2-dev \
-		pcre pcre-dev libtirpc libtirpc-dev ncurses-libs ncurses-dev \
-		linux-pam linux-pam-dev gdbm gdbm-dev db db-dev gsl gsl-dev \
-		libev libev-dev libsodium libsodium-dev \
+		pcre pcre-dev pcre2-dev libtirpc libtirpc-dev ncurses-libs \
+		ncurses-dev linux-pam linux-pam-dev gdbm gdbm-dev db db-dev \
+		gsl gsl-dev libev libev-dev libsodium libsodium-dev \
 		mysql mysql-client mrtg \
 	&& (cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \

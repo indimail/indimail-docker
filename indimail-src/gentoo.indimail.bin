@@ -57,7 +57,7 @@ RUN export HOSTNAME=indimail.org \
 		./default.configure; make &&  make install-strip; \
 		# courier-imap #########################################
 		cd ../courier-imap-x; \
-		./default.configure; make &&  make install-strip; \
+		./default.configure --force; make &&  make install-strip; \
 		# fetchmail ############################################
 		cd ../fetchmail-x; \
 		./default.configure; make &&  make install-strip; \

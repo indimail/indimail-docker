@@ -15,10 +15,11 @@ RUN mkdir -p /root /usr/local/srctmp \
 	&& emerge -a --ask n net-analyzer/mrtg \
 	&& emerge -a --ask n sys-process/cronie sys-process/lsof \
 	&& emerge -a --ask n app-admin/rsyslog \
-	&& emerge -a --ask n dev-libs/libev dev-libs/libsodium \
+	&& emerge -a --ask n dev-libs/libev dev-libs/libsodium dev-libs/libpcre2 \
 	&& emerge -a --ask n sys-libs/gdbm sys-libs/pam sys-libs/db sys-libs/ncurses \
 	&& emerge -a --ask n net-libs/libtirpc \
 	&& emerge -a --ask n sci-libs/gsl \
+	&& emerge -a --ask n sys-devel/gettext \
 	&& emerge -a --ask n ssh mail-client/mailx dev-util/strace \
 	&& emerge -a --ask n app-editors/vim \
 	&& (cd /usr/local/srctmp; \
@@ -29,7 +30,9 @@ RUN mkdir -p /root /usr/local/srctmp \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
 		# courier-imap #########################################
 		cd indimail-virtualdomains/courier-imap-x; \
-		./default.configure; \
+		cp /bin/true /usr/bin/qmail-inject; \
+		./default.configure --force; \
+		/bin/rm -f /usr/bin/qmail-inject; \
 		# fetchmail ############################################
 		cd ../fetchmail-x; \
 		./default.configure; \

@@ -31,8 +31,8 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		http://repo.okay.com.mx/centos/8/x86_64/release/docbook-style-xsl-1.79.2-8.el8.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
 		mysql-community-server mysql-devel \
-		openssl-devel openldap-devel ncurses-devel gd-devel libidn-devel pcre-devel libsodium-devel \
-		libdb-devel pam-devel \
+		openssl-devel openldap-devel ncurses-devel gd-devel libidn-devel pcre-devel pcre2-devel \
+		libsodium-devel libdb-devel pam-devel \
 		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
 		file sed wget bzip2 \
 	&& (set -e; \
