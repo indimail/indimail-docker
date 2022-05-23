@@ -18,7 +18,7 @@ RUN mkdir -p /root /usr/local/srctmp \
 	&& emerge -a --ask n dev-libs/libev dev-libs/libsodium \
 	&& emerge -a --ask n sys-libs/gdbm sys-libs/pam sys-libs/db sys-libs/ncurses \
 	&& emerge -a --ask n net-libs/libtirpc \
-	&& emerge -a --ask n ski-libs/gsl \
+	&& emerge -a --ask n sci-libs/gsl \
 	&& emerge -a --ask n ssh mail-client/mailx dev-util/strace \
 	&& emerge -a --ask n app-editors/vim \
 	&& (cd /usr/local/srctmp; \
