@@ -1,0 +1,25 @@
+name: indimail-src:gentoo container image
+
+on:
+  push:
+    paths:
+      - '**/indimail-src/gentoo.src'
+      - .github/workflows/src-gentoo.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: build
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+          cp indimail-src/gentoo.src Dockerfile
+          docker build --tag docker.io/cprogrammer/indimail-src:gentoo .
+          docker push docker.io/cprogrammer/indimail-src:gentoo
