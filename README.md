@@ -1,3 +1,5 @@
+[![Matrix](https://img.shields.io/matrix/indimail:matrix.org.svg)](https://matrix.to/#/#indimail:matrix.org)
+
 # Dockerfile repository for automated builds.
 
 This repo contains repository for Dockerfiles used for building docker/podman images for [indimail-mta](https://github.com/mbhangui/indimail-mta), [indimail](https://github.com/mbhangui/indimail-virtualdomains) and [indimail](https://github.com/mbhangui/indimail-virtualdomains) with [roundcube](https://roundcube.net/) web frontend. Read this document on how to run a fully functional mail server using docker / podman images. In just less than an hour, you will read how to run an indimail container and the bonus will be that you will understand how docker and podman works. The correct way to read this document is to read from top to bottom without clicking on any URL. You may click the URL for more information, but there is a chance that you will get distracted / overwhelmed.
@@ -875,7 +877,7 @@ On openSUSE
 
 ## IRC / Matrix
 
-![Matrix](https://img.shields.io/matrix/indimail:matrix.org)
+[![Matrix](https://img.shields.io/matrix/indimail:matrix.org.svg)](https://matrix.to/#/#indimail:matrix.org)
 
 * [Matrix Invite Link #indimail:matrix.org](https://matrix.to/#/#indimail:matrix.org)
 * IndiMail has an [IRC channel on libera](https://libera.chat/) #indimail-mta
