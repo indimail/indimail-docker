@@ -17,7 +17,7 @@ RUN mkdir -p /root /usr/local/srctmp \
 			sys-process/cronie sys-process/lsof app-admin/rsyslog dev-libs/libev \
 			dev-libs/libsodium dev-libs/libpcre2 sys-libs/gdbm sys-libs/pam sys-libs/db \
 			sys-libs/ncurses net-libs/libtirpc sci-libs/gsl mail-client/mailx dev-util/strace \
-			app-editors/vim; \
+			app-editors/vim net-misc/telnet-bsd; \
 		do \
 				grep -w $i /tmp/qlist.txt >/dev/null 2>&1; \
 				if [ $? -eq 0 ] ; then \
