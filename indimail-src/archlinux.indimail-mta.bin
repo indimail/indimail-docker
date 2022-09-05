@@ -8,6 +8,9 @@ RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root /usr/local/srctmp \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
+		# mrtg ###############################################
+		cd /usr/local/srctmp/mrtg-*; \
+		make && make install; \
 		# openrc #############################################
 		cd /usr/local/srctmp/openrc; \
 		make && make install; \

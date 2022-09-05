@@ -9,7 +9,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		# mrtg ###############################################
-		cd /usr/local/srctmp/mrtg-2.17.10; \
+		cd /usr/local/srctmp/mrtg-*; \
 		make && make install; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
