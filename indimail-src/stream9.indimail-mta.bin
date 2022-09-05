@@ -55,43 +55,56 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		./default.configure; make && make install-includeHEADERS && make install-libindimailLTLIBRARIES; \
 		# pam-multi ############################################
 		cd /usr/local/srctmp/indimail-virtualdomains/pam-multi-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# nssd #################################################
 		cd ../nssd-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# courier-imap #########################################
 		cd ../courier-imap-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# fetchmail ############################################
 		cd ../fetchmail-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# logalert #############################################
 		cd ../logalert-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# procmail #############################################
 		cd ../procmail-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# mpack ################################################
 		cd ../mpack-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# flash ################################################
 		cd ../flash-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# alertime #############################################
 		cd ../altermime-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# ripmime ##############################################
 		cd ../ripmime-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# fortune ##############################################
 		cd ../fortune-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# indimail-spamfilter ##################################
 		cd ../indimail-spamfilter-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# bogofilter-wordlist ##################################
 		cd ../bogofilter-wordlist-x; \
-		./default.configure; make && make install-strip; \
+		./default.configure; \
+		make && make install-strip; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot; \
