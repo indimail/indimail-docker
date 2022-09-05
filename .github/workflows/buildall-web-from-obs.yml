@@ -21,8 +21,8 @@ jobs:
 
       - name: build
         run: |
-          for i in almalinux8 bionic debian9 debian10 debian11 focal \
-          jammy oracle8 fc36 leap15.3 leap15.4 tumbleweed
+          for i in centos7 almalinux8 bionic debian9 debian10 debian11 focal \
+          jammy oracle8 fc36 leap15.3 leap15.4 tumbleweed rockylinux8
           do
             echo "Using webmail/$i/Dockerfile for build"
             cp webmail/$i/Dockerfile .
