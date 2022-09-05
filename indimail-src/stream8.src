@@ -15,8 +15,8 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		mysql-community-server mysql-devel gettext-devel \
 		openssl-devel openldap-devel ncurses-devel gd-devel pcre-devel pcre2-devel \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
-		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
-		file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
+		libgsasl-devel diffutils coreutils which chkconfig procps psmisc flex \
+		less cronie xmlto file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
