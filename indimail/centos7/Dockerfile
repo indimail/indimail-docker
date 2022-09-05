@@ -34,8 +34,8 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		perl \
 	&& wget https://download.opensuse.org/repositories/home:mbhangui/CentOS_7/home:mbhangui.repo -O /etc/yum.repos.d/indimail.repo \
-	&& wget https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm \
-	&& rpm -ivh mysql80-community-release-el7-3.noarch.rpm \
+	&& wget https://dev.mysql.com/get/mysql80-community-release-el7-7.noarch.rpm \
+	&& rpm -ivh mysql80-community-release-el7-7.noarch.rpm \
 	&& yum -y install \
 		mysql-community-server \
 		mysql-community-client \
