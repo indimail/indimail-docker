@@ -1,6 +1,6 @@
 #!/bin/sh
-if [ $(basename $PWD) != "indimail-src" ] ; then
-	echo "Not in indimail-src" 1>&2
+if [ $(basename $PWD) != "scripts" ] ; then
+	echo "Not in scripts" 1>&2
 	exit 1
 fi
 cd ..

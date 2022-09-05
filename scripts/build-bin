@@ -1,21 +1,23 @@
 #!/bin/sh
-if [ $(basename $PWD) != "indimail-src" ] ; then
-	echo "Not in indimail-src" 1>&2
+if [ $(basename $PWD) != "scripts" ] ; then
+	echo "Not in scripts" 1>&2
 	exit 1
 fi
 cd ..
-for i in `ls indimail-src/*.bin`
+for i in `ls scripts/*.bin`
 do
-	echo -n "$i: Continue (Y/N) - "
+	tag=$(basename $i | cut -d. -f1)
+	pkg=$(basename $i | cut -d. -f2)
+	echo -n "$i: $pkg/$tag: Continue (Y/N) - "
 	read key
 	if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
 		continue
 	fi
 	cp $i ./Dockerfile
-	tag=$(basename $i | cut -d. -f1)
-	pkg=$(basename $i | cut -d. -f2)
 	echo "Building cprogrammer/$pkg:$tag"
-	docker build -t cprogrammer/$pkg:$tag .
+	docker build --tag "ghcr.io/$github_owner/$pkg:$tag" .
+	docker push "ghcr.io/$github_owner/$pkg:$tag"
+	docker image tag "ghcr.io/$github_owner/$pkg:$tag" docker.io/cprogrammer/$pkg:$tag
 	docker push cprogrammer/$pkg:$tag
 	/bin/rm -f Dockerfile
 done

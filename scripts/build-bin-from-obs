@@ -8,7 +8,7 @@ github_owner=mbhangui
 if [ $# -gt 0 ] ; then
 	distro_list=$*
 else
-	distro_list="almalinux8 bionic stream8 stream9 debian9 debian10 debian11 \
+	distro_list="almalinux8 bionic centos7 debian9 debian10 debian11 \
 		focal hirsute jammy oracle8 fc36 leap15.3 leap15.4 \
 		tumbleweed rockylinux8"
 fi
@@ -20,12 +20,18 @@ do
 			echo "$j/$i/Dockerfile: No such file or directory"
 			continue
 		fi
+		echo -n "$i/$j: Continue (Y/N) - "
+		read key
+		if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
+			continue
+		fi
 		echo "Using $j/$i/Dockerfile for build"
 		cp $j/$i/Dockerfile .
 		docker build --tag "ghcr.io/$github_owner/$j:$i" .
 		docker push "ghcr.io/$github_owner/$j:$i"
 		docker image tag "ghcr.io/$github_owner/$j:$i" docker.io/cprogrammer/$j:$i
 		docker push docker.io/cprogrammer/$j:$i
+		/bin/rm -f Dockerfile
 	done
 done
 
