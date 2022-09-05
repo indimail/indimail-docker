@@ -32,7 +32,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
 		mysql-community-server mysql-devel \
 		openssl-devel openldap-devel ncurses-devel gd-devel libidn-devel pcre-devel pcre2-devel \
-		libsodium-devel libdb-devel pam-devel \
+		libsodium-devel libdb-devel pam-devel libgsasl-devel \
 		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
 		file sed wget bzip2 \
 	&& (set -e; \

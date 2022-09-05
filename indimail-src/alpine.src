@@ -16,7 +16,7 @@ RUN mkdir -p /root /usr/local/srctmp \
 		pcre pcre-dev pcre2-dev libtirpc libtirpc-dev ncurses-libs \
 		ncurses-dev linux-pam linux-pam-dev gdbm gdbm-dev db db-dev \
 		gsl gsl-dev libev libev-dev libsodium libsodium-dev \
-		mysql mysql-client mrtg \
+		libgsasl-dev mysql mysql-client mrtg \
 	&& (cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
