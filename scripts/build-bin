@@ -4,7 +4,8 @@ if [ $(basename $PWD) != "scripts" ] ; then
 	exit 1
 fi
 cd ..
-for i in `ls scripts/*.bin`
+github_owner=mbhangui
+for i in `ls indimail-src/*.bin`
 do
 	tag=$(basename $i | cut -d. -f1)
 	pkg=$(basename $i | cut -d. -f2)
