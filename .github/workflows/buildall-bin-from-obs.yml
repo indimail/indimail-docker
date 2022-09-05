@@ -21,8 +21,8 @@ jobs:
 
       - name: build
         run: |
-          for i in almalinux8 bionic stream8 stream9 debian9 debian10 debian11 \
-            focal hirsute jammy oracle8 fc36 fc35 leap15.2 leap15.3 tumbleweed
+          for i in almalinux8 bionic debian9 debian10 debian11 focal \
+          jammy oracle8 fc36 leap15.3 leap15.4 tumbleweed
           do
             for j in indimail indimail-mta
             do
