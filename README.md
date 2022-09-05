@@ -1,3 +1,25 @@
+Table of Contents
+=================
+
+   * [Dockerfile repository for automated builds.](#dockerfile-repository-for-automated-builds)
+         * [Start the podman container](#start-the-podman-container)
+         * [Creating podman volumes](#creating-podman-volumes)
+         * [Query the id of the container](#query-the-id-of-the-container)
+         * [Execute an interactive shell in the container](#execute-an-interactive-shell-in-the-container)
+         * [Get processlist in the container](#get-processlist-in-the-container)
+         * [Stop the container](#stop-the-container)
+         * [Clear the stopped container image](#clear-the-stopped-container-image)
+      * [github respository for Dockerfile](#github-respository-for-dockerfile)
+         * [Building container images](#building-container-images)
+      * [NOTE](#note)
+   * [Build Scripts](#build-scripts)
+   * [SUPPORT INFORMATION](#support-information)
+      * [IRC / Matrix](#irc--matrix)
+      * [Mailing list](#mailing-list)
+      * [References](#references)
+
+Created by [gh-md-toc](https://github.com/ekalinin/github-markdown-toc)
+
 [![Matrix](https://img.shields.io/matrix/indimail:matrix.org.svg)](https://matrix.to/#/#indimail:matrix.org)
 
 # Dockerfile repository for automated builds.
@@ -872,6 +894,25 @@ On Fedora/CentOS/Oracle Linux
 On openSUSE
 # zypper install man man-pages
 ```
+
+# Build Scripts
+
+This repository also has build scripts that help in generating docker/podman images. These are the main scripts for building docker/podman images for indimail, indimail-mta, indimail-web. They build and push the images to [hub.docker.com](https://hub.docker.com/u/cprogrammer)
+
+The recommended steps are
+1. run buildall-bin-from-src when indimail, indimail-mta sources are updated or when a new distribution is added
+2. run buildall-src-image occasionaly. This will build intermediate base images having development and other packages needed to build the indimail, indimail-mta packages. This is done only for alpine archlinux gentoo ubi8 centos-stream8 centos-stream9. Once you have the intermediate base images you can run buildall-bin-from-src as and when indimail, indimail-mta sources are updated.
+3. Instead of <b>2.</b> above, You can run buildall-bin-direct which builds deployable images in a single step. But this will build the intermediate base image for alpine, archlinux, gentoo and ubi8 everytime you need to build indimail, indimail-mta
+
+Name|Purpuse
+----|-------
+[buildall-bin-from-obs.yml](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-obs.yml)|Build deployable indimail/indimail-mta docker/podman images by installing rpm/deb from open build service. This excludes alpine archlinux gentoo ubi8 centos8-stream centos9-stream
+[buildall-web-from-obs.yml](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-web-from-obs.yml)|Build deployable webmail docker images. This excludes alpine archlinux gentoo ubi8 centos8-stream centos9-stream
+[build-single-src.yml](https://github.com/mbhangui/indimail-docker/actions/workflows/build-single-src.yml)|Requires Dockerfile ending with .src extension in indimail-src directory. Builds an intermediate base images for a single distribution from github sources. This can be used by build-single-bin-from-src to reduce build times. This will have all base packages built and installed. This should be used once in a while to keep upto date with the base OS.
+[build-single-bin.yml](https://github.com/mbhangui/indimail-docker/actions/workflows/build-single-bin.yml)|Requires Dockerfile ending with .bin extension in indimail-src directory. Builds deployable images for a single distribution. This requires source docker image to be pre-built.
+[buildall-src-image.yml](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-src-image.yml)|Build intermediate base images for alpine, archlinux, gentoo, ubi8, centos8-stream, centos9-stream from github sources. This can be used by buildall-bin-from-src to reduce build times. This has high build times as packages (all for gentoo) are downloaded and built from source. This has all base packages built and installed. This should be used once in a while to keep upto date with the base OS.
+[buildall-bin-from-src.yml](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-src.yml)|Build deployable indimail/indimail-mta images for alpine, archlinux, gentoo, ubi8, centos8-stream, centos9-stream using images from buildall-src-image.yml. This builds only the indimail, indimail-mta packages. The base packages were already built by buildall-src-image.yml. This should be used as and when indimail-mta, indimail-mta sources are modified.
+[buildall-bin-direct.yml](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-direct.yml)|Build deployable indimail/indimail-mta docker/podman images for alpine, archlinux, gentoo, ubi8, centos8-stream, centos9-stream from github sources, without using the intermediate base src image. This has very high build times as many packages (all for gentoo) are downloaded and built from source. This builds all base packages and indimail, indimail-mta packages from source. This shouldn't be used often. The time to complete this script will be more than using `buildall-src-image` and `buildall-bin-from-src` scripts.
 
 # SUPPORT INFORMATION
 
