@@ -10,7 +10,7 @@ RUN mkdir -p /root /usr/local/srctmp \
 	&& pacman -S  --noconfirm --needed base-devel git diffutils coreutils \
 		openssl openssh openldap mysql libidn2 wget gd man-db man-pages \
 		binutils cronie net-tools strace lsof vim syslog-ng logrotate \
-		inetutils libidn libev libsodium gsasl \
+		inetutils libidn libev libsodium libgcrypt \
 	&& pacman -S  --noconfirm --refresh --sysupgrade \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
@@ -26,6 +26,11 @@ RUN mkdir -p /root /usr/local/srctmp \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/OpenRC/openrc.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		# gsasl
+		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
+		tar xf gsasl-2.2.0.tar.gz; \
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		# courier-imap #########################################
 		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
 		./default.configure; \

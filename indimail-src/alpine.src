@@ -6,23 +6,29 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:a
 RUN mkdir -p /root /usr/local/srctmp \
 	&& apk -U upgrade \
 	&& apk add bash gcc g++ make git autoconf automake libtool m4 sed \
-		pkgconfig openrc mailx busybox-extras vim lsof strace \
+		pkgconfig openrc mailx busybox-extras vim lsof strace gettext \
 		mandoc man-pages mandoc-apropos dcron dcron-openrc \
 		inetutils-syslogd inetutils-syslogd-openrc util-linux \
 		openssh openssh-server openssh-server-common xmlto tzdata \
 		apk-tools-doc openrc-doc dcron-doc inetutils-syslogd-doc \
 		openssl openssl-dev fts fts-dev mariadb-connector-c mysql-dev \
 		musl-nscd musl-nscd-dev libidn libidn-dev libidn2 libidn2-dev \
+		libgcrypt-dev gnutls-dev gnutls krb5-dev \
 		pcre pcre-dev pcre2-dev libtirpc libtirpc-dev ncurses-libs \
 		ncurses-dev linux-pam linux-pam-dev gdbm gdbm-dev db db-dev \
 		gsl gsl-dev libev libev-dev libsodium libsodium-dev \
-		libgsasl-dev mysql mysql-client mrtg \
+		mysql mysql-client mrtg libgcrypt krb5-libs \
 	&& (cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		# gsasl
+		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
+		tar xf gsasl-2.2.0.tar.gz; \
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		# courier-imap #########################################
 		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
 		./default.configure; \

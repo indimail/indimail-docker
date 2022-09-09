@@ -30,9 +30,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		https://vault.centos.org/centos/8/AppStream/x86_64/os/Packages/telnet-0.17-76.el8.x86_64.rpm \
 		http://repo.okay.com.mx/centos/8/x86_64/release/docbook-style-xsl-1.79.2-8.el8.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
-		mysql-community-server mysql-devel \
+		mysql-community-server mysql-devel pkgconf \
 		openssl-devel openldap-devel ncurses-devel gd-devel libidn-devel pcre-devel pcre2-devel \
-		libsodium-devel libdb-devel pam-devel libgsasl-devel \
+		libsodium-devel libdb-devel pam-devel libgcrypt-devel \
 		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
 		file sed wget bzip2 \
 	&& (set -e; \
@@ -49,6 +49,11 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
 		git clone git://linux-nfs.org/~steved/libtirpc; \
+		# gsasl
+		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
+		tar xf gsasl-2.2.0.tar.gz; \
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		# courier-imap-x #######################################
 		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
 		./default.configure; \

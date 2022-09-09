@@ -12,10 +12,10 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
 		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
-		mysql-community-server mysql-devel gettext-devel \
+		mysql-community-server mysql-devel gettext-devel libgcrypt-devel pkgconf \
 		openssl-devel openldap-devel ncurses-devel gd-devel pcre-devel pcre2-devel \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
-		libgsasl-devel diffutils coreutils which chkconfig procps psmisc flex \
+		krb5-devel diffutils coreutils which chkconfig procps psmisc flex \
 		less cronie xmlto file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
@@ -31,6 +31,11 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
 		git clone git://linux-nfs.org/~steved/libtirpc; \
+		# gsasl
+		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
+		tar xf gsasl-2.2.0.tar.gz; \
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		# courier-imap-x #######################################
 		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
 		./default.configure; \
