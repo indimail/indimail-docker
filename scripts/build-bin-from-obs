@@ -8,8 +8,8 @@ github_owner=mbhangui
 if [ $# -gt 0 ] ; then
 	distro_list=$*
 else
-	distro_list="almalinux8 bionic centos7 debian9 debian10 debian11 \
-		focal hirsute jammy oracle8 fc36 leap15.3 leap15.4 \
+	distro_list="almalinux8 centos7 debian11 \
+		bionic focal jammy oracle8 fc36 leap15.3 leap15.4 \
 		tumbleweed rockylinux8"
 fi
 for i in $distro_list
