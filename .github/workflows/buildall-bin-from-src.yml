@@ -2,7 +2,7 @@
 # the images are common for both indimail and indimail-mta
 # the images have all packages required by indimail, indimail-mta installed and compiled
 # using these images instead of the base images reduces build times
-name: build-bin-from-src push script
+name: buildall-bin-from-src push script
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
 
       - name: build
         run: |
-          for i in alpine archlinux gentoo ubi8
+          for i in alpine archlinux stream8 stream9 ubi8 gentoo
           do
             for j in indimail indimail-mta
             do
