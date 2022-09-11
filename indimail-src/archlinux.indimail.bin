@@ -5,12 +5,15 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:archl
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		# openrc #############################################
 		cd /usr/local/srctmp/openrc; \
 		make && make install; \
+		# gsasl ###############################################
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		make -s && make -s install-strip; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
 		git pull; \
@@ -48,7 +51,7 @@ RUN export HOSTNAME=indimail.org \
 		echo "Creating self-signed certificate"; \
 		/usr/sbin/svctool \
 			--config=cert --postmaster=postmaster@indimail.org \
-			--common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
+			--common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
 		# ezmlm-idx ############################################
 		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
 		git pull; \
@@ -144,7 +147,7 @@ RUN export HOSTNAME=indimail.org \
 		/sbin/rc-update add cronie indimail; \
 		/sbin/rc-update add syslog-ng indimail; \
 		/sbin/rc-update add sshd indimail; \
-		) 2>&1 | tee -a /tmp/build.log \
+		) 2>&1 | tee -a /var/log/build/build.bin.log \
 	&& pacman -S --needed --noconfirm mailx \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \

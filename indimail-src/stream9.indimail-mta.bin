@@ -5,12 +5,15 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:s
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		# mrtg ###############################################
 		cd /usr/local/srctmp/mrtg-*; \
 		make && make install; \
+		# gsasl ###############################################
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		make -s && make -s install-strip; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
 		git pull; \
@@ -48,7 +51,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		echo "Creating self-signed certificate"; \
 		/usr/sbin/svctool \
 			--config=cert --postmaster=postmaster@indimail.org \
-			--common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
+			--common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
 		# indimail-virtualdomains ##############################
 		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
 		git pull; \
@@ -128,7 +131,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		) 2>&1 | tee -a /tmp/build.log \
+		) 2>&1 | tee -a /var/log/build/build.bin.log \
 	&& dnf -y install s-nail \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
