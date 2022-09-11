@@ -3,7 +3,7 @@ From archlinux:latest
 MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:archlinux
 
-RUN mkdir -p /root /usr/local/srctmp \
+RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& sed -i 's{usr/share/man/\*{{g' /etc/pacman.conf \
 	&& pacman -Sy --noconfirm --needed \
 	&& pacman -S  --noconfirm --needed archlinux-keyring \
@@ -37,5 +37,5 @@ RUN mkdir -p /root /usr/local/srctmp \
 		# fetchmail ############################################
 		cd ../fetchmail-x; \
 		./default.configure; \
-		) 2>&1 | tee -a /tmp/build.log \
+		) 2>&1 | tee -a /var/log/build/build.log \
 	&& echo "Build Completed" 

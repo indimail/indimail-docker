@@ -4,7 +4,7 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:stream8
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager --set-enabled powertools \
 	&& dnf -y module disable mysql \
@@ -50,5 +50,5 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		./bootstrap; \
 		./configure --prefix=/usr; \
 		make; make install-strip; \
-		) 2>&1 | tee -a /tmp/build.log \
+		) 2>&1 | tee -a /var/log/build/build.log \
 	&& echo "Build Completed" 

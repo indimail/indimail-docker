@@ -3,7 +3,7 @@ From alpine:latest
 MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:alpine
 
-RUN mkdir -p /root /usr/local/srctmp \
+RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& apk -U upgrade \
 	&& apk add bash gcc g++ make git autoconf automake libtool m4 sed \
 		pkgconfig openrc mailx busybox-extras vim lsof strace gettext \
@@ -38,5 +38,5 @@ RUN mkdir -p /root /usr/local/srctmp \
 		# bogofilter-wordlist ##################################
 		cd ../bogofilter-wordlist-x; \
 		./default.configure; \
-		) 2>&1 | tee -a /tmp/build.log \
+		) 2>&1 | tee -a /var/log/build/build.log \
 	&& echo "Build Completed" 

@@ -6,7 +6,7 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:ubi8
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root /usr/local/srctmp \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& dnf config-manager --set-enabled ubi-8-baseos-source ubi-8-appstream-source \
 	&& dnf -y install \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
@@ -68,5 +68,5 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		./bootstrap; \
 		./configure --prefix=/usr; \
 		make; make install-strip; \
-		) 2>&1 | tee -a /tmp/build.log \
+		) 2>&1 | tee -a /var/log/build/build.log \
 	&& echo "Build Completed" 
