@@ -5,8 +5,18 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:g
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&&  mkdir -p /root /usr/local/srctmp \
-	&&  (cd /usr/local/srctmp; \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& cd /root \
+	&& emaint -ay sync > /var/log/build/emaint.bin.log \
+	&& rm -f /var/db/repos/gentoo/metadata/timestamp.x \
+	&& emerge-webrsync > /var/log/build/webrsync.bin.log \
+	&& emerge --update --newuse --deep --with-bdeps=y @world \
+	&& etc-update \
+	&& emerge --depclean \
+	&& (cd /usr/local/srctmp; \
+		# gsasl ###############################################
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		make -s && make -s install-strip; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail;  \
 		git pull; \
@@ -37,7 +47,7 @@ RUN export HOSTNAME=indimail.org \
 		sed -i 's/^cc/cc -s/' conf-ld; \
 		sed -i 's/ -g//' conf-cc; make &&  make install-strip; \
 		echo "Creating self-signed certificate"; \
-		/usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log; \
+		/usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
 		# indimail-virtualdomains ##############################
 		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
 		git pull; \
@@ -99,7 +109,7 @@ RUN export HOSTNAME=indimail.org \
 		echo "building curvedns"; \
 		./default.configure; \
 		make; make install-strip; \
-		cd ..; ./dnssvc; ) 2>&1 | tee -a /tmp/build.log \
+		cd ..; ./dnssvc; ) 2>&1 | tee -a /var/log/build/build.log \
 	&&  (sed -i 's/^tty/#tty/g' /etc/inittab; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runleves/sysinit /etc/runlevels/nonetwork \
 		/etc/runlevels/shutdown/mount-ro; \
