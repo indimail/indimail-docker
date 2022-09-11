@@ -3,20 +3,20 @@ From gentoo/stage3:latest
 MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:gentoo
 
-RUN mkdir -p /root /usr/local/srctmp \
+RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e;cd /usr/local/srctmp; \
 		echo "emaint -ay sync"; \
-		emaint -ay sync > emaint.log; \
+		emaint -ay sync > /var/log/build/emaint.log; \
 		echo "emerge-webrsync"; \
-		emerge-webrsync > webrsync.log; \
+		emerge-webrsync > /var/log/build/webrsync.log; \
 		echo "qlist -IRv"; \
 		qlist -IRv > qlist.txt; \
 		for i in dev-vcs/git dev-db/mysql openldap openrc openssh net-dns/libidn \
 			net-dns/libidn2 app-text/xmlto sys-apps/init-system-helpers net-analyzer/mrtg \
-			sys-process/cronie sys-process/lsof app-admin/rsyslog dev-libs/libev \
-			dev-libs/libsodium dev-libs/libpcre2 sys-libs/gdbm sys-libs/pam sys-libs/db \
-			sys-libs/ncurses net-libs/libtirpc sci-libs/gsl mail-client/mailx dev-util/strace \
-			app-editors/vim net-misc/telnet-bsd mit-krb5; \
+			app-portage/portage-utils sys-process/cronie sys-process/lsof app-admin/rsyslog \
+			dev-libs/libev dev-libs/libsodium dev-libs/libpcre2 sys-libs/gdbm sys-libs/pam \
+			sys-libs/db sys-libs/ncurses net-libs/libtirpc sci-libs/gsl mail-client/mailx \
+			dev-util/strace app-editors/vim net-misc/telnet-bsd mit-krb5; \
 		do \
 				grep -w $i /tmp/qlist.txt >/dev/null 2>&1; \
 				if [ $? -eq 0 ] ; then \
@@ -24,7 +24,7 @@ RUN mkdir -p /root /usr/local/srctmp \
 					continue; \
 				fi; \
 				echo "installing $i"; \
-				emerge -a --ask n $i > $(basename $i).log 2>&1; \
+				emerge -a --ask n $i > /var/log/build/$(basename $i).log 2>&1; \
 		done; \
 		echo "Cloning git repositories"; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
@@ -40,14 +40,14 @@ RUN mkdir -p /root /usr/local/srctmp \
 		# courier-imap #########################################
 		cd indimail-virtualdomains/courier-imap-x; \
 		cp /bin/true /usr/bin/qmail-inject; \
-		./default.configure --force > /usr/local/srctmp/courier-imap.log 2>&1; \
+		./default.configure --force > /var/log/build/courier-imap.log 2>&1; \
 		/bin/rm -f /usr/bin/qmail-inject; \
 		# fetchmail ############################################
 		cd ../fetchmail-x; \
-		./default.configure > /usr/local/srctmp/fetchmail.log 2>&1; \
+		./default.configure > /var/log/build/fetchmail.log 2>&1; \
 		# bogofilter-wordlist ##################################
 		cd ../bogofilter-wordlist-x; \
 		./default.configure > /usr/local/srctmp/bogofilter.log 2>&1; \
 		echo "Build Completed"; \
-		) 2>&1 | tee -a /tmp/build.log \
-	&& tail -n 1 /tmp/build.log
+		) 2>&1 | tee -a /var/log/build/build.log \
+	&& tail -n 1 /var/log/build/build.log
