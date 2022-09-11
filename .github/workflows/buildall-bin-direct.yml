@@ -25,7 +25,7 @@ jobs:
 
       - name: build
         run: |
-          for i in alpine archlinux gentoo stream9 ubi8
+          for i in alpine archlinux gentoo stream8 stream9 ubi8
           do
             for j in indimail indimail-mta
             do
