@@ -1,7 +1,7 @@
 # This script builds runtime images by installing packages required by indimail, indimail-mta
 # from open build service. This can be used only for distributions for which obs can be used
 # to build binary packages
-name: buildall-bin push script
+name: buildall-bin-from-obs push script
 
 on:
   workflow_dispatch:
