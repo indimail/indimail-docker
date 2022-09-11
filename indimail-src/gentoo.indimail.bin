@@ -7,12 +7,12 @@ RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& cd /root \
-	&& emaint -ay sync > /var/log/build/emaint.bin.log \
-	&& rm -f /var/db/repos/gentoo/metadata/timestamp.x \
-	&& emerge-webrsync > /var/log/build/webrsync.bin.log \
-	&& emerge --update --newuse --deep --with-bdeps=y @world \
-	&& etc-update \
-	&& emerge --depclean \
+	&& (emaint -ay sync; \
+		#rm -f /var/db/repos/gentoo/metadata/timestamp.x
+		emerge-webrsync; \
+		emerge --update --newuse --deep --with-bdeps=y @world; \
+		etc-update --automode -5; \
+		emerge --depclean;) 2>&1 | tee /var/log/build/refresh.log \
 	&& (cd /usr/local/srctmp; \
 		# gsasl ###############################################
 		cd /usr/local/srctmp/gsasl-2.2.0; \
