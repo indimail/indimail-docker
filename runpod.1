@@ -3,7 +3,27 @@
 runpod \- Run podman / docker image using podman / docker
 
 .SH SYNOPSIS
-\fBrunpod\fR [\fIOPTIONS\fR]
+\fBrunpod\fR [\fIOPTIONS\fR] \fIprog\fR \fIarg\fR \fIarg\fR ...
+
+.SH DESCRIPTION
+\fBrunpod\fR is a frontend for \fBpodman\fR(1) / \fBdocker\fR(1) to help
+execute indimail containers
+
+\fIprog\fR is usually the binary to be executed on startup. \fIprog\fR also
+can have a special meaning. if \fIprog\fR is indimail, indimail-mta,
+webmail, runpod will let the docker-entrypoint get executed. If \fIprog\fR
+is test or devel, runpod will run bash in the container with a tty. If this
+is not specified, systemd will be loaded for debian, ubuntu, fedora,
+centos, almalinux, oraclelinux, opensuse images. For alpine linux bash
+will be loaded with a controlling terminal. If systemd is empty, the
+default entry point for the container will be used. If \fIprog\fR is set as
+auto, then \fBrunpod\fR will instruct podman or docker to execute systemd
+if the image supports systemd or /sbin/init for alpine and gentoo images.
+
+If \fIprog\fR is not specified, then runpod will execute bash in the
+container if \fIname\fR is test or devel and execute the entrypoint for the
+container if \fIname\fR is svscan. See --name or -n option below for
+setting name.
 
 .SH OPTIONS
 .TP
@@ -11,7 +31,7 @@ runpod \- Run podman / docker image using podman / docker
 Use this option to specify image id
 
 .TP
-\fB\-\-name\fR=\fIname\fR
+\fB\-\-name\fR=\fIname\fR | -\fBn\fR \fIname\fR
 Use this option to specify name for the running image. \fIname\fR has
 special significance if name is either of indimail, indimail-mta, webmail
 which causes following ports to be mapped
@@ -23,36 +43,36 @@ which causes following ports to be mapped
 8080 -> 80
 .EE
 
-If the \fIname\fR is test or svscan, the command that will be executed will
-be bash. If the \fIname\fR is svscan, entrypoint will be executed
+\fIname\fR is what you see in the podman ps or the docker ps command.
 
 .TP
-\fB\-\-capability\fR=\fIcap\fI
+\fB\-\-capability\fR=\fIcap\fR | -\fBC\fR \fIcap\fR
 Use this option to add capabilities like SYS_PTRACE, SYS_ADMIN, IPC_LOCK,
-SYS_RESOURCE
+SYS_RESOURCE. You can specify this option multiple times.
 
 .TP
-\fB\-\-host\fR=\fIhost\fI
+\fB\-\-host\fR=\fIhost\fR | -\fBh\fR \fIhost\fR
 Specify hostname for the container.
 
 .TP
-\fB\-\-systemd\fR=\fIhost\fI
-Specify the binary to execute on startup. if \fIname\fR is indimail,
-indimail-mta, webmail, runpod will let the docker-entrypoint get executed.
-If the name test or devel, runpod will run bash in the container with a
-tty. If this is not specified, systemd will be loaded for
-debian, ubuntu, fedora, centos, almalinux, oraclelinux, opensuse images.
-For alpine linux bash will be loaded with a controlling terminal. If
-systemd is empty, the default entry point for the container will be used.
+\fB\-\-port\fR=\fIlport\fR:\fIrport\fR -\fBp\fR \fIlport\fR:\fIrport\fR
+Map local port \fIlport\fR to remote port \fIrport\fR in the container. You
+can specify this option multiple times.
 
 .TP
-\fB\-\-port\fR=\fIlport\fR:\fIrport\fR
-Map local port \fIlport\fR to remote port \fIrport\fR in the container
-
-.TP
-\fB\-\-command\fR=\fIdocker|podman\fI
+\fB\-\-command\fR=\fIdocker\fR|\fIpodman\fR | -\fBc\fR \fIdocker\fR|\fIpodman\fR
 Use docker or podoman to run the container. Default is podman
 
 .TP
-\fB\-\-volume\fR=\fIlocal_dir:remote_dir\fI
-mount \fIlocal_dir\fR as \fIremote_dir\fR in the container
+\fB\-\-volume\fR=\fIlocal_dir\fR:\fIremote_dir\fR | -\fBv\fR \fIlocal_dir\fR:\fIremote_dir\fR
+mount \fIlocal_dir\fR as \fIremote_dir\fR in the container. You can specify
+this option multiple times.
+
+.TP
+\fB\-\-cgroup\fR=\fIgroup\fR | -\fBg\fR \fIgroup\fR
+Specify \fIgroup\fR for cgroups. You can specify this option multiple
+times.
+
+.SH SEE ALSO
+docker(1),
+podman(1)
