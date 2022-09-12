@@ -267,5 +267,5 @@ if [ $? -eq 0 ] ; then
   fi
 else
   echo "Removing container id $name" 1>&2
-  podman rm $name
+  $command rm $name
 fi
