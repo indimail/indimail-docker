@@ -37,5 +37,8 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		# fetchmail ############################################
 		cd ../fetchmail-x; \
 		./default.configure; \
+		# bogofilter-wordlist ##################################
+		cd ../bogofilter-wordlist-x; \
+		./default.configure; \
 		) 2>&1 | tee -a /var/log/build/build.log \
 	&& echo "Build Completed" 
