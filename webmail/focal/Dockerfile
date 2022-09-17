@@ -66,13 +66,13 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& a2enconf php7.4-fpm \
 	&& systemctl enable apache2 \
 	&& wget -nv \
-		https://github.com/roundcube/roundcubemail/releases/download/1.4.11/roundcubemail-1.4.11-complete.tar.gz \
+		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
 		-O /root/Downloads/roundcubemail.tar.gz \
 	&& (cd /usr/share; \
 		tar xfz /root/Downloads/roundcubemail.tar.gz; \
-		mv roundcubemail/plugins/* roundcubemail-1.4.11/plugins; \
+		mv roundcubemail/plugins/* roundcubemail-1.6.0/plugins; \
 		/bin/rm -rf roundcubemail; \
-		mv roundcubemail-1.4.11 roundcubemail; \
+		mv roundcubemail-1.6.0 roundcubemail; \
 		chown -R root:root roundcubemail; \
 		chown www-data:www-data roundcubemail/temp roundcubemail/logs; \
 		cd roundcubemail; \

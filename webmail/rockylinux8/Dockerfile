@@ -75,7 +75,7 @@ RUN export HOSTNAME=indimail.org \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl enable httpd php-fpm \
 	&& wget -nv \
-		https://github.com/roundcube/roundcubemail/releases/download/1.4.11/roundcubemail-1.4.11-complete.tar.gz \
+		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
 		-O /root/Downloads/roundcubemail.tar.gz \
 	&& (sed -i \
 			-e 's}listen = 127.0.0.1:9000}listen = /run/php-fpm/www.sock}' \
@@ -85,9 +85,9 @@ RUN export HOSTNAME=indimail.org \
 			-e 's}^listen.acl_users.};&}' /etc/php-fpm.d/www.conf) \
 	&& (cd /usr/share; \
 		tar xfz /root/Downloads/roundcubemail.tar.gz; \
-		mv roundcubemail/plugins/* roundcubemail-1.4.11/plugins; \
+		mv roundcubemail/plugins/* roundcubemail-1.6.0/plugins; \
 		/bin/rm -rf roundcubemail; \
-		mv roundcubemail-1.4.11 roundcubemail; \
+		mv roundcubemail-1.6.0 roundcubemail; \
 		chown -R root:root roundcubemail; \
 		chown apache:apache roundcubemail/temp roundcubemail/logs; \
 		chmod 775 roundcubemail/temp roundcubemail/logs; \
