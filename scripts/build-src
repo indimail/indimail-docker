@@ -3,6 +3,7 @@ if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
 fi
+github_owner=mbhangui
 cd ..
 for i in `ls indimail-src/*.src`
 do
@@ -17,4 +18,11 @@ do
 	docker build -t cprogrammer/indimail-src:$tag .
 	docker push cprogrammer/indimail-src:$tag
 	/bin/rm -f Dockerfile
+	echo -n "$i: Push src to ghcr.io (Y/N) - "
+	read key
+	if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
+		continue
+	fi
+	docker image tag docker.io/cprogrammer/indimail-src:$tag "ghcr.io/$github_owner/indimail-src:$tag"
+	docker push "ghcr.io/$github_owner/indimail-src:$tag"
 done
