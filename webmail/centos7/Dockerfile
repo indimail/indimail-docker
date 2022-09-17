@@ -9,7 +9,7 @@ RUN export HOSTNAME=indimail.org \
 	&& yum -y install \
 		epel-release \
 		http://rpms.remirepo.net/enterprise/remi-release-7.rpm \
-		https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm \
+		https://dev.mysql.com/get/mysql80-community-release-el7-7.noarch.rpm \
 		yum-utils \
 		deltarpm \
 	&& yum-config-manager --enable remi-php74 \
