@@ -41,7 +41,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		ezmlm-idx-mysql \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
 	&& apt-get -y install \
-		mailutils \
+		mailutils libgsasl7 \
 		apache2 \
 		php \
 		php-mysql \
