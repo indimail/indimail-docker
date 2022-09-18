@@ -1,0 +1,216 @@
+# docker build -f dockerfile.stream9 -t cprogrammer/indimail:stream9
+FROM cprogrammer/indimail-src:stream9
+MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:stream9
+
+RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& dnf -y install \
+		'dnf-command(config-manager)' \
+		http://rpms.remirepo.net/enterprise/remi-release-9.rpm \
+	&& dnf -y module reset php \
+	&& dnf -y module enable php:remi-8.1 \
+	&& dnf -y update \
+	&& dnf -y install \
+		binutils \
+		gnupg2 \
+		hostname \
+		man-db \
+		man-pages \
+		mrtg \
+		net-tools \
+		openssl \
+		openssh-clients \
+		rsync \
+		systemd \
+		telnet \
+		vim \
+		strace \
+		lsof \
+		perl \
+		httpd \
+		mod_ssl \
+		php \
+		php-fpm \
+		php-mysqlnd \
+		php-imagick \
+		php-mcrypt \
+		php-mbstring \
+		php-xml \
+		php-xmlrpc \
+		php-gd \
+		php-intl \
+		php-json \
+		php-zip \
+		php-cli \
+	&& (set -e; \
+		cd /usr/local/srctmp; \
+		# gsasl ###############################################
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		make -s && make -s install-strip; \
+		# libqmail #############################################
+		cd /usr/local/srctmp/libqmail; \
+		git pull; \
+		./default.configure; \
+		make -s && make -s install-strip; \
+		# libdkim ##############################################
+		cd /usr/local/srctmp/indimail-mta/libdkim-x; \
+		git pull; \
+		./default.configure; \
+		make -s && make -s install-strip; \
+		# libsrs2 ##############################################
+		cd /usr/local/srctmp/indimail-mta/libsrs2-x; \
+		./default.configure; \
+		make -s && make -s install-strip; \
+		# indimail-mta #########################################
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make; \
+		./svctool --config=users; \
+		make install-strip; \
+		# daemontools ##########################################
+		cd ../daemontools-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make && make install-strip; \
+		# ucspi-tcp ############################################
+		cd ../ucspi-tcp-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make && make install-strip; \
+		echo "Creating self-signed certificate"; \
+		/usr/sbin/svctool \
+			--config=cert --postmaster=postmaster@indimail.org \
+			--common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
+		# ezmlm-idx ############################################
+		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
+		git pull; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/^cc/cc -s/' conf-ldso; \
+		sed -i 's/ -g//' conf-cc; \
+		./default.configure; \
+		make && make install; \
+		# indimail-virtualdomains ##############################
+		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
+		git pull; \
+		./default.configure; \
+		make && make install-strip \
+		# pam-multi ############################################
+		cd /usr/local/srctmp/indimail-virtualdomains/pam-multi-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# nssd #################################################
+		cd ../nssd-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# courier-imap #########################################
+		cd ../courier-imap-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# fetchmail ############################################
+		cd ../fetchmail-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# logalert #############################################
+		cd ../logalert-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# procmail #############################################
+		cd ../procmail-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# mpack ################################################
+		cd ../mpack-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# flash ################################################
+		cd ../flash-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# altermime #############################################
+		cd ../altermime-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# ripmime ##############################################
+		cd ../ripmime-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# fortune ##############################################
+		cd ../fortune-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# indimail-spamfilter ##################################
+		cd ../indimail-spamfilter-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# bogofilter-wordlist ##################################
+		cd ../bogofilter-wordlist-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# iwebadmin ############################################
+		cd ../iwebadmin-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# ircube ###############################################
+		cd ../ircube-x; \
+		./default.configure; \
+		make && make install-strip; \
+		# configure indimail-mta ###############################
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
+		# tinydnssec ###########################################
+		echo "building tinydnssec"; \
+		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
+		git pull; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make; \
+		/usr/bin/core_perl/pod2man -s 8 -c '' "tinydns-sign" >tinydns-sign.8; \
+		make install-strip; \
+		echo "building dq"; \
+		cd dq-20161210; \
+		make; \
+		sh make-install.sh; \
+		cd ../curvedns-0.88; \
+		echo "building curvedns"; \
+		./default.configure; \
+		make; \
+		make install-strip; \
+		cd ..; ./dnssvc; \
+		) 2>&1 | tee -a /var/log/build/build.bin.log \
+	&& systemctl enable httpd php-fpm \
+	&& (cd /usr/share; \
+		tar xfz /usr/local/srctmp/roundcubemail.tar.gz; \
+		mv roundcubemail/plugins/* roundcubemail-1.6.0/plugins; \
+		/bin/rm -rf roundcubemail; \
+		mv roundcubemail-1.6.0 roundcubemail; \
+		chown -R root:root roundcubemail; \
+		chown www-data:www-data roundcubemail/temp roundcubemail/logs; \
+		cd roundcubemail; \
+		chmod 775 logs temp; \
+		mv config /etc/roundcubemail; \
+		ln -s /etc/roundcubemail config; \
+		systemctl disable mysqld 2>/dev/null; \
+		/usr/libexec/indimail/roundcube_config) >/tmp/roundcube.log 2>&1 \
+	&& cat /tmp/roundcube.log \
+	&& dnf -y install \
+		s-nail \
+	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
+		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
+		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
+		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
+		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
+	&& dnf -y erase gcc autoconf automake make git \
+		xmlto docbook-dtds sgml-common docbook-style-xsl \
+	&& /bin/rm -rf /run/* || true \
+	&& echo "Build Completed" 
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+VOLUME ["/sys/fs/cgroup"]
+VOLUME ["/run"]
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["indimail"]
