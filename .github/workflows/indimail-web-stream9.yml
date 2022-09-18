@@ -30,4 +30,4 @@ jobs:
         run: |
           docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9"
           docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9" docker.io/cprogrammer/indimail-web:stream9
-          docker push docker.io/cprogrammer/indimail:stream9
+          docker push docker.io/cprogrammer/indimail-web:stream9
