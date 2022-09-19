@@ -18,16 +18,17 @@ jobs:
 
       - name: login
         run: |
-          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
-          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+          echo "${{ secrets.GHCR_TOKEN }}" | podman login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | podman login docker.io --username cprogrammer --password-stdin
 
       - name: build
         run: |
+          sudo apt-get install podman
           cp indimail-src/stream9.webmail.bin Dockerfile
-          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9" .
+          podman build --cap-add SYS_NICE --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9" .
 
       - name: push
         run: |
-          docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9"
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9" docker.io/cprogrammer/indimail-web:stream9
-          docker push docker.io/cprogrammer/indimail-web:stream9
+          podman push "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9"
+          podman image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9" docker.io/cprogrammer/indimail-web:stream9
+          podman push docker.io/cprogrammer/indimail-web:stream9
