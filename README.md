@@ -83,8 +83,8 @@ rockylinux8|Rocky Linux 8|[![ghcr build status](https://github.com/mbhangui/dock
 **Runtime Container images built from Source**
 
 Distributions like alpine, gentoo, archlinux and ubi8 are not supported on the [Open Build Service](https://build.opensuse.org). The runtime images are built using Dockerfiles that pull the source from github, compile and install them. See this [Section](#build-scripts) for more details. To reduce the build time, these are built in two steps.
-1. Build an intermediate image with all source packages installed in the image. The base image comes from the OS distribution images. This image takes very long to build (2.5 hours for gentoo) and is refreshed on a need basis. The dockerfiles used have .src extension in [indimail-src](https://hub.docker.com/repository/docker/cprogrammer/indimail-src). [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-src.yml) directory. [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-src-image.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-src-image.yml) directory.
-2. Build the final image by pulling the base images built and pushed above in step 1. The dockerfiles used have .bin extension in [indimail-src](https://hub.docker.com/repository/docker/cprogrammer/indimail-src). [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-src.yml) directory.
+1. Build an intermediate image with all source packages installed in the image. The base image comes from the OS distribution images. This image takes very long to build (2.5 hours for gentoo) and is refreshed on a need basis. The dockerfiles used have .src extension in [indimail-src](https://hub.docker.com/repository/docker/cprogrammer/indimail-src) directory. [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-src-image.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-src-image.yml) directory.
+2. Build the final image by pulling the base images built and pushed above in step 1. The dockerfiles used have .bin extension in [indimail-src](https://hub.docker.com/repository/docker/cprogrammer/indimail-src) directory. [![status](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-src.yml/badge.svg)](https://github.com/mbhangui/indimail-docker/actions/workflows/buildall-bin-from-src.yml).
 
 tag|OS Distribution|indimai-mta|indimail|webmail|source
 ----|--------------|-----------|--------|-------|-------
@@ -899,8 +899,8 @@ This repository also has build scripts that help in generating docker/podman ima
 
 The recommended steps are
 1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, jammy, focal, bionic, centos7, debian10, debian11, fc36, leap15.3, leap15.4, oracle8, rockylinux8, tumbleweed.
-1. run buildall-bin-from-src when indimail, indimail-mta sources are updated or when a new distribution is added
-2. run buildall-src-image occasionaly. This will build intermediate base images having development and other packages needed to build the indimail, indimail-mta packages. This is done only for alpine, archlinux, gentoo, ubi8, centos-stream8, centos-stream9. Once you have the intermediate base images you can run buildall-bin-from-src as and when indimail, indimail-mta sources are updated.
+2. run buildall-bin-from-src when indimail, indimail-mta sources are updated or when a new distribution is added
+3. run buildall-src-image occasionaly. This will build intermediate base images having development and other packages needed to build the indimail, indimail-mta packages. This is done only for alpine, archlinux, gentoo, ubi8, centos-stream8, centos-stream9. Once you have the intermediate base images you can run buildall-bin-from-src as and when indimail, indimail-mta sources are updated.
 
 Name|Purpose|Status
 ----|-------|------
