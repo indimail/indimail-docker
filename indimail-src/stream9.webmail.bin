@@ -98,7 +98,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
 		git pull; \
 		./default.configure; \
-		make && make install-strip \
+		make && make install-strip; \
 		# pam-multi ############################################
 		cd /usr/local/srctmp/indimail-virtualdomains/pam-multi-x; \
 		./default.configure; \
@@ -190,7 +190,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		/bin/rm -rf roundcubemail; \
 		mv roundcubemail-1.6.0 roundcubemail; \
 		chown -R root:root roundcubemail; \
-		chown www-data:www-data roundcubemail/temp roundcubemail/logs; \
+		chown apache:apache roundcubemail/temp roundcubemail/logs; \
 		cd roundcubemail; \
 		chmod 775 logs temp; \
 		mv config /etc/roundcubemail; \
