@@ -46,6 +46,12 @@ RUN export HOSTNAME=indimail.org \
 		-O /etc/yum.repos.d/indimail.repo \
 	&& yum -y install \
 		indimail \
+		indimail-mta \
+		indimail-access \
+		indimail-auth \
+		indimail-utils \
+		indimail-spamfilter \
+		bogofilter-wordlist \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \

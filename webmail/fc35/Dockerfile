@@ -36,6 +36,12 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		deltarpm \
 		indimail \
+		indimail-mta \
+		indimail-access \
+		indimail-auth \
+		indimail-utils \
+		indimail-spamfilter \
+		bogofilter-wordlist \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \

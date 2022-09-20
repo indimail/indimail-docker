@@ -37,6 +37,12 @@ RUN export HOSTNAME=indimail.org \
 	&& sed -i -e 's{rpm.install.excludedocs = yes{rpm.install.excludedocs = no{' /etc/zypp/zypp.conf \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail \
+		indimail-mta \
+		indimail-access \
+		indimail-auth \
+		indimail-utils \
+		indimail-spamfilter \
+		bogofilter-wordlist \
 		mrtg \
 		ezmlm-idx \
 		ezmlm-idx-cgi \

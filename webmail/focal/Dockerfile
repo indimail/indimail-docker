@@ -38,6 +38,12 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		vim \
 		mrtg \
 		indimail \
+		indimail-mta \
+		indimail-access \
+		indimail-auth \
+		indimail-utils \
+		indimail-spamfilter \
+		bogofilter-wordlist \
 		iwebadmin \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
