@@ -1,0 +1,34 @@
+# this script builds runtime images for indimail with iwebadmin and roundcube mail
+# this script uses Dockerfile which install packages required by indimail, indimail-mta from
+# open build service
+name: buildall-web push script
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          for i in indimail-src/*.webmail.bin
+          do
+            name=$(basename $i |cut -d. -f1)
+            echo "Building web container for $name"
+            cp $i Dockerfile
+            docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" .
+            /bin/rm -f Dockerfile
+            docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:$name"
+            docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" docker.io/cprogrammer/indimail-web:$name
+            docker push docker.io/cprogrammer/indimail-web:$name
+          done
