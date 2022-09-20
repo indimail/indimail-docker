@@ -12,21 +12,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& dnf -y module enable php:remi-8.1 \
 	&& dnf -y update \
 	&& dnf -y install \
-		binutils \
-		gnupg2 \
-		hostname \
-		man-db \
-		man-pages \
-		mrtg \
-		net-tools \
-		openssl \
-		openssh-clients \
-		rsync \
-		systemd \
-		telnet \
-		vim \
-		strace \
-		lsof \
 		perl \
 		httpd \
 		mod_ssl \

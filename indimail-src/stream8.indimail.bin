@@ -139,6 +139,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		cd ..; ./dnssvc; \
 		) 2>&1 | tee -a /var/log/build/build.bin.log \
 	&& dnf -y install mailx \
+		syslog-ng \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
 		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \

@@ -122,7 +122,6 @@ RUN export HOSTNAME=indimail.org \
 		rc-update add rsyslog indimail; \
 		rc-update add sshd indimail; \
 		sed -i '/imklog/ s/^#*/#/' /etc/rsyslog.conf) \
-	&& emerge --deselect --ask n net-analyzer/mrtg \
 	&& emerge --deselect --ask n app-text/xmlto \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 	   /usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \

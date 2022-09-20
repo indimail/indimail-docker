@@ -8,9 +8,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
-		# mrtg ###############################################
-		cd /usr/local/srctmp/mrtg-2.17.10; \
-		make && make install; \
 		# gsasl ###############################################
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		make -s && make -s install-strip; \

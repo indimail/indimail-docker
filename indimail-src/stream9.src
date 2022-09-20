@@ -18,6 +18,8 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 		krb5-devel diffutils coreutils which chkconfig procps psmisc flex \
 		less cronie xmlto file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
+		binutils gnupg2 hostname man-db man-pages net-tools openssl openssh-clients  \
+		rsync systemd telnet vim strace lsof syslog-ng mrtg \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
