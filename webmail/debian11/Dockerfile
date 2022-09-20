@@ -34,16 +34,17 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		vim \
 		mrtg \
 		indimail \
+		bogofilter-wordlist \
 		indimail-mta \
 		indimail-access \
 		indimail-auth \
 		indimail-utils \
-		indimail-spamfilter \
-		bogofilter-wordlist \
 		iwebadmin \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+	&& apt-get -y install \
+		indimail-spamfilter \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
 	&& apt-get -y install \
 		s-nail \
