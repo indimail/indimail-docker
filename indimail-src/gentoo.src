@@ -36,7 +36,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
 		tar xf gsasl-2.2.0.tar.gz; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
-		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
+		./configure --prefix=/usr --libdir=/usr/lib64 --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		echo "Build Completed"; \
 		) 2>&1 | tee -a /var/log/build/build.log \
 	&& tail -n 1 /var/log/build/build.log
