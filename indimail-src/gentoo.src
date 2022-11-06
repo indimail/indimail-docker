@@ -37,17 +37,6 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		tar xf gsasl-2.2.0.tar.gz; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
-		# courier-imap #########################################
-		cd ../indimail-virtualdomains/courier-imap-x; \
-		cp /bin/true /usr/bin/qmail-inject; \
-		./default.configure --force > /var/log/build/courier-imap.log 2>&1; \
-		/bin/rm -f /usr/bin/qmail-inject; \
-		# fetchmail ############################################
-		cd ../fetchmail-x; \
-		./default.configure > /var/log/build/fetchmail.log 2>&1; \
-		# bogofilter-wordlist ##################################
-		cd ../bogofilter-wordlist-x; \
-		./default.configure > /var/log/build/bogofilter-wordlist.log 2>&1; \
 		echo "Build Completed"; \
 		) 2>&1 | tee -a /var/log/build/build.log \
 	&& tail -n 1 /var/log/build/build.log

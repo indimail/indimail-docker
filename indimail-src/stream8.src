@@ -32,15 +32,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		tar xf gsasl-2.2.0.tar.gz; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
-		# courier-imap-x #######################################
-		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
-		./default.configure; \
-		# fetchmail ############################################
-		cd ../fetchmail-x; \
-		./default.configure; \
-		# bogofilter-wordlist ##################################
-		cd ../bogofilter-wordlist-x; \
-		./default.configure; \
 		# libtirpc
 		cd ../../libtirpc; \
 		./bootstrap; \

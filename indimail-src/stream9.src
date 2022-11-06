@@ -38,15 +38,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		wget -nv \
 		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
 		-O roundcubemail.tar.gz; \
-		# courier-imap-x #######################################
-		cd /usr/local/srctmp/indimail-virtualdomains/courier-imap-x; \
-		./default.configure; \
-		# fetchmail ############################################
-		cd ../fetchmail-x; \
-		./default.configure; \
-		# bogofilter-wordlist ##################################
-		cd ../bogofilter-wordlist-x; \
-		./default.configure; \
 		# libtirpc
 		cd ../../libtirpc; \
 		./bootstrap; \
