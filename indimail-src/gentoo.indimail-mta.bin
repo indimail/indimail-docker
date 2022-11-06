@@ -127,7 +127,9 @@ RUN export HOSTNAME=indimail.org \
 	   /usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
 	   /usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 	   /usr/lib/libindimail.a /usr/lib/libcourier-unicode.a /usr/lib/libdkim.a \
+	   /usr/lib64/libltdl.la /usr/lib64/libgsasl.la /usr/lib64/libgsasl.la \
 	   /usr/lib/libsrs2.a /lib/security/pam-multi.la \
+	&& /sbin/ldconfig \
 	&& /bin/rm -rf /run/* || true \
 	&&  echo "Build Completed"
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
