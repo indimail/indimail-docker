@@ -11,7 +11,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		emerge-webrsync > /var/log/build/webrsync.log; \
 		echo "qlist -IRv"; \
 		qlist -IRv > qlist.txt; \
-		for i in dev-vcs/git dev-db/mysql openldap openrc openssh net-dns/libidn \
+		for i in dev-vcs/git dev-db/mysql openldap openrc openssh net-dns/libidn patch \
 			net-dns/libidn2 app-text/xmlto sys-apps/init-system-helpers net-analyzer/mrtg \
 			app-portage/portage-utils sys-process/cronie sys-process/lsof app-admin/rsyslog \
 			dev-libs/libev dev-libs/libsodium dev-libs/libpcre2 sys-libs/gdbm sys-libs/pam \
@@ -32,9 +32,12 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git;  \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git;  \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-docker.git; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
 		tar xf gsasl-2.2.0.tar.gz; \
+		/bin/rm -f gsasl-2.2.0.tar.gz; \
+		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --libdir=/usr/lib64 --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		echo "Build Completed"; \

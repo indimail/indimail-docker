@@ -1,0 +1,14 @@
+diff -Naur gsasl-2.2.0.orig/src/callbacks.c gsasl-2.2.0/src/callbacks.c
+--- gsasl-2.2.0.orig/src/callbacks.c	2022-08-20 19:23:21.000000000 +0530
++++ gsasl-2.2.0/src/callbacks.c	2022-11-02 00:04:51.079193609 +0530
+@@ -199,6 +199,10 @@
+       break;
+ 
+     case GSASL_SCRAM_SALTED_PASSWORD:
++      if (args_info.password_arg == NULL)
++	args_info.password_arg = readutf8pass ("Enter Hex salted password: ");
++
++      rc = gsasl_property_set (sctx, GSASL_SCRAM_SALTED_PASSWORD, args_info.password_arg);
+       break;
+ 
+     case GSASL_SCRAM_ITER:

@@ -18,7 +18,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		krb5-devel diffutils coreutils which chkconfig procps psmisc flex syslog-ng \
 		less cronie xmlto file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
 		binutils gnupg2 hostname man-db man-pages net-tools openssl openssh-clients \
-		rsync systemd telnet vim strace lsof mrtg \
+		rsync systemd telnet vim strace lsof mrtg patch \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
@@ -26,10 +26,13 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-docker.git; \
 		git clone git://linux-nfs.org/~steved/libtirpc; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
 		tar xf gsasl-2.2.0.tar.gz; \
+		/bin/rm -f gsasl-2.2.0.tar.gz; \
+		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		# libtirpc

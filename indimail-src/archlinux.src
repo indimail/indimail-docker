@@ -26,9 +26,12 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/OpenRC/openrc.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-docker.git; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
 		tar xf gsasl-2.2.0.tar.gz; \
+		/bin/rm -f gsasl-2.2.0.tar.gz; \
+		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		) 2>&1 | tee -a /var/log/build/build.log \
