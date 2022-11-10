@@ -119,8 +119,16 @@ RUN export HOSTNAME=indimail.org \
 		cd ..; ./dnssvc; ) 2>&1 | tee -a /var/log/build/build.log \
 	&&  (sed -i 's/^tty/#tty/g' /etc/inittab; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runleves/sysinit /etc/runlevels/nonetwork \
-		/etc/runlevels/shutdown/mount-ro; \
-		/bin/rm -f /lib/rc/sh/rc-cgroup.sh; \
+			/etc/runlevels/shutdown/mount-ro /etc/runlevels/default/netmount \
+			/etc/runlevels/shutdown/savecache /etc/runlevels/default/local; \
+		/bin/rm -f /lib/rc/sh/rc-cgroup.sh /libexec/rc/sh/rc-cgroup.sh; \
+		mkdir -p /run/openrc; \
+		touch /run/openrc/softlevel; \
+		/bin/rm /etc/init.d/mrtg /etc/init.d/netmount /etc/init.d/slapd /etc/init.d/udev \
+			/etc/init.d/udev-trigger  /etc/init.d/udev-settle /etc/init.d/hwclock \
+			/etc/init.d/dmesg; \
+		sed -i '/imklog/ s/^#*/#/' /etc/rsyslog.conf; \
+		sed -i 's{hostname {{' /etc/init.d/rsyslog; \
 		rc-update add cronie default; \
 		rc-update add rsyslog default; \
 		rc-update add sshd default; \
@@ -128,7 +136,7 @@ RUN export HOSTNAME=indimail.org \
 		rc-update add cronie indimail; \
 		rc-update add rsyslog indimail; \
 		rc-update add sshd indimail; \
-		sed -i '/imklog/ s/^#*/#/' /etc/rsyslog.conf) \
+		)
 	&& emerge --deselect --ask n app-text/xmlto \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 	   /usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \

@@ -141,6 +141,11 @@ RUN export HOSTNAME=indimail.org \
 		/bin/rm -rf /etc/runlevels/boot /etc/runlevels/sysinit \
 			/etc/runlevels/nonetwork; \
 		/bin/rm -f /lib/rc/sh/rc-cgroup.sh; \
+		mkdir -p /run/openrc; \
+		touch /run/openrc/softlevel; \
+		/bin/rm /etc/init.d/mrtg /etc/init.d/netmount /etc/init.d/slapd /etc/init.d/udev \
+			/etc/init.d/udev-trigger  /etc/init.d/udev-settle /etc/init.d/hwclock \
+			/etc/init.d/dmesg; \
 		/sbin/rc-update add killprocs shutdown; \
 		/sbin/rc-update add dcron default; \
 		/sbin/rc-update add inetutils-syslogd default; \
@@ -153,6 +158,7 @@ RUN export HOSTNAME=indimail.org \
 		sed 's/ root / /g' /etc/indimail/cronlist.i;) |crontab -; \
 		sed 's/ indimail / /g' /etc/indimail/cronlist.i | crontab -u indimail -; \
 		sed -i '/^kern\|^lpr/d' /etc/syslog.conf; \
+		sed -i 's{hostname {{' /etc/init.d/inetutils-syslogd; \
 		[ ! -f /etc/nsswitch.conf ] && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' > /etc/nsswitch.conf; \
 	   ) \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \

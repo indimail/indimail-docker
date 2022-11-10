@@ -123,12 +123,18 @@ RUN export HOSTNAME=indimail.org \
 			-e '/d_kernel/d;/d_lpr/d;/d_mail/d;/d_news/d;/d_uucp/d;/d_ppp/d;/d_debug/d;/d_everything/d' \
 			-e '/console_all/d; /tty12/d; /d_console/d' \
 			/etc/syslog-ng/syslog-ng.conf; \
+		sed -i '/need hostname/d' /etc/init.d/syslog-ng; \
+		systemctl mask proc-sys-fs-binfmt_misc.automount \
+			systemd-journald-audit.socket sys-kernel-tracing.mount \
+			sys-kernel-debug.mount sys-kernel-config.mount; \
 		systemctl enable cronie.service syslog-ng@default.service sshd.service; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runlevels/sysinit \
 			/etc/runlevels/nonetwork; \
 		/bin/rm -f /libexec/rc/sh/rc-cgroup.sh /etc/runlevels/default/local \
 			/etc/runlevels/default/netmount /etc/runlevels/shutdown/mount-ro \
 			/etc/runlevels/shutdown/savecache; \
+		mkdir -p /run/openrc; \
+		touch /run/openrc/softlevel; \
 		mkdir /etc/runlevels/indimail; \
 		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/cronie    -O /etc/init.d/cronie ; \
 		wget -nv https://raw.githubusercontent.com/mbhangui/docker/master/misc/syslog-ng -O /etc/init.d/syslog-ng ; \
