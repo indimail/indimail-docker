@@ -3,34 +3,105 @@ if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
 fi
+command="docker"
+options=$(getopt -a -n runpod -o "c:d:i:y" -l cmd:,distro:,image: -- "$@")
+if [ $? != 0 ]; then
+	(
+	echo "invalid usage"
+	echo "build [-c docker | podman] [-d distribution] [-i indimail|indimail-mta]"
+	) 1>&2
+	exit 1
+fi
+non_interactive=0
+eval set -- "$options"
+while :
+do
+	case "$1" in
+	-c | --cmd)
+	command=$2
+	shift 2
+	if [ " $command" != " podman" -a " $command" != " docker" ] ; then
+		echo "invalid command [$command]: command should be podman or docker" 1>&2
+		exit 1
+	fi
+	;;
+
+	-y)
+	non_interactive=1
+	;;
+
+	-d | --distro)
+	distro_list="$distro_list""$2 "
+	shift 2
+	;;
+
+	-i | --image)
+	if [ " $2" != " indimail" -a " $2" != " indimail-mta" ] ; then
+		echo "invalid image [$2]: image should be indimail or indimail-mta" 1>&2
+		exit 1
+	fi
+	image_list="$image_list""$2 "
+	shift 2
+	;;
+
+	--) # end of options
+	shift
+	break
+	;;
+
+	*)
+	echo "Unexpected option [$1]: this should'nt happen." 1>&2
+	exit 1
+	;;
+	esac
+done
+
+ask_d=0
+ask_i=0
 cd ..
 github_owner=mbhangui
-if [ $# -gt 0 ] ; then
-	distro_list=$*
-else
+if [ -z "$distro_list" ] ; then
+	ask_d=1
 	distro_list="archlinux almalinux8 centos7 debian11 \
 		bionic focal jammy oracle8 fc36 leap15.3 leap15.4 \
 		tumbleweed rockylinux8"
 fi
+if [ -z "$image_list" ] ; then
+	ask_i=1
+	image_list="indimail indimail-mta"
+fi
+echo "Using $command for build"
 for i in $distro_list
 do
-	for j in indimail-mta indimail
+	for j in $image_list
 	do
 		if [ ! -f $j/$i/Dockerfile ] ; then
 			echo "$j/$i/Dockerfile: No such file or directory"
 			continue
 		fi
-		echo -n "$i/$j: Continue (Y/N) - "
-		read key
-		if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
-			continue
+		if [ $non_interactive -eq 0 -a $ask_d -eq 1 -a $ask_i -eq 1 ] ; then
+			printf "%-30s Continue (Y/N) - " "$j/$i"
+			read key
+			if [ " $key" != " y" -a " $key" != " Y" ] ; then
+				continue
+			fi
 		fi
+		(
 		echo "Using $j/$i/Dockerfile for build"
 		cp $j/$i/Dockerfile .
-		docker build --tag "ghcr.io/$github_owner/$j:$i" .
-		docker push "ghcr.io/$github_owner/$j:$i"
-		docker image tag "ghcr.io/$github_owner/$j:$i" docker.io/cprogrammer/$j:$i
-		docker push docker.io/cprogrammer/$j:$i
+		$command build --tag "ghcr.io/$github_owner/$j:$i" .
+		if [ $non_interactive -eq 0 ] ; then
+			printf "%-30s Push (Y/N) - " "$j/$i"
+			read key
+		else
+			key="y"
+		fi
+		if [ " $key" = " y" -o " $key" = " Y" ] ; then
+			$command push "ghcr.io/$github_owner/$j:$i"
+			$command image tag "ghcr.io/$github_owner/$j:$i" docker.io/cprogrammer/$j:$i
+			$command push docker.io/cprogrammer/$j:$i
+		fi
+		)  2>&1 | tee /tmp/$j-$i.build
 		/bin/rm -f Dockerfile
 	done
 done
