@@ -129,7 +129,7 @@ RUN export HOSTNAME=indimail.org \
 		rc-update add cronie indimail; \
 		rc-update add rsyslog indimail; \
 		rc-update add sshd indimail; \
-		)
+		) \
 	&& emerge --deselect --ask n app-text/xmlto \
 	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 	   /usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
