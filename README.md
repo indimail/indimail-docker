@@ -150,33 +150,44 @@ $ podman run --net host -d -h indimail.org --name indimail fba3b42e0164
 You can combine the pull and run in a single command. Below are 3 use cases of invocation.
 
 ```
-1) Run the container in detached mode with systemd (init), just like a normal machine
+1. Run the container in detached mode with systemd (init), just like a normal machine.
+   In most cases you will require `--privileged` argument to docker / podman.
+
    $ podman run -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
-      --cap-add SYS_PTRACE --cap-add SYS_ADMIN --cap-add IPC_LOCK --cap-add SYS_RESOURCE \
-      -d --rm -h indimail.org --name indimail \
-      cprogrammer/indimail:stream8 /usr/lib/systemd/systemd
+       --privileged -d --rm -h indimail.org --name indimail \
+       cprogrammer/indimail:stream8 /usr/lib/systemd/systemd
 
-   Connect to the container
-   ------------------------
+   # Connect to the above container
    $ podman exec -ti indimail bash
-   $ ps -ef
 
-2) Run the container with just indimail with a controlling terminal and bash shell
+   # Run a command inside the container
+   indimail.org:(root) / > ps -ef
+
+2. Run the container with just indimail with a controlling terminal and bash shell.
+   NOTE: You need to give /bin/bash in the below command
+
    $ podman run -it --rm -h indimail.org --name indimail \
-     ghcr.io/mbhangui/indimail:stream8 bash
+       ghcr.io/mbhangui/indimail:stream8 /bin/bash
 
-   start indimail
-   --------------
-   $ /usr/libexec/indimail/svscanboot &
-   $ ps -ef
+   # Start indimail in the above container
+   indimail.org:(root) / > /usr/libexec/indimail/svscanboot &
 
-3) Run the container with just indimail in detached mode and svscan running as PID 1
+   # Run a command inside the container
+   indimail.org:(root) / > ps -ef
+
+3. Run the container with just indimail in detached mode and svscan running as PID 1
    The containers have been configured with 5 queues as default and hence you will
-   see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn
+   see 5 qmail-send, qmail-lspawn, qmail-rspawn, qmail-lspawn. You can pass the argument
+   -d for selecting a domain name, -t for selecting a timezone. Read the man page for
+   docker-entrypoint(8)
 
    $ podman run -d --rm -h indimail.org --name indimail \
      ghcr.io/mbhangui/indimail:stream8
 
+   # Connect to the above container
+   $ podman exec -ti indimail bash
+
+   # Run a command inside the container
    indimail.org:(root) / >ps -ef|egrep "svscan|qmail-send|qmail-smtpd|qmail-clean|spawn"
    root           1       0  0 17:23 ?        00:00:00 /usr/sbin/svscan /service
    root           2       1  0 17:23 ?        00:00:00 supervise log .svscan
