@@ -118,8 +118,8 @@ RUN export HOSTNAME=indimail.org \
 		mkdir -p /run/openrc; \
 		touch /run/openrc/softlevel; \
 		/bin/rm /etc/init.d/mrtg /etc/init.d/netmount /etc/init.d/slapd /etc/init.d/udev \
-			/etc/init.d/udev-trigger  /etc/init.d/udev-settle /etc/init.d/hwclock \
-			/etc/init.d/dmesg; \
+			/etc/init.d/udev-trigger /etc/init.d/udev-settle /etc/init.d/hwclock \
+			/etc/init.d/devfs /etc/init.d/cgroups /etc/init.d/dmesg; \
 		sed -i '/imklog/ s/^#*/#/' /etc/rsyslog.conf; \
 		sed -i 's{hostname {{' /etc/init.d/rsyslog; \
 		rc-update add cronie default; \
