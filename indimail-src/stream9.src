@@ -36,15 +36,15 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
+		# libtirpc
+		cd /usr/local/src/libtirpc; \
+		./bootstrap; \
+		./configure --prefix=/usr; \
+		make; make install-strip; \
 		# roundcube
 		cd /usr/local/srctmp; \
 		wget -nv \
 		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
 		-O roundcubemail.tar.gz; \
-		# libtirpc
-		cd ../../libtirpc; \
-		./bootstrap; \
-		./configure --prefix=/usr; \
-		make; make install-strip; \
 		) 2>&1 | tee -a /var/log/build/build.log \
 	&& echo "Build Completed" 

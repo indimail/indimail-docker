@@ -1,2 +1,4 @@
 *.bak
 dockerfile
+.gentoo.webmail.bin
+*/fc35

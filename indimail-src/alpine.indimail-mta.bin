@@ -158,7 +158,7 @@ RUN export HOSTNAME=indimail.org \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 		/lib/security/pam-multi.a \
 	&& apk del gcc g++ make git autoconf automake libtool \
-		openssl-dev fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
+		openssl-dev musl-fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
 		pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
 		libev-dev libsodium-dev m4 \
 	&& /bin/rm -rf /run/* || true \

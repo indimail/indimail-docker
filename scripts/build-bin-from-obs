@@ -63,7 +63,7 @@ github_owner=mbhangui
 if [ -z "$distro_list" ] ; then
 	ask_d=1
 	distro_list="archlinux almalinux8 centos7 debian11 \
-		bionic focal jammy oracle8 fc36 leap15.3 leap15.4 \
+		bionic focal jammy oracle8 fc36 fc37 leap15.3 leap15.4 \
 		tumbleweed rockylinux8"
 fi
 if [ -z "$image_list" ] ; then

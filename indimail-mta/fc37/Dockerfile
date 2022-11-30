@@ -1,13 +1,13 @@
-# docker build -f dockerfile.fc35 -t cprogrammer/indimail-mta:fc35
-FROM fedora:35
+# docker build -f dockerfile.fc37 -t cprogrammer/indimail-mta:fc37
+FROM fedora:37
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fc35
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fc37
 
 RUN export HOSTNAME=indimail.org \
 	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager \
-		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_35/home:mbhangui.repo \
+		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_37/home:mbhangui.repo \
 	&& mkdir -p /root \
 	&& dnf -y update \
 	&& dnf -y install \

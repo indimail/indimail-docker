@@ -9,7 +9,7 @@ if [ $# -gt 0 ] ; then
 	distro_list=$*
 else
 	distro_list="almalinux8 centos7 debian11 \
-		bionic focal jammy oracle8 fc36 leap15.3 leap15.4 \
+		bionic focal jammy oracle8 fc36 fc37 leap15.3 leap15.4 \
 		tumbleweed rockylinux8"
 fi
 for i in $distro_list
@@ -29,8 +29,18 @@ do
 		continue
 	fi
 	docker build --tag "ghcr.io/$github_owner/indimail-web:$i" .
-	docker push "ghcr.io/$github_owner/indimail-web:$i"
 	docker image tag "ghcr.io/$github_owner/indimail-web:$i" docker.io/cprogrammer/indimail-web:$i
-	docker push docker.io/cprogrammer/indimail-web:$i
 	/bin/rm -f Dockerfile
+
+	echo -n "$i: Push src to ghcr.io (Y/N) - "
+	read key
+	if [ " $key" = " y" -o " $key" = " Y" ] ; then
+		docker push "ghcr.io/$github_owner/indimail-web:$i"
+	fi
+
+	echo -n "$i: Push src to docker.io (Y/N) - "
+	read key
+	if [ " $key" = " y" -o " $key" = " Y" ] ; then
+		docker push docker.io/cprogrammer/indimail-web:$i
+	fi
 done

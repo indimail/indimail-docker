@@ -16,13 +16,18 @@ do
 	tag=$(basename $i | cut -d. -f1)
 	echo "Building cprogrammer/indimail-src:$tag"
 	docker build -t cprogrammer/indimail-src:$tag .
-	docker push cprogrammer/indimail-src:$tag
+	docker image tag docker.io/cprogrammer/indimail-src:$tag "ghcr.io/$github_owner/indimail-src:$tag"
 	/bin/rm -f Dockerfile
+
+	echo -n "$i: Push src to docker.io (Y/N) - "
+	read key
+	if [ " $key" = " y" -o " $key" = " Y" ] ; then
+		docker push cprogrammer/indimail-src:$tag
+	fi
+
 	echo -n "$i: Push src to ghcr.io (Y/N) - "
 	read key
-	if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
-		continue
+	if [ " $key" = " y" -o " $key" = " Y" ] ; then
+		docker push "ghcr.io/$github_owner/indimail-src:$tag"
 	fi
-	docker image tag docker.io/cprogrammer/indimail-src:$tag "ghcr.io/$github_owner/indimail-src:$tag"
-	docker push "ghcr.io/$github_owner/indimail-src:$tag"
 done

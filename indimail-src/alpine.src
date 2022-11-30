@@ -11,7 +11,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		inetutils-syslogd inetutils-syslogd-openrc util-linux \
 		openssh openssh-server openssh-server-common xmlto tzdata \
 		apk-tools-doc openrc-doc dcron-doc inetutils-syslogd-doc \
-		openssl openssl-dev fts fts-dev mariadb-connector-c mysql-dev \
+		openssl openssl-dev musl-fts-dev mariadb-connector-c mysql-dev \
 		musl-nscd musl-nscd-dev libidn libidn-dev libidn2 libidn2-dev \
 		libgcrypt-dev gnutls-dev gnutls krb5-dev \
 		pcre pcre-dev pcre2-dev libtirpc libtirpc-dev ncurses-libs \
