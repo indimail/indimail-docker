@@ -16,7 +16,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		cd /usr/local/srctmp; \
 		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
 			-O /usr/local/srctmp/mrtg.tar.gz; \
-		tar xf mrtg.tar.gz && /bin/rm -f mrtg.tar.gz \
+		tar xf mrtg.tar.gz && /bin/rm -f mrtg.tar.gz; \
 		cd mrtg-*; \
 		./configure --prefix=/usr; make && make install; \
 		cd /usr/local/srctmp; \
