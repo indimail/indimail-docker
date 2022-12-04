@@ -89,7 +89,8 @@ do
 		(
 		echo "Using $j/$i/Dockerfile for build"
 		cp $j/$i/Dockerfile .
-		$command build --tag "ghcr.io/$github_owner/$j:$i" .
+		$command build --tag cprogrammer/$j:$i .
+		$command image tag "ghcr.io/$github_owner/$j:$i" docker.io/cprogrammer/$j:$i
 		if [ $non_interactive -eq 0 ] ; then
 			printf "%-30s Push (Y/N) - " "$j/$i"
 			read key
@@ -98,7 +99,6 @@ do
 		fi
 		if [ " $key" = " y" -o " $key" = " Y" ] ; then
 			$command push "ghcr.io/$github_owner/$j:$i"
-			$command image tag "ghcr.io/$github_owner/$j:$i" docker.io/cprogrammer/$j:$i
 			$command push docker.io/cprogrammer/$j:$i
 		fi
 		)  2>&1 | tee /tmp/$j-$i.build
