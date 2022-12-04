@@ -28,7 +28,7 @@ do
 	if [ $? -ne 0 ] ; then
 		continue
 	fi
-	docker build --tag "ghcr.io/$github_owner/indimail-web:$i" .
+	docker build --tag cprogrammer/$indimail-web:$i .
 	docker image tag "ghcr.io/$github_owner/indimail-web:$i" docker.io/cprogrammer/indimail-web:$i
 	/bin/rm -f Dockerfile
 
