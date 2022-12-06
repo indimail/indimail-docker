@@ -117,7 +117,9 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make && make install-strip; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		setcap -r /usr/libexec/mysqld; \
 		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
+		setcap cap_sys_nice+ep /usr/libexec/mysqld; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
@@ -148,6 +150,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& dnf -y erase gcc autoconf automake make git \
 		xmlto docbook-dtds sgml-common docbook-style-xsl \
 	&& /bin/rm -rf /run/* || true \
+	&& test -d /var/indimail/mysqldb/data/indimail || echo "Build Failed" \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
