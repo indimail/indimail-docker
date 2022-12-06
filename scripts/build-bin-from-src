@@ -16,9 +16,11 @@ do
 	fi
 	cp $i ./Dockerfile
 	echo "Building cprogrammer/$pkg:$tag"
-	docker build --tag cprogrammer/$pkg:$tag .
-	docker image tag "ghcr.io/$github_owner/$pkg:$tag" docker.io/cprogrammer/$pkg:$tag
+	docker build -t  cprogrammer/$pkg:$tag .
+	docker image tag cprogrammer/$pkg:$tag ghcr.io/$github_owner/$pkg:$tag
+	docker image tag cprogrammer/$pkg:$tag docker.io/cprogrammer/$pkg:$tag
 	echo -n "$i: Push src to ghcr.io (Y/N) - "
+	read key
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
 		docker push "ghcr.io/$github_owner/$pkg:$tag"
 	fi

@@ -62,7 +62,7 @@ cd ..
 github_owner=mbhangui
 if [ -z "$distro_list" ] ; then
 	ask_d=1
-	distro_list="archlinux almalinux8 centos7 debian11 \
+	distro_list="archlinux almalinux9 almalinux8 centos7 debian11 \
 		bionic focal jammy oracle8 fc36 fc37 leap15.3 leap15.4 \
 		tumbleweed rockylinux8"
 fi
@@ -90,7 +90,8 @@ do
 		echo "Using $j/$i/Dockerfile for build"
 		cp $j/$i/Dockerfile .
 		$command build --tag cprogrammer/$j:$i .
-		$command image tag "ghcr.io/$github_owner/$j:$i" docker.io/cprogrammer/$j:$i
+		$command image tag cprogrammer/$j:$i ghcr.io/$github_owner/$j:$i
+		$command image tag cprogrammer/$j:$i docker.io/cprogrammer/$j:$i
 		if [ $non_interactive -eq 0 ] ; then
 			printf "%-30s Push (Y/N) - " "$j/$i"
 			read key

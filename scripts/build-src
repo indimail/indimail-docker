@@ -15,8 +15,9 @@ do
 	cp $i ./Dockerfile
 	tag=$(basename $i | cut -d. -f1)
 	echo "Building cprogrammer/indimail-src:$tag"
-	docker build -t cprogrammer/indimail-src:$tag .
-	docker image tag docker.io/cprogrammer/indimail-src:$tag "ghcr.io/$github_owner/indimail-src:$tag"
+	docker build -t  cprogrammer/indimail-src:$tag .
+	docker image tag cprogrammer/indimail-src:$tag ghcr.io/$github_owner/indimail-src:$tag
+	docker image tag cprogrammer/indimail-src:$tag docker.io/cprogrammer/indimail-src:$tag
 	/bin/rm -f Dockerfile
 
 	echo -n "$i: Push src to docker.io (Y/N) - "
