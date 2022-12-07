@@ -61,11 +61,6 @@ RUN export HOSTNAME=indimail.org \
 		--common_name=indimail.org > /dev/null 2>/tmp/cert.log || \
 		echo "certificate generation failed" \
 	&& echo "Created self-signed certificate" \
-	&& sed -i \
-			-e 's};listen.owner = nobody}listen.owner = apache}g' \
-			-e 's};listen.group = nobody}listen.group = apache}g' \
-			-e 's};listen.mode = 0660}listen.mode = 0660}g' \
-			-e 's}^listen.acl_users.};&}' /etc/php-fpm.d/www.conf \
 	&& /usr/libexec/indimail/roundcube_config > /tmp/roundcube.log 2>&1 \
 	&& cat /tmp/roundcube.log \
 	&& unset HOSTNAME \
