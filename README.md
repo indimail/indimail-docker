@@ -1,17 +1,18 @@
 Table of Contents
 =================
 
-   * [Dockerfile repository for automated builds.](#dockerfile-repository-for-automated-builds)  
-         * [Start the podman container](#start-the-podman-container)  
-         * [Creating podman volumes](#creating-podman-volumes)  
-         * [Query the id of the container](#query-the-id-of-the-container)  
-         * [Execute an interactive shell in the container](#execute-an-interactive-shell-in-the-container)  
-         * [Get processlist in the container](#get-processlist-in-the-container)  
-         * [Stop the container](#stop-the-container)  
-         * [Clear the stopped container image](#clear-the-stopped-container-image)  
-      * [github respository for Dockerfile](#github-respository-for-dockerfile)  
-         * [Building container images](#building-container-images)  
-      * [NOTE](#note)  
+   * [Dockerfile repository for automated builds.](#dockerfile-repository-for-automated-builds)
+         * [Start the podman container](#start-the-podman-container)
+         * [Creating podman volumes](#creating-podman-volumes)
+         * [Query the id of the container](#query-the-id-of-the-container)
+         * [Execute an interactive shell in the container](#execute-an-interactive-shell-in-the-container)
+         * [Get processlist in the container](#get-processlist-in-the-container)
+         * [Stop the container](#stop-the-container)
+         * [Clear the stopped container image](#clear-the-stopped-container-image)
+      * [github respository for Dockerfile](#github-respository-for-dockerfile)
+         * [Building container images](#building-container-images)
+      * [NOTE](#note)
+   * [Run MTA, Virtual Domains or Webmail](#run-mta-virtual-domains-or-webmail)
    * [Build Scripts](#build-scripts)
    * [SUPPORT INFORMATION](#support-information)
       * [IRC / Matrix](#irc--matrix)
@@ -906,6 +907,72 @@ On Fedora/CentOS/Oracle Linux
 On openSUSE
 # zypper install man man-pages
 ```
+
+# Run MTA, Virtual Domains or Webmail
+
+Now that you have learned the basics, you can use the container images to run three types of server explained below. If you have podman or docker command installed, it just takes less than 5 seconds (seriously) to run indimail and that too without any installation and configuration. The qmail control files are automatically adjusted based on the hostname of your container host. [Container Host](http://www.floydhilton.com/docker/2017/03/31/Docker-ContainerHost-vs-ContainerOS-Linux-Windows.html) is the host where you have pulled the indimail container images.
+
+1. indimail-mta container image: A basic server that servers as a MTA. You can also map your local /etc/passwd, /etc/group, /etc/shadow in the container to allow your users to send, receive emails. The server will provide SMTP/SMTPS, IMAP/IMAPS, POP3/POP3S services. You can use any email client that support these standard protocols. To start this container all you need to do is
+
+    `runpod --id=container_id -h your_host -n indimail-mta`
+
+2. indimail container image: An advanced email server that allows you to create virtual users. These users can send, receive emails. The server will provide the usual SMTP/SMTPS, IMAP/IMAPS, POP3/POP3S protocols. You can use any email client that support these standard protocols.
+
+    `runpod --id=container_id -h your_host -n indimail`
+
+3. indimail-web container image: An advanced email server that also provides a webmail interface to send, receive and read emails. Like the above two, the server will continue to provide the usual SMTP/SMTPS, IMAP/IMAPS, POP3/POP3S protocols. Like the above, you can use any email client that support these standard protocols. The web interface uses [roundcubemail](https://roundcube.net/) to provide a responsive web UI that works on all devices. To use the web interface all you need to do is point your browser to your container host IP at port 8080 on the container host or port 80 if you run the container with `-net host` option.
+
+    `runpod --id=container_id -h your_host -n webmail`
+
+When you use runpod on a container host to run a container OS with the above names (-n options), few ports will be mapped on the container OS as shown in the table below. Container Host is the host on which the container images are stored and also the host where you run the podman/docker command. Ports on the the container OS can be accessed by connecting to the mapped port. e.g. Connecting to port 2025 will get you connected to the SMTP port on the cotainer OS. If you are the root privileged user, you can use --net host to map the container's network to the HOST. In such a case you don't required to map ports on the container host to ports on the container OS. The indimail-web container image also comes with an administrative web interface named [iwebadmin](https://github.com/mbhangui/indimail-mta/wiki/iwebadmin.1) which allows you to carry out basic user, mailbox and ezmlm-idx mailing list administration.
+
+    Roundcubemail interface - http://container_IP:8080/indimail
+    iwebadmin interface - http://container_IP:8080/cgi-bin/iwebadmin
+
+The mapped ports are as below. To use any email client all you need is to use the below ports. e.g. 2025 for SMTP, 2587 for submission port, 2993 for IMAPS, and so on. As explained before you can use the standard port instead of the below mapped port if you run the container with `-net host` option. But using `-net host` option requires root privileges.
+
+Container Host|Container OS
+--------------|------------
+2025|25
+2106|106
+2110|110
+2143|143
+2209|209
+2366|366
+2465|465
+2587|587
+2628|628
+2993|993
+2995|995
+3110|4110
+3143|4143
+5110|9110
+5143|9143
+8080|80
+8081|443
+
+## Screenshots
+
+<b>Webmail Login Interface</b>
+
+![Webmail Login](webmail_login.jpg "Webmail Login")
+
+<b>Webmail Mailbox Interface</b>
+
+![Mailbox Large](mailbox.jpg "Mailbox Large")
+
+<b>Webmail Mailbox Interface on mobile device</b>
+
+![Mailbox Small](mailbox_small.jpg "Mailbox Small")
+
+
+<b>iwebadmin Administration Login Interface</b>. The cool thing about iwebadmin interface is it displays a random fortune cookie in the footer of every page.
+
+![iwebadmin Login](iwebadmin_login.jpg "iwebadmin Login")
+
+<b>iwebadmin Administration Interface</b>
+
+![iwebadmin](iwebadmin.jpg "iwebadmin")
 
 # Build Scripts
 
