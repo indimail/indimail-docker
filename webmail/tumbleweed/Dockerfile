@@ -4,6 +4,7 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:tumbleweed
 
 RUN export HOSTNAME=indimail.org \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
 	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
 	&& zypper --non-interactive update \
