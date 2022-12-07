@@ -1,7 +1,7 @@
 # this script builds runtime images for indimail with iwebadmin and roundcube mail
 # this script uses Dockerfile which install packages required by indimail, indimail-mta from
 # open build service
-name: buildall-web-obs push script
+name: buildall-web-from-obs push script
 
 on:
   workflow_dispatch:
