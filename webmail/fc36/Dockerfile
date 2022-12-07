@@ -4,6 +4,7 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:fc36
 
 RUN export HOSTNAME=indimail.org \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager \
