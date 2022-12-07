@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:o
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root/Downloads \
 	&& dnf -y install \
 		'dnf-command(config-manager)' \

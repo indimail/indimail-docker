@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:o
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root/Downloads \
 	&& dnf -y install \
 		'dnf-command(config-manager)' \
@@ -83,12 +84,6 @@ RUN export HOSTNAME=indimail.org \
 	&& wget -nv \
 		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
 		-O /root/Downloads/roundcubemail.tar.gz \
-	&& (sed -i \
-			-e 's}listen = 127.0.0.1:9000}listen = /run/php-fpm/www.sock}' \
-			-e 's};listen.owner = nobody}listen.owner = apache}g' \
-			-e 's};listen.group = nobody}listen.group = apache}g' \
-			-e 's};listen.mode = 0660}listen.mode = 0660}g' \
-			-e 's}^listen.acl_users.};&}' /etc/php-fpm.d/www.conf) \
 	&& (cd /usr/share; \
 		tar xfz /root/Downloads/roundcubemail.tar.gz; \
 		mv roundcubemail/plugins/* roundcubemail-1.6.0/plugins; \
