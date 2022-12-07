@@ -6,7 +6,9 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:a
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
-	&& dnf -y install 'dnf-command(config-manager)' \
+	&& dnf -y install \
+		'dnf-command(config-manager)' \
+		https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
 	&& dnf -y update \
 	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 	&& dnf -y install \
