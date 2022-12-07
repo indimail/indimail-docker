@@ -10,7 +10,7 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y install \
 		'dnf-command(config-manager)' \
 		epel-release \
-		http://rpms.remirepo.net/enterprise/remi-release-8.rpm \
+		https://rpms.remirepo.net/enterprise/remi-release-8.rpm \
 		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 		dnf-utils \
 		drpm \
