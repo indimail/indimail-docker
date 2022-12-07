@@ -1,4 +1,8 @@
 *.bak
 dockerfile
 .gentoo.webmail.bin
-*/fc35
+fc35
+centos7
+*-centos7.yml
+ubi9.src
+.gitignore
