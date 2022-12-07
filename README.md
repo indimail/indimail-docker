@@ -899,7 +899,7 @@ The images are without man pages. You do the following
 On Debian
 # apt-get install man-db
 
-On Fedora/CentOS/Oracle Linux
+On Fedora/CentOS/Oracle Linux/AlmaLinux/RockyLinux
 
 # yum/dnf --setopt=tsflags=''
 # yum/dnf install man-db man-pages
