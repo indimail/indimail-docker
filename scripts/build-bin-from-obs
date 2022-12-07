@@ -93,14 +93,22 @@ do
 		$command image tag cprogrammer/$j:$i ghcr.io/$github_owner/$j:$i
 		$command image tag cprogrammer/$j:$i docker.io/cprogrammer/$j:$i
 		if [ $non_interactive -eq 0 ] ; then
-			printf "%-30s Push (Y/N) - " "$j/$i"
-			read key
+			printf "%-30s Push docker (Y/N) - " "$j/$i"
+			read keyd
 		else
-			key="y"
+			keyd="y"
 		fi
-		if [ " $key" = " y" -o " $key" = " Y" ] ; then
-			$command push "ghcr.io/$github_owner/$j:$i"
+		if [ " $keyd" = " y" -o " $keyd" = " Y" ] ; then
 			$command push docker.io/cprogrammer/$j:$i
+		fi
+		if [ $non_interactive -eq 0 ] ; then
+			printf "%-30s Push ghcr (Y/N) - " "$j/$i"
+			read keyg
+		else
+			keyg="y"
+		fi
+		if [ " $keyg" = " y" -o " $keyg" = " Y" ] ; then
+			$command push "ghcr.io/$github_owner/$j:$i"
 		fi
 		)  2>&1 | tee /tmp/$j-$i.build
 		/bin/rm -f Dockerfile
