@@ -929,10 +929,10 @@ When you use runpod on a container host to run a container OS with the above nam
     Roundcubemail interface - http://container_IP:8080/indimail
     iwebadmin interface - http://container_IP:8080/cgi-bin/iwebadmin
 
-The mapped ports are as below. To use any email client all you need is to use the below ports. e.g. 2025 for SMTP, 2587 for submission port, 2993 for IMAPS, and so on. As explained before you can use the standard port instead of the below mapped port if you run the container with `-net host` option. But using `-net host` option requires root privileges.
+You can use the port 8081 on the container host to access the SSL port 443 on the container OS. The mapped ports are as below. To use an email client all you need is to use the below ports in the settings of your email client. e.g. 2025 for SMTP, 2587 for submission port, 2993 for IMAPS, and so on. As explained before you can use the standard ports instead of the below mapped ports if you run the container with `-net host` option. But using `-net host` option requires root privileges.
 
-Container Host|Container OS
---------------|------------
+Port on Container Host|Port on Container OS
+----------------------|--------------------
 2025|25
 2106|106
 2110|110
