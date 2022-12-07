@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:d
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root/Downloads \
 	&& apt-get -y update \
 	&& apt-get -y install \
