@@ -3,7 +3,7 @@ name: indimail-web:stream9 container image
 on:
   push:
     paths:
-      - '**/indimail-src/stream9.webmail.bin'
+      - '**/webmail/stream9/**'
       - .github/workflows/indimail-web-stream9.yml
       - '!**.md'
   workflow_dispatch:
