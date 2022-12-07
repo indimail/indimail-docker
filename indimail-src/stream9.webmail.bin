@@ -198,4 +198,4 @@ COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /roo
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["indimail"]
+CMD ["webmail"]
