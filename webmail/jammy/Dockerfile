@@ -1,11 +1,13 @@
 # docker build -f dockerfile.jammy -t cprogrammer/indimail-web:jammy
 # run dpkg-reconfigure tzdata after starting the container
+# ubuntu 22.04
 From ubuntu:jammy
 MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:jammy
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root/Downloads \
 	&& sed -i 's:^path-exclude=/usr/share/man:#path-exclude=/usr/share/man:' \
 		/etc/dpkg/dpkg.cfg.d/excludes \
