@@ -16,7 +16,6 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y module reset php \
 	&& dnf -y module enable php:remi-8.1 \
 	&& dnf -y update \
-	&& dnf config-manager --set-enabled powertools \
 	&& dnf -y install \
 		binutils \
 		gnupg2 \
