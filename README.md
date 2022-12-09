@@ -979,7 +979,7 @@ Port on Container Host|Port on Container OS
 This repository also has build scripts that help in generating docker/podman images. These are the main scripts for building docker/podman images for indimail, indimail-mta, indimail-web. They build and push the images to [hub.docker.com](https://hub.docker.com/u/cprogrammer)
 
 The recommended steps are
-1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, jammy, focal, bionic, centos7, debian10, debian11, fc36, leap15.3, leap15.4, oracle8, rockylinux8, tumbleweed.
+1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, almalinux9, jammy, focal, bionic, debian10, debian11, fc36, fc37, leap15.3, leap15.4, oracle8, rockylinux8, rockylinux9, tumbleweed.
 2. run buildall-bin-from-src when indimail, indimail-mta sources are updated or when a new distribution is added
 3. run buildall-src-image occasionaly. This will build intermediate base images having development and other packages needed to build the indimail, indimail-mta packages. This is done only for alpine, archlinux, gentoo, ubi8, centos-stream8, centos-stream9. Once you have the intermediate base images you can run buildall-bin-from-src as and when indimail, indimail-mta sources are updated.
 
