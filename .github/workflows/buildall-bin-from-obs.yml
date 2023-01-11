@@ -22,7 +22,7 @@ jobs:
       - name: build
         run: |
           for i in almalinux8 oracle8 rockylinux8 almalinux9 oracle9 rockylinux9 \
-          debian10 debian11 bionic focal jammy fc36 fc37 leap15.3 leap15.4 tumbleweed
+          debian10 debian11 bionic focal jammy fc36 fc37 leap15.4 tumbleweed
           do
             for j in indimail indimail-mta
             do
