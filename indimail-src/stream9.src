@@ -37,7 +37,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		# libtirpc
-		cd /usr/local/src/libtirpc; \
+		cd /usr/local/srctmp/libtirpc; \
 		./bootstrap; \
 		./configure --prefix=/usr; \
 		make; make install-strip; \
