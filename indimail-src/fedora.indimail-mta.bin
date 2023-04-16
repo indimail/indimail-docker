@@ -1,5 +1,4 @@
-# docker build -f dockerfile.stream9 -t cprogrammer/indimail-src:stream9
-# https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+# docker build -f fedora.indimail-mta.bin -t cprogrammer/indimail-mta:fedora
 FROM cprogrammer/indimail-src:fedora
 MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fedora
