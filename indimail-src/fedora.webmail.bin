@@ -1,0 +1,85 @@
+# docker build -f dockerfile.stream9 -t cprogrammer/indimail-src:stream9
+# https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+FROM cprogrammer/indimail-src:fedora
+MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fedora
+
+RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& dnf -y update \
+	&& dnf -y install mysql-server mariadb httpd mod_ssl php php-fpm roundcubemail php-mysqlnd php-imagick \
+	&& (set -e; \
+		cd /usr/local/srctmp; \
+		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
+			do cd $i; echo "updating $i";git pull; cd ..; done; \
+		# libqmail
+		cd /usr/local/srctmp/libqmail; \
+		./default.configure; \
+		make && make install-strip; \
+		# indimail-mta
+		cd /usr/local/srctmp/indimail-mta; \
+		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x;./default.configure; \
+			if [ -f conf.ld ] ; then sed -i 's/^cc/cc -s/' conf-ld; fi; \
+			if [ -f conf.cc ] ; then sed -i 's/ -g//' conf-cc; fi; make; cd ..; done; \
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		./svctool --config=users; \
+		cd ..; \
+		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x; make install-strip; cd ..; done ;\
+		echo "Creating self-signed certificate"; \
+		/usr/sbin/svctool \
+			--config=cert --postmaster=postmaster@indimail.org \
+			--common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
+		# ezmlm-idx ##############################
+		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/^cc/cc -s/' conf-ldso; \
+		sed -i 's/ -g//' conf-cc; \
+		make && make install-strip; \
+		make mysql install-strip; \
+		# indimail-virtualdomains ##############################
+		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
+		./default.configure; \
+		make && make install-strip; \
+		cd ..; \
+		for i in altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
+			bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
+			indium-x nssd-x fetchmail-x logalert-x procmail-x \
+			iwebadmin-x ircube ; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
+		# configure indimail-mta ###############################
+		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		./create_services --add-boot; \
+		# tinydnssec ###########################################
+		echo "building tinydnssec"; \
+		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
+		git pull; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/ -g//' conf-cc; \
+		make; \
+		/usr/bin/pod2man -s 8 -c '' "tinydns-sign" >tinydns-sign.8; \
+		make install-strip; \
+		echo "building dq"; \
+		cd dq-20161210; \
+		make; \
+		sh make-install.sh; \
+		cd ../curvedns-0.88; \
+		echo "building curvedns"; \
+		./default.configure; \
+		make; \
+		make install-strip; \
+		cd ..; ./dnssvc; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la; \
+		dnf -y erase flex xmlto bison \
+			gcc gcc-g++ autoconf automake libtool bzip2 tcl tk git \
+			libgcrypt-devel gettext-devel libgcrypt-devel \
+			openssl-devel openldap-devel ncurses-devel gdbm-devel pcre-devel pcre2-devel \
+			libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
+			libidn2-devel readline-devel tcl-devel tk-devel; \
+		dnf -y autoremove; \
+		) 2>&1 | tee -a /var/log/build/build.log \
+	&& echo "Build Completed" 
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+VOLUME ["/sys/fs/cgroup"]
+VOLUME ["/run"]
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["indimail"]
