@@ -17,6 +17,7 @@ RUN export HOSTNAME=indimail.org \
 		hostname \
 		initscripts \
 		less \
+		cronie \
 		mailx \
 		man-db \
 		man-pages \
