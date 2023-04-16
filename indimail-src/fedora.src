@@ -1,0 +1,41 @@
+# docker build -f dockerfile.stream9 -t cprogrammer/indimail-src:stream9
+# https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+FROM fedora:latest
+MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fedoralatest
+
+RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& dnf -y install 'dnf-command(config-manager)' \
+	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& dnf -y update \
+	&& dnf -y install gnupg2 binutils hostname initscripts less mailx \
+		man-db man-pages net-tools openssl openssh-clients procps psmisc \
+		rsync systemd telnet vim wget which strace lsof deltarpm git patch \
+		file cronie rsyslog sed bzip2 s-nail libidn libidn2 \
+		flex xmlto bison perl-podlators \
+		gcc gcc-g++ autoconf automake libtool bzip2 tcl tk \
+		pkgconf libgcrypt-devel mysql-devel gettext-devel libgcrypt-devel \
+		openssl-devel openldap-devel ncurses-devel gdbm-devel pcre-devel pcre2-devel \
+		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
+		libidn2-devel readline-devel tcl-devel tk-devel \
+	&& (set -e; \
+		cd /usr/local/srctmp; \
+		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
+			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done; \
+		git clone git://linux-nfs.org/~steved/libtirpc; \
+		# gsasl
+		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
+		tar xf gsasl-2.2.0.tar.gz; \
+		/bin/rm -f gsasl-2.2.0.tar.gz; \
+		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
+		make; make install-strip; \
+		# libtirpc
+		cd /usr/local/srctmp/libtirpc; \
+		./bootstrap; \
+		./configure --prefix=/usr; \
+		make; make install-strip; \
+		) 2>&1 | tee -a /var/log/build/build.log \
+	&& echo "Build Completed" 
