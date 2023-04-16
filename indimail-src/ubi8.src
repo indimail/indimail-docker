@@ -31,7 +31,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		http://repo.okay.com.mx/centos/8/x86_64/release/docbook-style-xsl-1.79.2-8.el8.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
 		mysql-community-server mysql-devel pkgconf patch \
-		openssl-devel openldap-devel ncurses-devel gd-devel libidn-devel pcre-devel pcre2-devel \
+		openssl-devel openldap-devel ncurses-devel gdbm-devel libidn-devel pcre-devel pcre2-devel \
 		libsodium-devel libdb-devel pam-devel libgcrypt-devel \
 		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
 		file sed wget bzip2 \
@@ -57,6 +57,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
+		make && make install-strip; \
 		# libtirpc
 		cd /usr/local/srctmp/libtirpc; \
 		./bootstrap; \

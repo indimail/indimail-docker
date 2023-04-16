@@ -32,5 +32,6 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
+		make; make install-strip; \
 		) 2>&1 | tee -a /var/log/build/build.log \
 	&& echo "Build Completed" 

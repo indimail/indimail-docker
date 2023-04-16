@@ -7,9 +7,6 @@ RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (cd /usr/local/srctmp; \
-		# gsasl ###############################################
-		cd /usr/local/srctmp/gsasl-2.2.0; \
-		make -s && make -s install-strip; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
 		git pull; \

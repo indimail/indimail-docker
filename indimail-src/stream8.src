@@ -13,7 +13,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
 		mysql-community-server mysql-devel gettext-devel libgcrypt-devel pkgconf \
-		openssl-devel openldap-devel ncurses-devel gd-devel pcre-devel pcre2-devel \
+		openssl-devel openldap-devel ncurses-devel gdbm-devel pcre-devel pcre2-devel \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 		krb5-devel diffutils coreutils which chkconfig procps psmisc flex syslog-ng \
 		less cronie xmlto file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
@@ -35,6 +35,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
+		make; make install-strip
 		# libtirpc
 		cd /usr/local/srctmp/libtirpc; \
 		./bootstrap; \
