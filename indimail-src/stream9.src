@@ -23,7 +23,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
-			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done
+			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done; \
 		git clone git://linux-nfs.org/~steved/libtirpc; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \

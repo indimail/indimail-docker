@@ -21,12 +21,8 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		rsync systemd telnet vim strace lsof mrtg patch \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-docker.git; \
+		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
+			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done; \
 		git clone git://linux-nfs.org/~steved/libtirpc; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
@@ -35,7 +31,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
-		make; make install-strip
+		make; make install-strip; \
 		# libtirpc
 		cd /usr/local/srctmp/libtirpc; \
 		./bootstrap; \
