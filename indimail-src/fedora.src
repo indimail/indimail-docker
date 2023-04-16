@@ -2,7 +2,7 @@
 # https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 FROM fedora:latest
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fedoralatest
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fedora
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& dnf -y install 'dnf-command(config-manager)' \
