@@ -19,6 +19,7 @@ jobs:
       - name: login
         run: |
           echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
 
       - name: build
         run: |
@@ -27,6 +28,8 @@ jobs:
             echo "Using indimail-src/$i.src for build"
             cp indimail-src/$i.src Dockerfile
             docker build --tag "docker.io/cprogrammer/indimail-src:$i" .
+            docker image tag "docker.io/cprogrammer/indimail-src:$i" "ghcr.io/${{ github.repository_owner }}/indimail-src:$i"
             docker push docker.io/cprogrammer/indimail-src:$i
+            docker push ghcr.io/${{ github.repository_owner }}/indimail-src:$i
             /bin/rm -f Dockerfile
           done

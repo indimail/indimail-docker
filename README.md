@@ -1,18 +1,20 @@
+
 Table of Contents
 =================
 
    * [Dockerfile repository for automated builds.](#dockerfile-repository-for-automated-builds)
-         * [Start the podman container](#start-the-podman-container)
-         * [Creating podman volumes](#creating-podman-volumes)
-         * [Query the id of the container](#query-the-id-of-the-container)
-         * [Execute an interactive shell in the container](#execute-an-interactive-shell-in-the-container)
-         * [Get processlist in the container](#get-processlist-in-the-container)
-         * [Stop the container](#stop-the-container)
-         * [Clear the stopped container image](#clear-the-stopped-container-image)
+      * [Start the podman container](#start-the-podman-container)
+      * [Creating podman volumes](#creating-podman-volumes)
+      * [Query the id of the container](#query-the-id-of-the-container)
+      * [Execute an interactive shell in the container](#execute-an-interactive-shell-in-the-container)
+      * [Get processlist in the container](#get-processlist-in-the-container)
+      * [Stop the container](#stop-the-container)
+      * [Clear the stopped container image](#clear-the-stopped-container-image)
       * [github respository for Dockerfile](#github-respository-for-dockerfile)
-         * [Building container images](#building-container-images)
+      * [Building container images](#building-container-images)
       * [NOTE](#note)
    * [Run MTA, Virtual Domains or Webmail](#run-mta-virtual-domains-or-webmail)
+      * [Screenshots](#screenshots)
    * [Build Scripts](#build-scripts)
    * [SUPPORT INFORMATION](#support-information)
       * [IRC / Matrix](#irc--matrix)
@@ -126,7 +128,7 @@ ghcr.io/mbhangui/indimail        stream8      e543dee69ab7   38 hours ago   1.03
 ghcr.io/mbhangui/indimail        fc33         a5266643441b   4 days ago     1.13 GB
 ```
 
-### Start the podman container
+## Start the podman container
 
 indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
 
@@ -241,7 +243,7 @@ You can combine the pull and run in a single command. Below are 3 use cases of i
 
 There are other cool things you can do with the docker/podman images. You can have the images have their own filesystem with the queue and the user's home directory. It is better to have them on the host running the containers.
 
-### Creating podman volumes
+## Creating podman volumes
 
 The big advantage of using docker / podman container is the ease with which you can maintain your server config. You can easily make snapshots of the configuration, push the image to your own docker / podman repository, pull it whenever required and deploy with exactly the same configuration. You don't have to run custom scripts to configure your server. Now we need to decide few things. indimail / indimail-mta requires a filesystem for the queue and a filesystem to store the user's emails. We call it the `queue` directory and the `maildir` directory. i.e.
 
@@ -349,7 +351,7 @@ $ podman run -d -h indimail.org \
 0deab2154ef89688fc1953dc32dcf0c3a4fcde50ce79ed6a47e4886415093304
 ```
 
-### Query the id of the container
+## Query the id of the container
 
 ```
 $ podman ps
@@ -357,14 +359,14 @@ CONTAINER ID  IMAGE                                   COMMAND   CREATED         
 0deab2154ef8  ghcr.io/mbhangui/indimail:stream8  indimail  About a minute ago  Up About a minute ago         indimail
 ```
 
-### Execute an interactive shell in the container
+## Execute an interactive shell in the container
 
 ```
 $ podman exec -ti indimail /bin/bash
 indimail:/>
 ```
 
-### Get processlist in the container
+## Get processlist in the container
 
 ```
 indimail:/> ps -ef
@@ -783,14 +785,14 @@ If you use this script it will
 4. Run the container with special privileges that allows it to start like a normal OS with systemd, privileges to do strace and IPC locking
 
 
-### Stop the container
+## Stop the container
 
 ```
 $ podman stop \`podman ps -q\`
 08a4df5054d920cfdf8869aa777a7afc39bab19591394ea283c0c082f8b0a876
 ```
 
-### Clear the stopped container image
+## Clear the stopped container image
 
 ```
 $ podman rm \`podman ps -aq\`
@@ -818,7 +820,7 @@ $ docker build -t indimail:fc31 ./Dockerfile .
 or
 $ podman build -t indimail:fc31 ./Dockerfile .
 ```
-### Building container images
+## Building container images
 
 If may want to build the image yourself instead of using ghcr.io. All you need is the Dockerfile and the files .alias, .bash_profile, .bashrc, .exrc, .gfuncs, .glogout, .indent.pro, .vimrc.
 
