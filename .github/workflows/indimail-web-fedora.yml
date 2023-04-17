@@ -1,0 +1,33 @@
+name: indimail-web:fedora container image
+
+on:
+  push:
+    paths:
+      - '**/indimail-src/fedora.indimail-web.bin'
+      - .github/workflows/indimail-web-fedora.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          cp indimail-src/fedora.indimail-web.bin ./Dockerfile
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:fedora" .
+
+      - name: push
+        run: |
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:fedora"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:fedora" docker.io/cprogrammer/indimail-web:fedora
+          docker push docker.io/cprogrammer/indimail-web:fedora
