@@ -64,7 +64,7 @@ RUN export HOSTNAME=indimail.org \
 		echo "building curvedns"; \
 		./default.configure; \
 		make; make install-strip; \
-		cd ..; ./dnssvc;
+		cd ..; ./dnssvc; \
 		sed -i 's/^tty/#tty/g' /etc/inittab; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runleves/sysinit /etc/runlevels/nonetwork \
 			/etc/runlevels/shutdown/mount-ro /etc/runlevels/default/netmount \
