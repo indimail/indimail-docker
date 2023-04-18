@@ -64,15 +64,15 @@ RUN export HOSTNAME=indimail.org \
 		echo "building curvedns"; \
 		./default.configure; \
 		make; make install-strip; \
-		cd ..; ./dnssvc; ) 2>&1 | tee -a /var/log/build/build.log \
-	&&  (sed -i 's/^tty/#tty/g' /etc/inittab; \
+		cd ..; ./dnssvc; \
+		sed -i 's/^tty/#tty/g' /etc/inittab; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runleves/sysinit /etc/runlevels/nonetwork \
 			/etc/runlevels/shutdown/mount-ro /etc/runlevels/default/netmount \
 			/etc/runlevels/shutdown/savecache /etc/runlevels/default/local; \
 		/bin/rm -f /lib/rc/sh/rc-cgroup.sh /libexec/rc/sh/rc-cgroup.sh; \
 		mkdir -p /run/openrc; \
 		touch /run/openrc/softlevel; \
-		/bin/rm /etc/init.d/mrtg /etc/init.d/netmount /etc/init.d/slapd /etc/init.d/udev \
+		/bin/rm -f /etc/init.d/mrtg /etc/init.d/netmount /etc/init.d/slapd /etc/init.d/udev \
 			/etc/init.d/udev-trigger /etc/init.d/udev-settle /etc/init.d/hwclock \
 			/etc/init.d/devfs /etc/init.d/cgroups /etc/init.d/dmesg; \
 		sed -i '/imklog/ s/^#*/#/' /etc/rsyslog.conf; \
@@ -84,17 +84,18 @@ RUN export HOSTNAME=indimail.org \
 		rc-update add cronie indimail; \
 		rc-update add rsyslog indimail; \
 		rc-update add sshd indimail; \
-		) \
-	&& emerge --deselect --ask n app-text/xmlto \
-	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
-	   /usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
-	   /usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
-	   /usr/lib/libindimail.a /usr/lib/libcourier-unicode.a /usr/lib/libdkim.a \
-	   /usr/lib64/libltdl.la /usr/lib64/libgsasl.la /usr/lib64/libgsasl.la \
-	   /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-	&& /sbin/ldconfig \
-	&& /bin/rm -rf /run/* || true \
-	&&  echo "Build Completed"
+		emerge --deselect --ask n app-text/xmlto; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
+			/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
+			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
+			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a /usr/lib/libdkim.a \
+			/usr/lib64/libltdl.la /usr/lib64/libgsasl.la /usr/lib64/libgsasl.la \
+			/usr/lib/libsrs2.a /lib/security/pam-multi.la /var/log/build/build.log; \
+		/sbin/ldconfig; \
+		/bin/rm -rf /run/* || true; \
+	) > /var/log/build/build.bin.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
+	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || (echo "MySQL db creation failed" && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["indimail"]

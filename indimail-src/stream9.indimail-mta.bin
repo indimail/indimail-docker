@@ -125,17 +125,18 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		) 2>&1 | tee -a /var/log/build/build.bin.log \
-	&& dnf -y install s-nail \
-	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
-		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
-		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
-		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
-		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-	&& dnf -y erase gcc autoconf automake make git \
-		xmlto docbook-dtds sgml-common docbook-style-xsl \
-	&& /bin/rm -rf /run/* || true \
-	&& echo "Build Completed" 
+		dnf -y install s-nail; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
+			/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
+			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
+			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
+			/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
+			/var/log/build/build.log; \
+		dnf -y erase gcc autoconf automake make git \
+			xmlto docbook-dtds sgml-common docbook-style-xsl; \
+		/bin/rm -rf /run/* || true; \
+	) > /var/log/build/build.bin.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]

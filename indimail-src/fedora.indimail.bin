@@ -65,7 +65,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log; \
 		dnf -y erase flex xmlto bison \
 			gcc gcc-g++ autoconf automake libtool bzip2 tcl tk git \
 			libgcrypt-devel gettext-devel libgcrypt-devel \
@@ -73,8 +73,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 			libidn2-devel readline-devel tcl-devel tk-devel; \
 		dnf -y autoremove; \
-		) 2>&1 | tee -a /var/log/build/build.log \
-	&& echo "Build Completed" 
+	) > /var/log/build/build.bin.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
+	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || (echo "MySQL db creation failed" && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]

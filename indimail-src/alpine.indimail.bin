@@ -6,7 +6,8 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:alpin
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
-	&& (cd /usr/local/srctmp; \
+	&& (set -e; \
+		cd /usr/local/srctmp; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
 		git pull; \
@@ -134,14 +135,13 @@ RUN export HOSTNAME=indimail.org \
 		make install-strip; \
 		cd ..; ./dnssvc; \
 		echo "Completed stage 1"; \
-		) 2>&1 | tee -a /var/log/build/build.bin.log \
-	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
+		sed -i 's/^tty/#tty/g' /etc/inittab; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runlevels/sysinit \
 			/etc/runlevels/nonetwork; \
 		/bin/rm -f /lib/rc/sh/rc-cgroup.sh; \
 		mkdir -p /run/openrc; \
 		touch /run/openrc/softlevel; \
-		/bin/rm /etc/init.d/mrtg /etc/init.d/netmount /etc/init.d/slapd /etc/init.d/udev \
+		/bin/rm -f /etc/init.d/mrtg /etc/init.d/netmount /etc/init.d/slapd /etc/init.d/udev \
 			/etc/init.d/udev-trigger  /etc/init.d/udev-settle /etc/init.d/hwclock \
 			/etc/init.d/dmesg; \
 		/sbin/rc-update add killprocs shutdown; \
@@ -159,21 +159,22 @@ RUN export HOSTNAME=indimail.org \
 		sed -i 's{hostname {{' /etc/init.d/inetutils-syslogd; \
 		[ ! -f /etc/nsswitch.conf ] && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' > /etc/nsswitch.conf; \
 		echo "Completed stage 2"; \
-	   ) 2>&1 | tee -a /var/log/build/build.bin.log \
-	&& (/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
-		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
-		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
-		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
-		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-		/lib/security/pam-multi.a /usr/lib/libcourier-unicode.la /usr/lib/libgsasl.la /usr/lib/libltdl.la; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
+			/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
+			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
+			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
+			/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
+			/lib/security/pam-multi.a /usr/lib/libcourier-unicode.la /usr/lib/libgsasl.la /usr/lib/libltdl.la \
+			/var/log/build/build.log; \
 		apk del gcc g++ make git autoconf automake libtool \
-		openssl-dev musl-fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
-		pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
-		libev-dev libsodium-dev m4; \
-		/bin/rm -rf /run/* || true; \
+			openssl-dev musl-fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
+			pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
+			libev-dev libsodium-dev m4; \
+			/bin/rm -rf /run/* || true; \
 		echo "Completed stage 3"; \
-	   ) 2>&1 | tee -a /var/log/build/build.bin.log \
-	&& echo "Build Completed" 
+	) > /var/log/build/build.bin.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
+	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || (echo "MySQL db creation failed" && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["indimail"]

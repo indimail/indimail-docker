@@ -143,7 +143,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		dnf -y erase gcc autoconf automake make git \
 			xmlto docbook-dtds sgml-common docbook-style-xsl; \
 		/bin/rm -rf /run/* || true; \
-		) > /var/log/build/build.bin.log 2>&1 \
+	) > /var/log/build/build.bin.log 2>&1 \
 	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || (echo "MySQL db creation failed" && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
