@@ -63,5 +63,5 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		./bootstrap; \
 		./configure --prefix=/usr; \
 		make; make install-strip; \
-		) 2>&1 | tee -a /var/log/build/build.log \
-	&& echo "Build Completed" 
+		) > /var/log/build/build.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.log) || (echo "Build Failed" && cat /var/log/build/build.log && exit 1)

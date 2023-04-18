@@ -35,5 +35,5 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		make && make install-strip; \
-		) 2>&1 | tee -a /var/log/build/build.log \
-	&& echo "Build Completed" 
+		) > /var/log/build/build.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.log) || (echo "Build Failed" && cat /var/log/build/build.log && exit 1)
