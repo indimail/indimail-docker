@@ -133,6 +133,7 @@ RUN export HOSTNAME=indimail.org \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
+		echo "Completed stage 1"; \
 		) 2>&1 | tee -a /var/log/build/build.bin.log \
 	&& (sed -i 's/^tty/#tty/g' /etc/inittab; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runlevels/sysinit \
@@ -157,18 +158,21 @@ RUN export HOSTNAME=indimail.org \
 		sed -i '/^kern\|^lpr/d' /etc/syslog.conf; \
 		sed -i 's{hostname {{' /etc/init.d/inetutils-syslogd; \
 		[ ! -f /etc/nsswitch.conf ] && echo 'hosts: files mdns4_minimal [NOTFOUND=return] dns mdns4' > /etc/nsswitch.conf; \
-	   ) \
-	&& /bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
+		echo "Completed stage 2"; \
+	   ) 2>&1 | tee -a /var/log/build/build.bin.log \
+	&& (/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 		/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
 		/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 		/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 		/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-		/lib/security/pam-multi.a \
-	&& apk del gcc g++ make git autoconf automake libtool \
+		/lib/security/pam-multi.a /usr/lib/libcourier-unicode.la /usr/lib/libgsasl.la /usr/lib/libltdl.la; \
+		apk del gcc g++ make git autoconf automake libtool \
 		openssl-dev musl-fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
 		pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
-		libev-dev libsodium-dev m4 \
-	&& /bin/rm -rf /run/* || true \
+		libev-dev libsodium-dev m4; \
+		/bin/rm -rf /run/* || true; \
+		echo "Completed stage 3"; \
+	   ) 2>&1 | tee -a /var/log/build/build.bin.log \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
