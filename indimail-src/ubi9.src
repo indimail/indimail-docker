@@ -1,0 +1,61 @@
+# docker build -f dockerfile.ubi9 -t cprogrammer/indimail-src:ubi9
+# run dpkg-reconfigure tzdata after starting the container
+#From redhat/ubi9:latest
+# redhat is screwing lot of us folks. pam-devel, xmlto, flex, mailx is missing
+From registry.access.redhat.com/ubi9/ubi-init
+MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:ubi9
+
+RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& dnf config-manager --set-enabled ubi-9-baseos-source ubi-9-appstream-source \
+	&& dnf -y erase subscription-manager \
+	&& dnf -y install \
+		https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
+		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
+		mysql-community-server mysql-devel pkgconf patch \
+		openssl-devel openldap-devel ncurses-devel libidn-devel pcre-devel pcre2-devel \
+		findutils libsodium-devel libdb-devel libgcrypt-devel krb5-devel \
+		diffutils coreutils which chkconfig procps psmisc less cronie \
+		file sed wget bzip2 \
+	&& (set -e; \
+		# mrtg
+		cd /usr/local/srctmp; \
+		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
+			-O /usr/local/srctmp/mrtg.tar.gz; \
+		tar xf mrtg.tar.gz && /bin/rm -f mrtg.tar.gz; \
+		cd mrtg-*; \
+		./configure --prefix=/usr; make && make install; \
+		# gsasl
+		cd /usr/local/srctmp; \
+		wget -nv https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz; \
+			-O /usr/local/srctmp/gdbm.tar.gz; \
+		tar xf gdbm.tar.gz && /bin/rm -f gdbm.tar.gz; \
+		cd gdbm-*; \
+		./configure --prefix=/usr; make && make install; \
+		# indimail
+		cd /usr/local/srctmp; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-docker.git; \
+		# libtirpc
+		git clone git://linux-nfs.org/~steved/libtirpc; \
+		cd /usr/local/srctmp/libtirpc; \
+		./bootstrap; \
+		./configure --prefix=/usr; \
+		make; make install-strip; \
+		# gsasl
+		cd /usr/local/srctmp; \
+		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
+		tar xf gsasl-2.2.0.tar.gz; \
+		/bin/rm -f gsasl-2.2.0.tar.gz; \
+		patch -p0 < indimail-docker/patches/gsasl-2.2.0.patch; \
+		cd /usr/local/srctmp/gsasl-2.2.0; \
+		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
+		make && make install-strip; \
+		) > /var/log/build/build.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.log) || (echo "Build Failed" && cat /var/log/build/build.log && exit 1)

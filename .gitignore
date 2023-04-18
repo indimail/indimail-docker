@@ -4,5 +4,4 @@ dockerfile
 fc35
 centos7
 *-centos7.yml
-ubi9.src
 .gitignore
