@@ -6,8 +6,8 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:s
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
-	&& dnf -y update \
 	&& (set -e; \
+		dnf -y update; \
 		cd /usr/local/srctmp; \
 		# libqmail #############################################
 		cd /usr/local/srctmp/libqmail; \
@@ -133,7 +133,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 			/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-			/var/log/build/build.log; \
+			/var/log/build/build.log.gz; \
 		dnf -y erase gcc autoconf automake make git \
 			xmlto docbook-dtds sgml-common docbook-style-xsl; \
 		/bin/rm -rf /run/* || true; \

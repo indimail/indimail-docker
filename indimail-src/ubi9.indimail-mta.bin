@@ -117,7 +117,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 			/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-			/var/log/build/build.log; \
+			/var/log/build/build.log.gz; \
 		dnf -y erase gcc autoconf automake make git \
 			xmlto docbook-dtds sgml-common docbook-style-xsl; \
 		/bin/rm -rf /run/* || true; \

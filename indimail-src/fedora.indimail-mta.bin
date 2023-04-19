@@ -4,8 +4,8 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fedora
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& dnf -y update \
 	&& (set -e; \
+		dnf -y update; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \
@@ -57,9 +57,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		dnf -y erase flex xmlto bison \
-			gcc gcc-g++ autoconf automake libtool bzip2 tcl tk git \
+			gcc gcc-g++ autoconf automake libtool tcl tk git \
 			libgcrypt-devel mysql-devel gettext-devel libgcrypt-devel \
 			openssl-devel openldap-devel ncurses-devel gdbm-devel pcre-devel pcre2-devel \
 			libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \

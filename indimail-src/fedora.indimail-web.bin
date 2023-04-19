@@ -4,9 +4,9 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-virtualdomains:fedora
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& dnf -y update \
-	&& dnf -y install mysql-server mariadb httpd mod_ssl php php-fpm roundcubemail php-mysqlnd php-imagick \
 	&& (set -e; \
+		dnf -y update && dnf -y install mysql-server mariadb httpd mod_ssl \
+			php php-fpm roundcubemail php-mysqlnd php-imagick; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \
@@ -36,14 +36,11 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make && make install-strip; \
 		make mysql install-strip; \
 		# indimail-virtualdomains ##############################
-		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
-		./default.configure; \
-		make && make install-strip; \
-		cd ..; \
-		for i in altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
+		cd /usr/local/srctmp/indimail-virtualdomains; \
+		for i in indimail-x altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
 			bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
 			indium-x nssd-x fetchmail-x logalert-x procmail-x \
-			iwebadmin-x ircube ; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
+			iwebadmin-x ircube-x ; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot; \
@@ -67,20 +64,22 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \
 		dnf -y erase flex xmlto bison \
-			gcc gcc-g++ autoconf automake libtool bzip2 tcl tk git \
+			gcc gcc-g++ autoconf automake libtool tcl tk git \
 			libgcrypt-devel gettext-devel libgcrypt-devel \
 			openssl-devel openldap-devel ncurses-devel gdbm-devel pcre-devel pcre2-devel \
 			libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 			libidn2-devel readline-devel tcl-devel tk-devel; \
 		dnf -y autoremove; \
-	) > /var/log/build/build.bin.log 2>&1 \
+	) >/var/log/build/build.bin.log 2>&1 \
 	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
-	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || (echo "MySQL db creation failed" && exit 1) \
-	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || (echo "RoundCube db creation failed" && exit 1)
+	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || \
+		(echo "MySQL db creation failed" && gunzip -c /var/log/build/build.bin.log.gz && exit 1) \
+	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
+		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/build.bin.log.gz && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]

@@ -4,9 +4,8 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-virtualdomains:fedora
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& dnf -y update \
-	&& dnf -y install mysql-server mariadb \
 	&& (set -e; \
+		dnf -y update && dnf -y install mysql-server mariadb; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \
@@ -35,11 +34,8 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		sed -i 's/ -g//' conf-cc; \
 		make && make install-strip; \
 		# indimail-virtualdomains ##############################
-		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
-		./default.configure; \
-		make && make install-strip; \
-		cd ..; \
-		for i in altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
+		cd /usr/local/srctmp/indimail-virtualdomains; \
+		for i in indimail-x altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
 			bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
 			indium-x nssd-x fetchmail-x logalert-x procmail-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
@@ -65,9 +61,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		dnf -y erase flex xmlto bison \
-			gcc gcc-g++ autoconf automake libtool bzip2 tcl tk git \
+			gcc gcc-g++ autoconf automake libtool tcl tk git \
 			libgcrypt-devel gettext-devel libgcrypt-devel \
 			openssl-devel openldap-devel ncurses-devel gdbm-devel pcre-devel pcre2-devel \
 			libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \

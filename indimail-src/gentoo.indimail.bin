@@ -91,7 +91,7 @@ RUN export HOSTNAME=indimail.org \
 			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a /usr/lib/libdkim.a \
 			/usr/lib64/libltdl.la /usr/lib64/libgsasl.la /usr/lib64/libgsasl.la \
-			/usr/lib/libsrs2.a /lib/security/pam-multi.la /var/log/build/build.log; \
+			/usr/lib/libsrs2.a /lib/security/pam-multi.la /var/log/build/build.log.gz; \
 		/sbin/ldconfig; \
 		/bin/rm -rf /run/* || true; \
 	) > /var/log/build/build.bin.log 2>&1 \

@@ -147,7 +147,7 @@ RUN export HOSTNAME=indimail.org \
 			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 			/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-			/var/log/build/build.log; \
+			/var/log/build/build.log.gz; \
 		pacman -Rnss --noconfirm gcc autoconf automake make git; \
 		pacman -S --noconfirm --needed diffutils binutils; \
 		/bin/rm -rf /run/* || true; \

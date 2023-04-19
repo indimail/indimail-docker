@@ -154,7 +154,7 @@ RUN export HOSTNAME=indimail.org \
 			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
 			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
 			/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
-			/lib/security/pam-multi.a /var/log/build/build.log; \
+			/lib/security/pam-multi.a /var/log/build/build.log.gz; \
 		apk del gcc g++ make git autoconf automake libtool \
 			openssl-dev musl-fts-dev mysql-dev musl-nscd-dev libidn-dev libidn2-dev \
 			pcre-dev libtirpc-dev ncurses-dev linux-pam-dev gdbm-dev db-dev gsl-dev \
