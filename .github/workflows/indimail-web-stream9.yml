@@ -3,7 +3,7 @@ name: indimail-web:stream9 container image
 on:
   push:
     paths:
-      - '**/webmail/stream9/**'
+      - '**/indimail-strc/stream9.indimail-web.bin/**'
       - .github/workflows/indimail-web-stream9.yml
       - '!**.md'
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
       - name: build
         run: |
           sudo apt-get install podman
-          cp indimail-src/stream9.webmail.bin Dockerfile
+          cp indimail-src/stream9.indimail-web.bin Dockerfile
           podman build --cap-add SYS_NICE --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:stream9" .
 
       - name: push
