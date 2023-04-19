@@ -146,7 +146,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make && make install-strip; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		setcap -r /usr/libexec/mysqld; \
 		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
+		setcap cap_sys_nice+ep /usr/libexec/mysqld; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
@@ -180,7 +182,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		mv config /etc/roundcubemail; \
 		ln -s /etc/roundcubemail config; \
 		systemctl disable mysqld 2>/dev/null; \
+		setcap -r /usr/libexec/mysqld; \
 		/usr/libexec/indimail/roundcube_config; \
+		setcap cap_sys_nice+ep /usr/libexec/mysqld; \
 		echo "End roundcube config"; \
 		dnf -y install s-nail; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
@@ -194,7 +198,8 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		/bin/rm -rf /run/* || true; \
 	) > /var/log/build/build.bin.log 2>&1 \
 	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
-	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || (echo "MySQL db creation failed" && exit 1)
+	&& (test -d /var/indimail/mysqldb/data/indimail && echo "IndiMail db creation succeeded") || (echo "IndiMail db creation failed" && exit 1) \
+	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || (echo "RoundCube db creation failed" && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]
