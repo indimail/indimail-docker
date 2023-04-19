@@ -41,11 +41,17 @@ jobs:
             do
               echo "Using $j/$i/Dockerfile for build"
               cp $j/$i/Dockerfile .
-              docker build --tag "ghcr.io/${{ github.repository_owner }}/$j:$i" .
+              docker build --tag "ghcr.io/${{ github.repository_owner }}/$j:$i" . > $i.$j.log 2>&1
               if [ $? -eq 0 ] ; then
                 docker push "ghcr.io/${{ github.repository_owner }}/$j:$i"
                 docker image tag "ghcr.io/${{ github.repository_owner }}/$j:$i" docker.io/cprogrammer/$j:$i
                 docker push docker.io/cprogrammer/$j:$i
               fi
+              /bin/rm -f Dockerfile
+              gzip $i.$j.log
             done
           done
+      - uses: actions/upload-artifact@v2
+        with:
+          name: buildall-bin=from-src
+          path: '*.log.gz'

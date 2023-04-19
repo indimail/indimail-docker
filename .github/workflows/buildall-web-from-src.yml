@@ -21,14 +21,22 @@ jobs:
 
       - name: build
         run: |
-          for i in indimail-src/*.webmail.bin
+          set +e
+          for i in indimail-src/*.indimail-web.bin
           do
             name=$(basename $i |cut -d. -f1)
             echo "Building web container for $name"
             cp $i Dockerfile
-            docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" .
+            docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" . > $name.log 2>&1
+            if [ $? -eq 0 ] ; then
+              docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:$name"
+              docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" docker.io/cprogrammer/indimail-web:$name
+              docker push docker.io/cprogrammer/indimail-web:$name
+            fi
             /bin/rm -f Dockerfile
-            docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:$name"
-            docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" docker.io/cprogrammer/indimail-web:$name
-            docker push docker.io/cprogrammer/indimail-web:$name
+            gzip $name.log
           done
+      - uses: actions/upload-artifact@v2
+        with:
+          name: buildall-bin=from-src
+          path: '*.log.gz'

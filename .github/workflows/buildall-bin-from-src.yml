@@ -22,6 +22,7 @@ jobs:
 
       - name: build
         run: |
+          set +e
           for i in alpine archlinux stream8 stream9 ubi8 gentoo
           do
             for j in indimail indimail-mta
@@ -29,10 +30,12 @@ jobs:
               echo "Using indimail-src/$i.$j.bin for build"
               cp indimail-src/$i.$j.bin Dockerfile
               docker build --tag "ghcr.io/${{ github.repository_owner }}/$j:$i" . > $i.$j.log 2>&1
+              if [ $? -eq 0 ] ; then
+                docker push "ghcr.io/${{ github.repository_owner }}/$j:$i"
+                docker image tag "ghcr.io/${{ github.repository_owner }}/$j:$i" docker.io/cprogrammer/$j:$i
+                docker push docker.io/cprogrammer/$j:$i
+              fi
               /bin/rm -f Dockerfile
-              docker push "ghcr.io/${{ github.repository_owner }}/$j:$i"
-              docker image tag "ghcr.io/${{ github.repository_owner }}/$j:$i" docker.io/cprogrammer/$j:$i
-              docker push docker.io/cprogrammer/$j:$i
               gzip $i.$j.log
             done
           done
