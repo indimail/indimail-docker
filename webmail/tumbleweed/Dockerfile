@@ -32,8 +32,6 @@ RUN export HOSTNAME=indimail.org \
 		https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/server:monitoring/openSUSE_Tumbleweed/server:monitoring.repo \
-	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:php:applications/openSUSE_Tumbleweed/server:php:applications.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& sed -i -e 's{rpm.install.excludedocs = yes{rpm.install.excludedocs = no{' /etc/zypp/zypp.conf \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
@@ -50,13 +48,6 @@ RUN export HOSTNAME=indimail.org \
 		ezmlm-idx-mysql \
 		iwebadmin \
 		ircube \
-		apache2-mod_php7 \
-		php7-ctype \
-		php7-gd \
-		php7-imagick \
-		php7-intl \
-		php7-xmlrpc \
-		php7-zip \
 		roundcubemail \
 		mailx \
 	&& echo "Creating self-signed certificate" \
