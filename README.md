@@ -12,7 +12,6 @@ Table of Contents
       * [Clear the stopped container image](#clear-the-stopped-container-image)
       * [github respository for Dockerfile](#github-respository-for-dockerfile)
       * [Building container images](#building-container-images)
-      * [NOTE](#note)
    * [Run MTA, Virtual Domains or Webmail](#run-mta-virtual-domains-or-webmail)
       * [Screenshots](#screenshots)
    * [Build Scripts](#build-scripts)
@@ -885,7 +884,7 @@ docker.io/library/fedora                   33          b3048463dcef  8 months ag
 docker.io/opensuse/tumbleweed              latest      2eac6045a15c  8 months ago    93.4 MB
 ```
 
-## NOTE
+**NOTE**
 
 The images above have been installed without clam anti-virus to keep the image size as low as possible. You may install and configure it using the below steps.
 
