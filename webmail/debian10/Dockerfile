@@ -66,13 +66,15 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		php-cli \
 		ircube \
 	&& update-alternatives --config mta \
-	&& a2enmod proxy_fcgi setenvif \
-	&& a2enconf php7.3-fpm \
-	&& systemctl enable apache2 \
-	&& wget -nv \
-		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
-		-O /root/Downloads/roundcubemail.tar.gz \
-	&& (cd /usr/share; \
+	&& mkdir -p /var/log/build \
+	&& (set -e; \
+		a2enmod proxy_fcgi setenvif; \
+		a2enconf php7.3-fpm; \
+		#systemctl enable apache2; \
+		wget -nv \
+			https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
+			-O /root/Downloads/roundcubemail.tar.gz; \
+		cd /usr/share; \
 		tar xfz /root/Downloads/roundcubemail.tar.gz; \
 		mv roundcubemail/plugins/* roundcubemail-1.6.0/plugins; \
 		/bin/rm -rf roundcubemail; \
@@ -86,10 +88,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		systemctl disable mariadb; \
 		systemctl stop mariadb; \
 		/usr/libexec/indimail/roundcube_config; \
-		/bin/rm -r /root/Downloads) >/tmp/roundcube.log 2>&1 \
-	&& cat /tmp/roundcube.log \
-	&& unset HOSTNAME \
-	&& echo "Build Completed" 
+		/bin/rm -r /root/Downloads) >/var/log/build/roundcube.log 2>&1 \
+	&& (echo "Build Succeeded" && gzip /var/log/build/roundcube.log) || (echo "Build Failed" && cat /var/log/build/roundcube.log && exit 1) \
+	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
+		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/roundcube.log.gz && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["webmail"]
