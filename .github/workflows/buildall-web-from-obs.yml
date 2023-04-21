@@ -42,8 +42,10 @@ jobs:
             cp webmail/$i/Dockerfile .
             docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$i" . > $i.log 2>&1
             if [ $? -eq 0 ] ; then
+              echo "docker push ghcr.io/${{ github.repository_owner }}/indimail-web:$i"
               docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:$i"
               docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$i" docker.io/cprogrammer/indimail-web:$i
+              echo "docker push docker.io/cprogrammer/indimail-web:$i"
               docker push docker.io/cprogrammer/indimail-web:$i
             else
               cat $i.log

@@ -30,8 +30,10 @@ jobs:
             cp $i Dockerfile
             docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" . > $name.log 2>&1
             if [ $? -eq 0 ] ; then
+              ech "docker push ghcr.io/${{ github.repository_owner }}/indimail-web:$name"
               docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:$name"
               docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$name" docker.io/cprogrammer/indimail-web:$name
+              eco "docker push docker.io/cprogrammer/indimail-web:$name"
               docker push docker.io/cprogrammer/indimail-web:$name
             else
               cat $name.log

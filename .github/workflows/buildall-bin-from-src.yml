@@ -31,7 +31,7 @@ jobs:
         run: |
           set +e
           if [ -z "${{ github.event.inputs.distro_list }}"  ] ; then
-            distros="alpine archlinux stream8 stream9 ubi8 gentoo"
+            distros="alpine archlinux fedora stream8 stream9 ubi8 ubi9 gentoo"
           else
             distros="${{ github.event.inputs.distro_list }}"
           fi
@@ -44,8 +44,10 @@ jobs:
               cp indimail-src/$i.$j.bin Dockerfile
               docker build --tag "ghcr.io/${{ github.repository_owner }}/$j:$i" . > $i.$j.log 2>&1
               if [ $? -eq 0 ] ; then
+                echo "docker push ghcr.io/${{ github.repository_owner }}/$j:$i"
                 docker push "ghcr.io/${{ github.repository_owner }}/$j:$i"
                 docker image tag "ghcr.io/${{ github.repository_owner }}/$j:$i" docker.io/cprogrammer/$j:$i
+                echo "docker push docker.io/cprogrammer/$j:$i"
                 docker push docker.io/cprogrammer/$j:$i
               else
                 cat $i.$j.log
