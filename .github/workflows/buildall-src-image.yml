@@ -61,5 +61,5 @@ jobs:
           fi
       - uses: actions/upload-artifact@v2
         with:
-          name: buildall-bin=from-src
+          name: buildall-src-logs
           path: '*.log.gz'
