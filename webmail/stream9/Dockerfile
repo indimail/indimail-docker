@@ -22,7 +22,6 @@ RUN export HOSTNAME=indimail.org \
 		hostname \
 		less \
 		cronie \
-		mailx \
 		man-db \
 		man-pages \
 		mrtg \
