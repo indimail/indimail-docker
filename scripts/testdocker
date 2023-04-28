@@ -70,7 +70,7 @@ function setup_maildir()
 
 function shutdown_svscan()
 {
-	echo "Shutting down svscan"
+	[ $verbose -eq 1 ] && echo "Shutting down svscan"
 	if [ -d $servicedir/.svscan/log ] ; then
 		sudo kill $1
 		sleep 5
@@ -102,7 +102,7 @@ function setup_queue()
 
 function setup_config()
 {
-	echo "Creating default config files in $cntrldir" 1>&3
+	[ $verbose -eq 1 ] && echo "Creating default config files in $cntrldir" 1>&3
 	env CONTROLDIR=$cntrldir config-fast $HOSTNAME 
 
 	echo ./Maildir/                > $cntrldir/defaultdelivery
@@ -112,9 +112,9 @@ function setup_config()
 	echo blocked@$HOSTNAME         > $cntrldir/badrcptto
 	echo "$domain2:127.0.0.1:2025" > $cntrldir/smtproute
 
-	echo "Creating qmail config" 1>&3
+	[ $verbose -eq 1 ] && echo "Creating qmail config" 1>&3
 	sudo /usr/sbin/svctool --cntrldir=$cntrldir --config=qmail
-	echo "Creating openssl certificates" 1>&3
+	[ $verbose -eq 1 ] && echo "Creating openssl certificates" 1>&3
 	sudo /usr/sbin/svctool --certdir=$certdir    --config=cert \
 		--postmaster=postmaster@$HOSTNAME --common_name=$HOSTNAME
 	sudo chown -R $user $cntrldir
@@ -123,8 +123,7 @@ function setup_config()
 
 function setup_svscan_without_svscanlog()
 {
-	echo
-	echo "Starting svscan services without svscanlog"
+	[ $verbose -eq 1 ] && echo "Starting svscan services without svscanlog"
 	sudo /bin/rm -rf $servicedir
 	sudo /bin/rm -rf $logdir/smtpd
 	sudo /bin/rm -rf $logdir/qmail-send
@@ -170,24 +169,16 @@ function start_svscan_without_svscanlog()
 	sleep 1
 	svpid=$(sed -n '$p' $servicedir/.svscan.pid)
 	sudo kill -0 $svpid
-	if [ $? -eq 0 ] ; then
-		tcount=$(expr $tcount + 1)
-		echo "  testing svscan (without svscanlog) startup succeeded"
-	else
-		fcount=$(expr $fcount + 1)
-		echo "  testing svscan (without svscanlog) startup failed"
+	if [ $? -ne 0 ] ; then
+		echo "  testing svscan (without svscanlog) startup failed" 1>&2
 		shutdown_svscan $svpid
 		exit 1
 	fi
 	for i in smtpd smtpd/log qmail-send qmail-send/log
 	do
 		sudo svok $servicedir/smtpd
-		if [ $? -eq 0 ] ; then
-			tcount=$(expr $tcount + 1)
-			echo "  testing service $i startup succeeded"
-		else
-			fcount=$(expr $fcount + 1)
-			echo "  testing service $i startup failed"
+		if [ $? -ne 0 ] ; then
+			echo "  testing service $i startup failed" 1>&2
 			shutdown_svscan $svpid
 			exit 1
 		fi
@@ -206,13 +197,13 @@ function do_setup()
 	mkdir -p $logdir/smtpd
 	mkdir -p $logdir/podman
 	(
-	echo "Creating maildir" 1>&3
+	[ $verbose -eq 1 ] && echo "Creating maildir" 1>&3
 	setup_maildir
-	echo "Creating assign" 1>&3
+	[ $verbose -eq 1 ] && echo "Creating assign" 1>&3
 	setup_assign
-	echo "Creating config" 1>&3
+	[ $verbose -eq 1 ] && echo "Creating config" 1>&3
 	setup_config
-	echo "Creating queue" 1>&3
+	[ $verbose -eq 1 ] && echo "Creating queue" 1>&3
 	setup_queue
 	) > $logdir/setup/setup.log 2>&1
 }
@@ -220,7 +211,7 @@ function do_setup()
 function do_svscan_without_svscanlog()
 {
 	# start svscan without svscanlog
-	echo "Setting  svscan service" 1>&3
+	[ $verbose -eq 1 ] && echo "Setting  svscan service" 1>&3
 	setup_svscan_without_svscanlog
 	start_svscan_without_svscanlog
 	svpid=$(sed -n '$p' $servicedir/.svscan.pid)
@@ -270,43 +261,58 @@ test_docker()
 	fi
 	if [ "$what" = "indimail" -o "$what" = "indimail-web" ] ; then
 		case $image in
-			jammy)
+		jammy)
 			for i in qmail-send.25 slowq-send inlookup.infifo indisrvr.4000
 			do
 				podman exec -ti $what /bin/rm -f /service/$i/variables/MYSQL_OPT_RECONNECT
 				podman exec -ti $what svc -r /service/$i
 			done
-			;;
-			#stream9)
-			#podman exec -ti $what setcap -r /usr/libexec/mysqld
-			#;;
+		;;
+		#stream9)
+		#podman exec -ti $what setcap -r /usr/libexec/mysqld
+		#;;
 		esac
-		echo "Waiting 25 seconds for MySQL"
 		sleep 25
 	fi
+	case $image in
+		bionic)
+			podman exec -ti $what sh -c "echo 209715200 > /service/qmail-smtpd.25/variables/SOFT_MEM"
+			podman exec -ti $what svc -r /service/qmail-smtpd.25
+		;;
+	esac
 	if [ $verbose -eq 1 ] ; then
 		podman ps
 	fi
 
 	if [ "$what" = "indimail-mta" ] ; then
+		(
 		podman exec -ti indimail-mta sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
 		podman exec -ti indimail-mta sh -c "printf \"$domain1:$ip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
 		podman exec -ti indimail-mta touch /etc/indimail/control/chkrcptdomains
 		podman exec -ti indimail-mta svc -h /service/qmail-smtpd.25
 		sleep $sleep_int
-		swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+		if [ $verbose -eq 1 ] ; then
+			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+		else
+			swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+		fi
+		) > $logdir/podman/$what.$image.log 2>&1
 	else
+		(
 		podman exec -ti $what sh -c "printf \"$domain1:$ip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
 		podman exec -ti $what touch /etc/indimail/control/chkrcptdomains
 		podman exec -ti $what svc -h /service/qmail-smtpd.25
-		(
 		echo "podman commands vadddomain, vadduser"
 		podman exec -ti $what vadddomain $domain3 $password
 		podman exec -ti $what vadduser $user@$domain3 $password
 		echo "------------------"
-		)  > $logdir/podman/$what.$image.log
 		sleep $sleep_int
-		swaks -S --to $user@$domain3 --from testuser01@example.com -s 127.0.0.1 -p 2025
+		if [ $verbose -eq 1 ] ; then
+			swaks    --to $user@$domain3 --from testuser01@example.com -s 127.0.0.1 -p 2025
+		else
+			swaks -S --to $user@$domain3 --from testuser01@example.com -s 127.0.0.1 -p 2025
+		fi
+		) > $logdir/podman/$what.$image.log 2>&1
 	fi
 	sleep $sleep_int
 	(
@@ -314,7 +320,8 @@ test_docker()
 	podman exec -ti $what cat /var/log/svc/smtpd.25/current
 	echo "------ qmail-send  log ------"
 	podman exec -ti $what cat /var/log/svc/deliver.25/current
-	) >> $logdir/podman/$what.$image.log
+	echo "------ --------------- ------"
+	) >> $logdir/podman/$what.$image.log 2>&1
 	if [ "$what" = "indimail-mta" ] ; then
 		check_mail $maildir
 	else
@@ -323,21 +330,39 @@ test_docker()
 	fi
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
-		echo "  testing mail send+receive via podman container succeeded"
+		echo "  testing mail send+receive via podman container $what.$image succeeded"
 	else
 		fcount=$(expr $fcount + 1)
-		echo "  testing mail send+receive via podman container failed"
+		echo "  testing mail send+receive via podman container $what.$image failed"
 		cat $logdir/podman/$what.$image.log
+		if [ -z "$failed" ] ; then
+			failed="$what"
+		else
+			failed="$failed $what"
+		fi
 		echo "Press ENTER"
 		read key
 	fi
-	echo -n "Stopping $image container="
+	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
+	(
 	podman stop $what
+	if [ $delete -eq 1 ] ; then
+		podman rmi $id
+	fi
+	) >> $logdir/podman/$what.$image.log 2>&1
+	if [ $verbose -eq 1 ] ; then
+		cat $logdir/podman/$what.$image.log
+	fi
+	echo
 }
 
 usage()
 {
-	echo "testdocker [-y|--nprompt] [-u|--update] [-v|--verbose]" 1>&2
+	(
+	echo "testdocker [-y|--nprompt] [-u|--update] [-v|--verbose] [-d|--delete] [-c catalog|--catalog catalog]"
+	echo " - where catalog is one of indimail, indimail-mta, indimail-web"
+	echo "   if -c is not provided, all three (indimail, indimail-mta, indimail-web) will be processed"
+	) 1>&2
 	exit 1
 }
 
@@ -346,8 +371,10 @@ fcount=0
 tcount=0
 prompt=1
 doquit=0
+delete=0
 do_update=0
 verbose=0
+catalog=""
 if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
@@ -357,7 +384,7 @@ if [ ! -x /usr/bin/podman ] ; then
 	echo "podman command not found" 1>&2
 	exit 1
 fi
-options=$(getopt -a -n testdocker -o "yuv" -l noprompt,update,verbose -- "$@")
+options=$(getopt -a -n testdocker -o "yuvdc:" -l noprompt,update,verbose,delete,catalog -- "$@")
 if [ $? != 0 ]; then
   usage
 fi
@@ -375,6 +402,19 @@ do
 	;;
 	-v | --verbose)
 	verbose=1
+	shift
+	;;
+	-d | --delete)
+	delete=1
+	shift
+	;;
+	-c | --catalog)
+	if [ -z "$catalog" ] ; then
+		catalog="$2"
+	else
+		catalog="$catalog $2"
+	fi
+	shift 2
 	;;
 	--) # end of options
 	shift
@@ -389,8 +429,29 @@ done
 
 do_setup
 do_svscan_without_svscanlog
+[ $verbose -eq 1 ] && echo
+
 if [ $# -eq 0 ] ; then
-	if [ $doquit -eq 0 ] ; then
+	if [ -z "$catalog" ] ; then
+		process_indimail=1
+		process_indimail_mta=1
+		process_indimail_web=1
+	else
+		process_indimail=0
+		process_indimail_mta=0
+		process_indimail_web=0
+		for i in $catalog
+		do
+			if [ "$i" = "indimail" ] ; then
+				process_indimail=1
+			elif [ "$i" = "indimail-mta" ] ; then
+				process_indimail_mta=1
+			elif [ "$i" = "indimail-web" ] ; then
+				process_indimail_web=1
+			fi
+		done
+	fi
+	if [ $doquit -eq 0 -a $process_indimail_mta -eq 1 ] ; then
 		for i in indimail-mta/*/Dockerfile
 		do
 			image=$(echo $i | cut -d/ -f2)
@@ -408,7 +469,7 @@ if [ $# -eq 0 ] ; then
 			fi
 		done
 	fi
-	if [ $doquit -eq 0 ] ; then
+	if [ $doquit -eq 0 -a $process_indimail -eq 1 ] ; then
 		for i in indimail/*/Dockerfile
 		do
 			image=$(echo $i | cut -d/ -f2)
@@ -426,7 +487,7 @@ if [ $# -eq 0 ] ; then
 			fi
 		done
 	fi
-	if [ $doquit -eq 0 ] ; then
+	if [ $doquit -eq 0 -a $process_indimail_web -eq 1 ] ; then
 		for i in webmail/*/Dockerfile
 		do
 			image=$(echo $i | cut -d/ -f2)
@@ -455,8 +516,7 @@ else
 		fi
 	done
 fi
-echo
-echo "Tests Completed"
+[ $verbose -eq 1 ] && echo "Tests Completed"
 shutdown_svscan $svpid
 wait
 # Cleanup
@@ -465,9 +525,12 @@ sudo /bin/rm -rf $logdir
 sudo /bin/rm -rf $testdir/queue
 sudo /bin/rm -rf $sysconfdir/users
 echo
-if [ $fcount -eq 0 ] ; then
-	echo "All $tcount tests succeeded"
-else
+if [ $fcount -ne 0 ] ; then
 	echo "$tcount tests succeeded, $fcount tests failed"
+	if [ -n "$failed" ] ; then
+		echo "failed list=$failed"
+	fi
+else
+	echo "All $tcount tests succeeded"
 fi
 exit 0
