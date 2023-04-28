@@ -3,16 +3,18 @@ if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
 fi
-command="docker"
-options=$(getopt -a -n runpod -o "c:d:i:y" -l cmd:,distro:,image: -- "$@")
+options=$(getopt -a -n build-bin-from-obs -o "c:d:i:yo:" -l cmd:,distro:,image:,yes,owner: -- "$@")
 if [ $? != 0 ]; then
 	(
 	echo "invalid usage"
-	echo "build [-c docker | podman] [-d distribution] [-i indimail|indimail-mta]"
+	echo "build-bin-from-obs [-c docker | podman] [-d distribution] [-i indimail|indimail-mta] [-o owner|--owner owner]"
 	) 1>&2
 	exit 1
 fi
+
 non_interactive=0
+command="docker"
+github_owner=mbhangui
 eval set -- "$options"
 while :
 do
@@ -44,6 +46,11 @@ do
 	shift 2
 	;;
 
+	-o | --owner)
+	github_owner=$2
+	shift 2
+	;;
+
 	--) # end of options
 	shift
 	break
@@ -59,11 +66,10 @@ done
 ask_d=0
 ask_i=0
 cd ..
-github_owner=mbhangui
 if [ -z "$distro_list" ] ; then
 	ask_d=1
 	distro_list="archlinux almalinux9 almalinux8 centos7 debian11 \
-		bionic focal jammy oracle8 fc36 fc37 leap15.3 leap15.4 \
+		bionic focal jammy oracle8 fc36 fc37 leap15.4 leap15.5 \
 		tumbleweed rockylinux8"
 fi
 if [ -z "$image_list" ] ; then
@@ -84,6 +90,9 @@ do
 			read key
 			if [ " $key" != " y" -a " $key" != " Y" ] ; then
 				continue
+			fi
+			if [ " $key" = " quit" ] ; then
+				break
 			fi
 		fi
 		(

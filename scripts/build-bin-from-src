@@ -3,31 +3,86 @@ if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
 fi
-cd ..
+options=$(getopt -a -n build-bin-from-obs -o "c:yo:" -l cmd:,yes,owner: -- "$@")
+if [ $? != 0 ]; then
+	(
+	echo "invalid usage"
+	echo "build-bin-from-src [-c docker | podman] [-d distribution]"
+	) 1>&2
+	exit 1
+fi
+
+non_interactive=0
+command=docker
 github_owner=mbhangui
+eval set -- "$options"
+while :
+do
+	case "$1" in
+	-c | --cmd)
+	command=$2
+	shift 2
+	if [ " $command" != " podman" -a " $command" != " docker" ] ; then
+		echo "invalid command [$command]: command should be podman or docker" 1>&2
+		exit 1
+	fi
+	;;
+
+	-o | --owner)
+	github_owner=$2
+	shift 2
+	;;
+
+	-y)
+	non_interactive=1
+	;;
+
+	--) # end of options
+	shift
+	break
+	;;
+
+	*)
+	echo "Unexpected option [$1]: this should'nt happen." 1>&2
+	exit 1
+	;;
+	esac
+done
+
+cd ..
 for i in `ls indimail-src/*.bin`
 do
 	tag=$(basename $i | cut -d. -f1)
 	pkg=$(basename $i | cut -d. -f2)
-	echo -n "$i: $pkg/$tag: Continue (Y/N) - "
-	read key
-	if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
-		continue
+	if [ $non_interactive -eq 0 ] ; then
+		printf "%-40s %-30s Continue (Y/N) - " $i $pkg/$tag
+		read key
+		if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
+			continue
+		fi
 	fi
 	cp $i ./Dockerfile
 	echo "Building cprogrammer/$pkg:$tag"
-	docker build -t  cprogrammer/$pkg:$tag .
-	docker image tag cprogrammer/$pkg:$tag ghcr.io/$github_owner/$pkg:$tag
-	docker image tag cprogrammer/$pkg:$tag docker.io/cprogrammer/$pkg:$tag
-	echo -n "$i: Push src to ghcr.io (Y/N) - "
-	read key
-	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		docker push "ghcr.io/$github_owner/$pkg:$tag"
+	$command build -t  cprogrammer/$pkg:$tag .
+	$command image tag cprogrammer/$pkg:$tag ghcr.io/$github_owner/$pkg:$tag
+	$command image tag cprogrammer/$pkg:$tag docker.io/cprogrammer/$pkg:$tag
+	if [ $non_interactive -eq 0 ] ; then
+		echo -n "$i: Push src to ghcr.io (Y/N) - "
+		read key
+	else
+		key="y"
 	fi
-	echo -n "$i: Push src to docker.io (Y/N) - "
-	read key
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		docker push cprogrammer/$pkg:$tag
+		$command push "ghcr.io/$github_owner/$pkg:$tag"
+	fi
+	if [ $non_interactive -eq 0 ] ; then
+		echo -n "$i: Push src to docker.io (Y/N) - "
+		read key
+	else
+		key="y"
+	fi
+	if [ " $key" = " y" -o " $key" = " Y" ] ; then
+		$command push cprogrammer/$pkg:$tag
 	fi
 	/bin/rm -f Dockerfile
 done

@@ -3,13 +3,58 @@ if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
 fi
-cd ..
+options=$(getopt -a -n build-bin-from-obs -o "c:yo:" -l cmd:,yes,owner: -- "$@")
+if [ $? != 0 ]; then
+	(
+	echo "invalid usage"
+	echo "build-bin-from-src [-c docker | podman] [-d distribution]"
+	) 1>&2
+	exit 1
+fi
+
+non_interactive=0
+command=docker
 github_owner=mbhangui
+eval set -- "$options"
+while :
+do
+	case "$1" in
+	-c | --cmd)
+	command=$2
+	shift 2
+	if [ " $command" != " podman" -a " $command" != " docker" ] ; then
+		echo "invalid command [$command]: command should be podman or docker" 1>&2
+		exit 1
+	fi
+	;;
+
+	-o | --owner)
+	github_owner=$2
+	shift 2
+	;;
+
+	-y)
+	non_interactive=1
+	;;
+
+	--) # end of options
+	shift
+	break
+	;;
+
+	*)
+	echo "Unexpected option [$1]: this should'nt happen." 1>&2
+	exit 1
+	;;
+	esac
+done
+
+cd ..
 if [ $# -gt 0 ] ; then
 	distro_list=$*
 else
 	distro_list="almalinux8 oracle8 rockylinux8 almalinux9 oracle9 rockylinux9 \
-		debian10 debian11 bionic focal jammy fc36 fc37 leap15.4 \
+		debian10 debian11 bionic focal jammy fc36 fc37 leap15.4 leap15.5 \
 		stream8 stream9 tumbleweed"
 fi
 for i in $distro_list
@@ -18,30 +63,40 @@ do
 		echo "webmail/$i/Dockerfile: No such file or directory"
 		exit 1
 	fi
-	echo -n "indimail-web/$i: Continue (Y/N) - "
-	read key
-	if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
-		continue
+	if [ $non_interactive -eq 0 ] ; then
+		printf "indimail-web/%-15s Continue (Y/N) - " "$i"
+		read key
+		if [ ! " $key" = " y" -a ! " $key" = " Y" ] ; then
+			continue
+		fi
 	fi
 	echo "Using indimail-web/$i/Dockerfile for build"
 	cp webmail/$i/Dockerfile .
 	if [ $? -ne 0 ] ; then
 		continue
 	fi
-	docker build -t cprogrammer/indimail-web:$i .
-	docker image tag cprogrammer/indimail-web:$i ghcr.io/$github_owner/indimail-web:$i
-	docker image tag cprogrammer/indimail-web:$i docker.io/cprogrammer/indimail-web:$i
+	$command build -t cprogrammer/indimail-web:$i .
+	$command image tag cprogrammer/indimail-web:$i ghcr.io/$github_owner/indimail-web:$i
+	$command image tag cprogrammer/indimail-web:$i docker.io/cprogrammer/indimail-web:$i
 	/bin/rm -f Dockerfile
 
-	echo -n "$i: Push src to ghcr.io (Y/N) - "
-	read key
+	if [ $non_interactive -eq 0 ] ; then
+		echo -n "$i: Push src to ghcr.io (Y/N) - "
+		read key
+	else
+		key="y"
+	fi
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		docker push "ghcr.io/$github_owner/indimail-web:$i"
+		$command push "ghcr.io/$github_owner/indimail-web:$i"
 	fi
 
-	echo -n "$i: Push src to docker.io (Y/N) - "
-	read key
+	if [ $non_interactive -eq 0 ] ; then
+		echo -n "$i: Push src to docker.io (Y/N) - "
+		read key
+	else
+		key="y"
+	fi
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		docker push docker.io/cprogrammer/indimail-web:$i
+		$command push docker.io/cprogrammer/indimail-web:$i
 	fi
 done
