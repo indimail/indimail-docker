@@ -1,5 +1,4 @@
 #!/bin/sh
-user=mbhangui
 #
 testdir=/tmp/qmail-test
 maildir=$testdir/$user/Maildir
@@ -13,12 +12,8 @@ bindir=/usr/bin
 sbindir=/usr/sbin
 qmail_newu=$sbindir/qmail-newu
 qmail_start=$sbindir/qmail-start
-qmail_inject=$bindir/qmail-inject
 qmail_smtpd=$sbindir/qmail-smtpd
-setuidgid=$bindir/setuidgid
 tcpserver=$bindir/tcpserver
-qmail_queue=$sbindir/qmail-queue
-s_nail=/usr/bin/s-nail
 smtp_port=2050
 sleep_int=2
 HOSTNAME=$(uname -n)
@@ -375,13 +370,15 @@ delete=0
 do_update=0
 verbose=0
 catalog=""
+ip=$(ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
+user=$(whoami)
 if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
 fi
 cd ..
-if [ ! -x /usr/bin/podman ] ; then
-	echo "podman command not found" 1>&2
+if [ ! -x /usr/bin/podman -a ! -x /usr/bin/docker ] ; then
+	echo "podman/docker command not found" 1>&2
 	exit 1
 fi
 options=$(getopt -a -n testdocker -o "yuvdc:" -l noprompt,update,verbose,delete,catalog -- "$@")
