@@ -1,6 +1,9 @@
 #!/bin/sh
 #
+localip=192.168.2.127
+#
 testdir=/tmp/qmail-test
+user=$(whoami)
 maildir=$testdir/$user/Maildir
 homedir=$testdir/home/mail
 servicedir=$testdir/service
@@ -21,7 +24,6 @@ HOSTNAME=$(uname -n)
 domain1=argos.indimail.org
 domain2=podman.indimail.org
 domain3=virtual.indimail.org
-ip=192.168.2.107
 password="abcdefgh12"
 
 function check_mail()
@@ -98,7 +100,7 @@ function setup_queue()
 function setup_config()
 {
 	[ $verbose -eq 1 ] && echo "Creating default config files in $cntrldir" 1>&3
-	env CONTROLDIR=$cntrldir config-fast $HOSTNAME 
+	env CONTROLDIR=$cntrldir config-fast $domain1 
 
 	echo ./Maildir/                > $cntrldir/defaultdelivery
 	echo TLSv1_3                   > $cntrldir/tlsclientmethod
@@ -242,13 +244,18 @@ test_docker()
 	fi
 	echo "Testing $what:$image"
 	id=$(podman image list -q cprogrammer/$what:$image)
+	if [ $selinux_enabled -eq 1 ] ; then
+		vol="$homedir:/home/mail:z"
+	else
+		vol="$homedir:/home/mail"
+	fi
 	if [ $verbose -eq 1 ] ; then
 		extra="--cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
-		echo "podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $homedir:/home/mail $id -d $domain2"
-		podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $homedir:/home/mail $id -d $domain2
+		echo "podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $vol $id -d $domain2"
+		podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $vol $id -d $domain2
 	else
 		extra="-q --cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
-		podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $homedir:/home/mail $id -d $domain2 >/dev/null
+		podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 >/dev/null
 	fi
 	if [ $? -ne 0 ] ; then
 		echo "Failed to run $what:$image"
@@ -282,7 +289,7 @@ test_docker()
 	if [ "$what" = "indimail-mta" ] ; then
 		(
 		podman exec -ti indimail-mta sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
-		podman exec -ti indimail-mta sh -c "printf \"$domain1:$ip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+		podman exec -ti indimail-mta sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
 		podman exec -ti indimail-mta touch /etc/indimail/control/chkrcptdomains
 		podman exec -ti indimail-mta svc -h /service/qmail-smtpd.25
 		sleep $sleep_int
@@ -294,7 +301,7 @@ test_docker()
 		) > $logdir/podman/$what.$image.log 2>&1
 	else
 		(
-		podman exec -ti $what sh -c "printf \"$domain1:$ip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+		podman exec -ti $what sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
 		podman exec -ti $what touch /etc/indimail/control/chkrcptdomains
 		podman exec -ti $what svc -h /service/qmail-smtpd.25
 		echo "podman commands vadddomain, vadduser"
@@ -321,7 +328,7 @@ test_docker()
 		check_mail $maildir
 	else
 		t=$(podman exec -ti $what vuserinfo -d $user@$domain3|awk '{print $3}')
-		check_mail $testdir/$t/Maildir
+		check_mail "$testdir"$t/Maildir
 	fi
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
@@ -348,7 +355,6 @@ test_docker()
 	if [ $verbose -eq 1 ] ; then
 		cat $logdir/podman/$what.$image.log
 	fi
-	echo
 }
 
 usage()
@@ -370,12 +376,27 @@ delete=0
 do_update=0
 verbose=0
 catalog=""
-ip=$(ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
-user=$(whoami)
+localip=$(ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
 if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
 fi
+sudo ls -d /tmp >/dev/null 2>&1
+if [ $? -ne 0 ] ; then
+	echo "$0: This script requires sudo privileges" 1>&2
+	exit 1
+fi
+if [ -x /usr/sbin/getenforce ] ; then
+	x=$(getenforce)
+	if [ "$x" = "disabled" ] ; then
+		selinux_enabled=0
+	else
+		selinux_enabled=1
+	fi
+else
+	selinux_enabled=0
+fi
+
 cd ..
 if [ ! -x /usr/bin/podman -a ! -x /usr/bin/docker ] ; then
 	echo "podman/docker command not found" 1>&2
@@ -456,6 +477,7 @@ if [ $# -eq 0 ] ; then
 			if [ $doquit -eq 1 ] ; then
 				break
 			fi
+			echo
 		done
 		for i in indimail-src/*.indimail-mta.bin
 		do
@@ -464,6 +486,7 @@ if [ $# -eq 0 ] ; then
 			if [ $doquit -eq 1 ] ; then
 				break
 			fi
+			echo
 		done
 	fi
 	if [ $doquit -eq 0 -a $process_indimail -eq 1 ] ; then
@@ -474,6 +497,7 @@ if [ $# -eq 0 ] ; then
 			if [ $doquit -eq 1 ] ; then
 				break
 			fi
+			echo
 		done
 		for i in indimail-src/*.indimail.bin
 		do
@@ -482,6 +506,7 @@ if [ $# -eq 0 ] ; then
 			if [ $doquit -eq 1 ] ; then
 				break
 			fi
+			echo
 		done
 	fi
 	if [ $doquit -eq 0 -a $process_indimail_web -eq 1 ] ; then
@@ -492,6 +517,7 @@ if [ $# -eq 0 ] ; then
 			if [ $doquit -eq 1 ] ; then
 				break
 			fi
+			echo
 		done
 		for i in indimail-src/*.indimail-web.bin
 		do
@@ -500,6 +526,7 @@ if [ $# -eq 0 ] ; then
 			if [ $doquit -eq 1 ] ; then
 				break
 			fi
+			echo
 		done
 	fi
 else
@@ -511,6 +538,7 @@ else
 		if [ $doquit -eq 1 ] ; then
 			break
 		fi
+		echo
 	done
 fi
 [ $verbose -eq 1 ] && echo "Tests Completed"
@@ -521,7 +549,6 @@ sudo /bin/rm -rf $servicedir
 sudo /bin/rm -rf $logdir
 sudo /bin/rm -rf $testdir/queue
 sudo /bin/rm -rf $sysconfdir/users
-echo
 if [ $fcount -ne 0 ] ; then
 	echo "$tcount tests succeeded, $fcount tests failed"
 	if [ -n "$failed" ] ; then

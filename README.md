@@ -350,6 +350,24 @@ $ podman run -d -h indimail.org \
 0deab2154ef89688fc1953dc32dcf0c3a4fcde50ce79ed6a47e4886415093304
 ```
 
+If your host has SELinux enabled, volumes you pass to podman will need to have appropriate labels, otherwise the container won’t be able access the volume, no-matter what the filesystem permissions are.
+
+**Shared Labels**
+
+If you have selinux enabled on your host then you have to use :z SELinux volume option. The :z option creates a shared label which will allow all containers to access the directory
+
+```
+$ podman run -d -h indimail.org \
+    -v /home/podman/queue:/var/indimail/queue:z \
+    -v /home/podman/mail:/home/mail:z \
+    --name indimail e543dee69ab7
+0deab2154ef89688fc1953dc32dcf0c3a4fcde50ce79ed6a47e4886415093304
+```
+
+**Private Labels**
+
+So what if you wanted to restrict a volume to a specific container only? Well, that’s what the the UPPERCASE :Z option can be used. It tells podman to set the context on the volume, like lowercase :z, but it also ensures that other containers are not able to access it.
+
 ## Query the id of the container
 
 ```
