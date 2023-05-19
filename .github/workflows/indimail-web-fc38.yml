@@ -1,0 +1,33 @@
+name: indimail-web:fc38 container image
+
+on:
+  push:
+    paths:
+      - '**/webmail/fc38/**'
+      - .github/workflows/indimail-web-fc38.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          cp webmail/fc38/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:fc38" .
+
+      - name: push
+        run: |
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:fc38"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:fc38" docker.io/cprogrammer/indimail-web:fc38
+          docker push docker.io/cprogrammer/indimail-web:fc38
