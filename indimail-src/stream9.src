@@ -2,7 +2,7 @@
 # https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 FROM quay.io/centos/centos:stream9 
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:stream9
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:stream9-indimail-src
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \

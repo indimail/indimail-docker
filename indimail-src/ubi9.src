@@ -4,7 +4,7 @@
 # redhat is screwing lot of us folks. pam-devel, xmlto, flex, mailx is missing
 From registry.access.redhat.com/ubi9/ubi-init
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:ubi9
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:ubi9-indimail-src
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \

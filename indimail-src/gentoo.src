@@ -1,7 +1,7 @@
 # docker build -f dockerfile.gentoo -t cprogrammer/indimail-src:gentoo
 From gentoo/stage3:latest
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:gentoo
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:gentoo-indimail-src
 
 RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e;cd /usr/local/srctmp; \
