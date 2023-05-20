@@ -28,10 +28,14 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			--config=cert --postmaster=postmaster@indimail.org \
 			--common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
 		# indimail-virtualdomains ##############################
-		cd /usr/local/srctmp/indimail-virtualdomains; \
+		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
+		./default.configure; \
+		make indimail_config.h && make libindimail.la && make install-includeHEADERS && \
+		make install-libindimailLTLIBRARIES; \
+		cd ..; \
 		for i in altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
 			bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
-			nssd-x fetchmail-x iwebadmin-x ircube-x ; do \
+			fetchmail-x iwebadmin-x ircube-x ; do \
 			cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
@@ -56,9 +60,10 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \
+		cd /; \
+		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		dnf -y erase flex xmlto bison \
 			gcc gcc-g++ autoconf automake libtool tcl tk git \
 			libgcrypt-devel gettext-devel libgcrypt-devel \

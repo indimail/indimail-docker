@@ -24,6 +24,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		tar xf mrtg.tar.gz && /bin/rm -f mrtg.tar.gz; \
 		cd mrtg-*; \
 		./configure --prefix=/usr; make && make install; \
+		cd /; \
 		/bin/rm -rf /usr/local/srctmp; \
 	   ) \
 	&& (set -e; \

@@ -67,6 +67,7 @@ RUN export HOSTNAME=indimail.org \
 		make; make install-strip; \
 		cd ..; ./dnssvc; \
 		sed -i 's/^tty/#tty/g' /etc/inittab; \
+		cd /; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runleves/sysinit /etc/runlevels/nonetwork \
 			/etc/runlevels/shutdown/mount-ro /etc/runlevels/default/netmount \
 			/etc/runlevels/shutdown/savecache /etc/runlevels/default/local; \

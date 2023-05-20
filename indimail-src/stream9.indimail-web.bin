@@ -15,43 +15,23 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			php-imagick php-mcrypt php-mbstring php-xml php-xmlrpc \
 			php-gd php-intl php-json php-zip php-cli; \
 		cd /usr/local/srctmp; \
-		# gsasl ###############################################
-		cd /usr/local/srctmp/gsasl-2.2.0; \
-		make -s && make -s install-strip; \
-		# libqmail #############################################
+		# indimail-mta ###############################################
+		cd /usr/local/srctmp; \
+		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
+			do cd $i; echo "updating $i";git pull; cd ..; done; \
+		# libqmail
 		cd /usr/local/srctmp/libqmail; \
-		git pull; \
 		./default.configure; \
-		make -s && make -s install-strip; \
-		# libdkim ##############################################
-		cd /usr/local/srctmp/indimail-mta/libdkim-x; \
-		git pull; \
-		./default.configure; \
-		make -s && make -s install-strip; \
-		# libsrs2 ##############################################
-		cd /usr/local/srctmp/indimail-mta/libsrs2-x; \
-		./default.configure; \
-		make -s && make -s install-strip; \
-		# indimail-mta #########################################
+		make && make install-strip; \
+		# indimail-mta
+		cd /usr/local/srctmp/indimail-mta; \
+		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x;./default.configure; \
+			if [ -f conf.ld ] ; then sed -i 's/^cc/cc -s/' conf-ld; fi; \
+			if [ -f conf.cc ] ; then sed -i 's/ -g//' conf-cc; fi; make; cd ..; done; \
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
-		./default.configure; \
-		sed -i 's/^cc/cc -s/' conf-ld; \
-		sed -i 's/ -g//' conf-cc; \
-		make; \
 		./svctool --config=users; \
-		make install-strip; \
-		# daemontools ##########################################
-		cd ../daemontools-x; \
-		./default.configure; \
-		sed -i 's/^cc/cc -s/' conf-ld; \
-		sed -i 's/ -g//' conf-cc; \
-		make && make install-strip; \
-		# ucspi-tcp ############################################
-		cd ../ucspi-tcp-x; \
-		./default.configure; \
-		sed -i 's/^cc/cc -s/' conf-ld; \
-		sed -i 's/ -g//' conf-cc; \
-		make && make install-strip; \
+		cd ..; \
+		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x; make install-strip; cd ..; done ;\
 		echo "Creating self-signed certificate"; \
 		/usr/sbin/svctool \
 			--config=cert --postmaster=postmaster@indimail.org \
@@ -65,70 +45,11 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		./default.configure; \
 		make && make install; \
 		# indimail-virtualdomains ##############################
-		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
-		git pull; \
-		./default.configure; \
-		make && make install-strip; \
-		# pam-multi ############################################
-		cd /usr/local/srctmp/indimail-virtualdomains/pam-multi-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# nssd #################################################
-		cd ../nssd-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# courier-imap #########################################
-		cd ../courier-imap-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# fetchmail ############################################
-		cd ../fetchmail-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# logalert #############################################
-		cd ../logalert-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# procmail #############################################
-		cd ../procmail-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# mpack ################################################
-		cd ../mpack-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# flash ################################################
-		cd ../flash-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# altermime #############################################
-		cd ../altermime-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# ripmime ##############################################
-		cd ../ripmime-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# fortune ##############################################
-		cd ../fortune-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# indimail-spamfilter ##################################
-		cd ../indimail-spamfilter-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# bogofilter-wordlist ##################################
-		cd ../bogofilter-wordlist-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# iwebadmin ############################################
-		cd ../iwebadmin-x; \
-		./default.configure; \
-		make && make install-strip; \
-		# ircube ###############################################
-		cd ../ircube-x; \
-		./default.configure; \
-		make && make install-strip; \
+		cd /usr/local/srctmp/indimail-virtualdomains; \
+		for i in indimail-x altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
+			bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
+			indium-x nssd-x fetchmail-x logalert-x procmail-x \
+			iwebadmin-x ircube-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		setcap -r /usr/libexec/mysqld; \
@@ -158,6 +79,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		cd /usr/share; \
 		tar xfz /usr/local/srctmp/roundcubemail.tar.gz; \
 		mv roundcubemail/plugins/* roundcubemail-1.6.0/plugins; \
+		cd /; \
 		/bin/rm -rf roundcubemail; \
 		mv roundcubemail-1.6.0 roundcubemail; \
 		chown -R root:root roundcubemail; \

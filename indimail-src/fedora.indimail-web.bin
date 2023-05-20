@@ -64,6 +64,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
+		cd /; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \

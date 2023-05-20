@@ -32,20 +32,14 @@ RUN export HOSTNAME=indimail.org \
 		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x; make install-strip; cd ..; done ;\
 		echo "Creating self-signed certificate"; \
 		/usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
-		# ezmlm-idx ##############################
-		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
-		./default.configure; \
-		sed -i 's/^cc/cc -s/' conf-ld; \
-		sed -i 's/^cc/cc -s/' conf-ldso; \
-		sed -i 's/ -g//' conf-cc; \
-		make && make install-strip; \
 		# indimail-virtualdomains ##############################
 		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
 		./default.configure; \
-		make libindimail.la && make install-includeHEADERS && make install-libindimailLTLIBRARIES; \
+		make indimail_config.h && make libindimail.la && make install-includeHEADERS && \
+		make install-libindimailLTLIBRARIES; \
 		cd ..; \
 		for i in altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x bogofilter-wordlist-x \
-			courier-imap-x indimail-spamfilter-x nssd-x fetchmail-x logalert-x \
+			courier-imap-x indimail-spamfilter-x fetchmail-x logalert-x \
 			procmail-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
@@ -67,6 +61,7 @@ RUN export HOSTNAME=indimail.org \
 		make; make install-strip; \
 		cd ..; ./dnssvc; \
 		sed -i 's/^tty/#tty/g' /etc/inittab; \
+		cd /; \
 		/bin/rm -rf /etc/runlevels/boot /etc/runleves/sysinit /etc/runlevels/nonetwork \
 			/etc/runlevels/shutdown/mount-ro /etc/runlevels/default/netmount \
 			/etc/runlevels/shutdown/savecache /etc/runlevels/default/local; \
@@ -88,7 +83,7 @@ RUN export HOSTNAME=indimail.org \
 		emerge --deselect --ask n app-text/xmlto; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 			/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
-			/usr/lib/libnss_nssd.la /usr/lib/libsrs2.la /usr/lib/libqmail.a \
+			/usr/lib/libsrs2.la /usr/lib/libqmail.a \
 			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a /usr/lib/libdkim.a \
 			/usr/lib64/libltdl.la /usr/lib64/libgsasl.la /usr/lib64/libgsasl.la \
 			/usr/lib/libsrs2.a /lib/security/pam-multi.la /var/log/build/build.log.gz; \

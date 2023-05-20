@@ -29,11 +29,12 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		# indimail-virtualdomains ##############################
 		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
 		./default.configure; \
-		make libindimail.la && make install-includeHEADERS && make install-libindimailLTLIBRARIES; \
+		make indimail_config.h && make libindimail.la && make install-includeHEADERS && \
+		make install-libindimailLTLIBRARIES; \
 		cd ..; \
 		for i in altermime-x ripmime-x mpack-x flash-x fortune-x \
 			pam-multi-x bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
-			nssd-x fetchmail-x logalert-x procmail-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
+			fetchmail-x logalert-x procmail-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./create_services --add-boot; \
@@ -57,6 +58,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
+		cd /; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		dnf -y erase flex xmlto bison \
 			gcc gcc-g++ autoconf automake libtool tcl tk git \
