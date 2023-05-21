@@ -242,8 +242,8 @@ test_docker()
 		echo "podman pull cprogrammer/$what:$image"
 		podman pull cprogrammer/$what:$image
 	fi
-	echo "Testing $what:$image"
 	id=$(podman image list -q cprogrammer/$what:$image)
+	echo "Testing $what:$image id=$id"
 	if [ $selinux_enabled -eq 1 ] ; then
 		vol="$homedir:/home/mail:z"
 	else
@@ -286,12 +286,12 @@ test_docker()
 		podman ps
 	fi
 
-	if [ "$what" = "indimail-mta" ] ; then
+	if [ "$what" = "indimail-mta" -o "$what" = "indimail-mta-web" ] ; then
 		(
-		podman exec -ti indimail-mta sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
-		podman exec -ti indimail-mta sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
-		podman exec -ti indimail-mta touch /etc/indimail/control/chkrcptdomains
-		podman exec -ti indimail-mta svc -h /service/qmail-smtpd.25
+		podman exec -ti $what sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
+		podman exec -ti $what sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+		podman exec -ti $what touch /etc/indimail/control/chkrcptdomains
+		podman exec -ti $what svc -h /service/qmail-smtpd.25
 		sleep $sleep_int
 		if [ $verbose -eq 1 ] ; then
 			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
@@ -324,7 +324,7 @@ test_docker()
 	podman exec -ti $what cat /var/log/svc/deliver.25/current
 	echo "------ --------------- ------"
 	) >> $logdir/podman/$what.$image.log 2>&1
-	if [ "$what" = "indimail-mta" ] ; then
+	if [ "$what" = "indimail-mta" -o "$what" = "indimail-mta-web" ] ; then
 		check_mail $maildir
 	else
 		t=$(podman exec -ti $what vuserinfo -d $user@$domain3|awk '{print $3}')
@@ -361,8 +361,9 @@ usage()
 {
 	(
 	echo "testdocker [-y|--nprompt] [-u|--update] [-v|--verbose] [-d|--delete] [-c catalog|--catalog catalog]"
-	echo " - where catalog is one of indimail, indimail-mta, indimail-web"
-	echo "   if -c is not provided, all three (indimail, indimail-mta, indimail-web) will be processed"
+	echo ""
+	echo "   where catalog is one of indimail, indimail-mta, indimail-mta-web, indimail-web"
+	echo "   if -c is not provided, all four (indimail, indimail-mta, indimail-mta-web, indimail-web) will be processed"
 	) 1>&2
 	exit 1
 }
@@ -402,7 +403,7 @@ if [ ! -x /usr/bin/podman -a ! -x /usr/bin/docker ] ; then
 	echo "podman/docker command not found" 1>&2
 	exit 1
 fi
-options=$(getopt -a -n testdocker -o "yuvdc:" -l noprompt,update,verbose,delete,catalog -- "$@")
+options=$(getopt -a -n testdocker -o "hyuvdc:" -l help,noprompt,update,verbose,delete,catalog -- "$@")
 if [ $? != 0 ]; then
   usage
 fi
@@ -413,6 +414,9 @@ do
 	-y | --noprompt)
 	prompt=0
 	shift
+	;;
+	-h | --help)
+	usage
 	;;
 	-u | --update)
 	do_update=1
@@ -454,10 +458,12 @@ if [ $# -eq 0 ] ; then
 		process_indimail=1
 		process_indimail_mta=1
 		process_indimail_web=1
+		process_indimail_mta_web=1
 	else
 		process_indimail=0
 		process_indimail_mta=0
 		process_indimail_web=0
+		process_indimail_mta_web=0
 		for i in $catalog
 		do
 			if [ "$i" = "indimail" ] ; then
@@ -466,6 +472,8 @@ if [ $# -eq 0 ] ; then
 				process_indimail_mta=1
 			elif [ "$i" = "indimail-web" ] ; then
 				process_indimail_web=1
+			elif [ "$i" = "indimail-mta-web" ] ; then
+				process_indimail_mta_web=1
 			fi
 		done
 	fi
@@ -523,6 +531,17 @@ if [ $# -eq 0 ] ; then
 		do
 			image=$(echo $i | cut -d/ -f2 | cut -d. -f1)
 			test_docker $image indimail-web
+			if [ $doquit -eq 1 ] ; then
+				break
+			fi
+			echo
+		done
+	fi
+	if [ $doquit -eq 0 -a $process_indimail_mta_web -eq 1 ] ; then
+		for i in indimail-src/*.indimail-mta-web.bin
+		do
+			image=$(echo $i | cut -d/ -f2 | cut -d. -f1)
+			test_docker $image indimail-mta-web
 			if [ $doquit -eq 1 ] ; then
 				break
 			fi
