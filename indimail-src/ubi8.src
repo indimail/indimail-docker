@@ -3,7 +3,7 @@
 #From redhat/ubi8:latest
 From registry.access.redhat.com/ubi8/ubi-init
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-src:ubi8-indimail-src
+LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
