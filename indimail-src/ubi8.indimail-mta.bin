@@ -1,7 +1,7 @@
 # docker build -f dockerfile.ubi8 -t cprogrammer/indimail-mta:ubi8
 FROM cprogrammer/indimail-src:ubi8
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:ubi8-indimail-mta
+LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \

@@ -1,7 +1,7 @@
 # docker build -f dockerfile.archlinux -t cprogrammer/indimail-mta:archlinux
 FROM cprogrammer/indimail-src:archlinux
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:archlinux-indimail-mta
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-docker/indimail-src/archlinux.indimail-mta.bin
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
