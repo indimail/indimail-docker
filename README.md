@@ -32,15 +32,17 @@ You can use either docker or podman. One of the downsides of Docker is it has a 
 
 You have to decide the image that you want.
 
-* indimail-mta - for a minimal server that gives you a MTA. This server can receive mails from the internet and send mails to users within the same server or to the internet.
-* indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP or POP3 and do everything that the **indimail-mta** image does.
+* indimail-mta - for a minimal server that gives you a MTA. This server can receive mails from the internet and send mails to users within the same server or to the internet. This also provides you IMAP(S), POP3(S) protocols to access emails received on the server.
+* indimail - For a complete mail server. You can create many virtual domains, access the mails using IMAP(S), POP3(S) and do everything that the **indimail-mta** image does.
 * indimail-web - Like the **indimail** image with the addition of a web based email client based on [Roundcube Mail](https://roundcube.net/).
+* indimail-mta-web - Like the **indimail-mta** image with the addition of a web based email client based on [Roundcube Mail](https://roundcube.net/). Use this if you just want to access your own personal mailbox or you want to host few local accounts on your server.
 
 Name|Docker Repository Location
 ----|--------------------------
 indimail-mta|[indimail-mta Repository](https://github.com/mbhangui/indimail-mta/pkgs/container/indimail-mta)
 indimail|[indimail Repository](https://github.com/mbhangui/indimail-virtualdomains/pkgs/container/indimail)
 indimail-web|[indimail+Roundcube Repository](https://github.com/mbhangui/indimail-virtualdomains/pkgs/container/indimail-web)
+indimail-mta-web|[indimail-mta+Roundcube Repository](https://github.com/mbhangui/indimail-mta/pkgs/container/indimail-mta-web)
 
 
 The following tags/images can be pulled by executing the commands
