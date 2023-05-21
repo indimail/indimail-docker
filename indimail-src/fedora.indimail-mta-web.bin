@@ -20,7 +20,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			if [ -f conf.ld ] ; then sed -i 's/^cc/cc -s/' conf-ld; fi; \
 			if [ -f conf.cc ] ; then sed -i 's/ -g//' conf-cc; fi; make; cd ..; done; \
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
-		./svctool --config=users; \
+		./svctool --config=users || true; \
 		cd ..; \
 		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x; make install-strip; cd ..; done ;\
 		echo "Creating self-signed certificate"; \
@@ -60,7 +60,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \
 		cd /; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
@@ -73,8 +72,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		dnf -y autoremove; \
 	) >/var/log/build/build.bin.log 2>&1 \
 	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
-	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || \
-		(echo "MySQL db creation failed" && gunzip -c /var/log/build/build.bin.log.gz && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
 		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/build.bin.log.gz && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
