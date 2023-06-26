@@ -10,7 +10,7 @@ RUN export HOSTNAME=indimail.org \
 	&& dnf -y copr enable cprogrammer/indimail \
 	&& mkdir -p /root /usr/local/srctmp \
 	&& dnf -y update \
-	&& dnf -y install tar wget gcc gcc-c++ make autoconf automake libtool gzip \
+	&& dnf -y install tar wget gcc gcc-c++ make autoconf automake libtool gzip gd-devel \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
