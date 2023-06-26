@@ -54,7 +54,7 @@ if [ $# -gt 0 ] ; then
 	distro_list=$*
 else
 	distro_list="almalinux8 oracle8 rockylinux8 almalinux9 oracle9 rockylinux9 \
-		debian10 debian11 bionic focal jammy fc36 fc37 leap15.4 leap15.5 \
+		debian10 debian11 bionic focal jammy fc37 fc38 leap15.4 leap15.5 \
 		stream8 stream9 tumbleweed"
 fi
 for i in $distro_list
