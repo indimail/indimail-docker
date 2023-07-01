@@ -47,7 +47,7 @@ RUN export HOSTNAME=indimail.org \
 		mysql-community-libs \
 		mysql-community-client \
 	&& wget -nv \
-		https://download.opensuse.org/repositories/home:mbhangui/CentOS_8/home:mbhangui.repo \
+		https://download.opensuse.org/repositories/home:mbhangui/RockyLinux_8/home:mbhangui.repo \
 		-O /etc/yum.repos.d/indimail.repo \
 	&& dnf -y install \
 		indimail \
