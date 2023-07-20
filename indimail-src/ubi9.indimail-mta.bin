@@ -17,13 +17,13 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make && make install-strip; \
 		# indimail-mta
 		cd /usr/local/srctmp/indimail-mta; \
-		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x;./default.configure; \
+		for i in libdkim2 libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x;./default.configure; \
 			if [ -f conf.ld ] ; then sed -i 's/^cc/cc -s/' conf-ld; fi; \
 			if [ -f conf.cc ] ; then sed -i 's/ -g//' conf-cc; fi; make; cd ..; done; \
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		./svctool --config=users; \
 		cd ..; \
-		for i in libdkim libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x; make install-strip; cd ..; done ;\
+		for i in libdkim2 libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x; make install-strip; cd ..; done ;\
 		echo "Creating self-signed certificate"; \
 		/usr/sbin/svctool \
 			--config=cert --postmaster=postmaster@indimail.org \
@@ -64,10 +64,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		dnf -y install mailx; \
 		cd /; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
-			/usr/lib/libqmail.la /usr/lib/libdkim.la /usr/lib/libflash.la \
+			/usr/lib/libqmail.la /usr/lib/libdkim2.la /usr/lib/libflash.la \
 			/usr/lib/libsrs2.la /usr/lib/libqmail.a \
 			/usr/lib/libindimail.a /usr/lib/libcourier-unicode.a \
-			/usr/lib/libdkim.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
+			/usr/lib/libdkim2.a /usr/lib/libsrs2.a /lib/security/pam-multi.la \
 			/var/log/build/build.log.gz; \
 		dnf -y erase gcc autoconf automake make git \
 			xmlto docbook-dtds sgml-common docbook-style-xsl; \
