@@ -34,12 +34,13 @@ jobs:
             package_list="indimail indimail-mta"
             distros="alpine archlinux fedora stream8 stream9 ubi8 ubi9 gentoo"
           else
-            package_list=$(echo "${{ github.event.inputs.distro_list }}" | cut -d: -f2)
-            if [ -z "$package_list" ] ; then
+            echo "${{ github.event.inputs.distro_list }}" | grep ":" > /dev/null
+            if [ $? -eq 0 ] ; then
+              package_list=$(echo "${{ github.event.inputs.distro_list }}" | cut -d: -f2)
+              distros=$(echo "${{ github.event.inputs.distro_list }}" | cut -d: -f1)
+            else
               package_list="indimail indimail-mta"
               distros="${{ github.event.inputs.distro_list }}"
-            else
-              distros=$(echo "${{ github.event.inputs.distro_list }}" | cut -d: -f1)
             fi
           fi
           flag=""
