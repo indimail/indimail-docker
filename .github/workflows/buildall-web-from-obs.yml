@@ -38,6 +38,10 @@ jobs:
           flag=""
           for i in $distros
           do
+            if [ ! -f webmail/$i/Dockerfile ] ; then
+              echo "webmail/$i/Dockerfile not found" 1>&2
+              continue
+            fi
             echo "Using webmail/$i/Dockerfile for build"
             cp webmail/$i/Dockerfile .
             docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:$i" . > $i.log 2>&1
@@ -55,7 +59,7 @@ jobs:
             gzip $i.log
           done
           if [ -n "$flag" ] ; then
-            echo "docker build failed for $flag"
+            echo "docker build failed for $flag" 1>&2
             exit 1
           fi
       - uses: actions/upload-artifact@v2
