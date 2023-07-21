@@ -1,3 +1,5 @@
+<!-- # vim: wrap
+-->
 
 Table of Contents
 =================
@@ -131,7 +133,7 @@ ghcr.io/mbhangui/indimail        fc33         a5266643441b   4 days ago     1.13
 
 ## Start the podman container
 
-indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
+indimail, indimail-mta uses docker-entrypoint to execute svscan and start indimail-mta, indimail-mta. Passing webmail argument starts apache and php-fpm in addition to indimail. You just need to pass any argument other than indimail, indimail-mta, svscan or webmail to bypass the default action in docker-entrypoint.
 
 The below command will start svscan process
 
@@ -794,7 +796,7 @@ podman run -d
 471b4e53020b350c5e62e4913fe815203d16827e3e6cfc5e14fced8579c4a2b3
 ```
 
-The argument --name=indimail is needed. It is actually an entry point in all the indimail, indimail-mta containers to start `svscan` command. The `svscan` command further runs `supervise` command on all services in the `/service` directory. Similarly the `indimail-web` container images have the entry point `webmail` which does everything that `indimail` entrypoint does and addiotionally runs the `apache` web server.
+The argument --name=indimail is needed. It is actually an entry point in all the indimail, indimail-mta containers to start `svscan` command. The `svscan` command further runs `supervise` command for all services in the `/service` directory. Similarly the `indimail-web` container images have the entry point `webmail` which does everything that `indimail` entrypoint does and addiotionally runs the `apache` web server.
 
 If you use this script it will
 
@@ -825,7 +827,6 @@ The Dockerfile for each of the images is located in a separate subdirectory for 
 * [indimail-mta](https://github.com/mbhangui/docker/tree/master/indimail-mta)
 * [indimail](https://github.com/mbhangui/docker/tree/master/indimail)
 * [indimail+roundcube](https://github.com/mbhangui/docker/tree/master/webmail)
-
 
 
 ```
@@ -972,6 +973,21 @@ Port on Container Host|Port on Container OS
 5143|9143
 8080|80
 8081|443
+
+Since the host has a mapped port for every port (SMTP, SMTPS, IMAP, IMAPS, POP3, POP3S, HTTP, HTTPS), we can run any email client on the host machine to use the mapped port. In fact one doesn't need the webmail contrainer image for indimail. You are free to use any webmail client and use port 2025 for SMTP, 2587 for SMTP submission, 2465 for SMTPS, 2143 for IMAP, 2993 for IMAPS, etc. This allows us to use the official docker image for roundcubemail to provide a webmail interface for indimail-mta or indimail container images
+
+```
+# Run a webmail interface for indimail on port 8000 using the official
+# roundcube docker image.
+# This example assumes that the IP of the host is 192.168.2.108
+$ podman run -ti -e ROUNDCUBEMAIL_DEFAULT_HOST=ssl://192.168.2.108 \
+  -e ROUNDCUBEMAIL_DEFAULT_PORT =2993 \
+  -e ROUNDCUBEMAIL_SMTP_SERVER=192.168.2.108 \
+  -e ROUNDCUBEMAIL_SMTP_PORT=2025 \
+  -p 8000:80 roundcube/roundcubemail
+```
+
+It is better to use the official roundcubemail docker container as it is tested. The webmail container images are untested for webmail function. This is because I do not have a script which can use something like curl to test it. The indimail-mta, indimail-mta and indimail-web images are tested for sending, receiving, reading emails, imap/pop3 login, etc using the script [testdocker](https://github.com/mbhangui/indimail-docker/blob/master/scripts/testdocker). The script test all important functions of a mail server. The script currently cannot test indimail-web container images for webmail functions like login, logout, reading, composing, etc. I believe this can be done using curl but have no experience in using it. So that test will have to wait till someone helps me in building that test function. Lot of times the webmail images fail because the configuration of php-fpm, php.ini have wildly different configuration between different versions of php and os distributions. There isn't much consistency here. If I make a particular config today, it changes after few months either because of a change in php, php-fpm or apache. I have given up trying to maintain the webmail images and these will be removed completely someday.
 
 ## Screenshots
 
