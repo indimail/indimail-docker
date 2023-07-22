@@ -1003,6 +1003,9 @@ It is better to use the official roundcubemail docker container as it is tested.
 
 ![Mailbox Small](mailbox_small.jpg "Mailbox Small")
 
+![Password Change](iwebadmin-password-change.jpg "Password Change")
+
+![Auto Responder](iwebadmin-vacation.jpg "Auto Responder")
 
 <b>iwebadmin Administration Login Interface</b>. The cool thing about iwebadmin interface is it displays a random fortune cookie in the footer of every page.
 
