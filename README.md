@@ -1007,6 +1007,15 @@ It is better to use the official roundcubemail docker container as it is tested.
 
 ![Auto Responder](iwebadmin-vacation.jpg "Auto Responder")
 
+![Roundcube Main Setting](roundcube-setting-main.jpg "Main")
+![Roundcube Junk Setting](roundcube-setting-junk.jpg "Junk")
+![Roundcube Junk Setting - General](roundcube-setting-junk-general.jpg "General")
+![Roundcube Junk Setting - Internet](roundcube-setting-junk-internet.jpg "Internet")
+![Roundcube Junk Setting - Bayes](roundcube-setting-junk-bayes.jpg "bayes")
+![Roundcube Junk Setting - Headers](roundcube-setting-junk-msgheaders.jpg "Headers")
+![Roundcube Junk Setting - Report](roundcube-setting-junk-report.jpg "Report")
+![Roundcube Junk Setting - Rules](roundcube-setting-junk-rules.jpg "Rules")
+
 <b>iwebadmin Administration Login Interface</b>. The cool thing about iwebadmin interface is it displays a random fortune cookie in the footer of every page.
 
 ![iwebadmin Login](iwebadmin_login.jpg "iwebadmin Login")
