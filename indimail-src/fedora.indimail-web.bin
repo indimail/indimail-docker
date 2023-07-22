@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docke
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
+		touch /usr/local/srctmp/incomplete; \
 		dnf -y update && dnf -y install mysql-server mariadb httpd mod_ssl \
 			php php-fpm roundcubemail php-mysqlnd php-imagick; \
 		cd /usr/local/srctmp; \
@@ -75,8 +76,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 			libidn2-devel readline-devel tcl-devel tk-devel; \
 		dnf -y autoremove; \
+		/bin/rm -f /usr/local/srctmp/incomplete; \
 	) >/var/log/build/build.bin.log 2>&1 \
-	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) \
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log)
 	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || \
 		(echo "MySQL db creation failed" && gunzip -c /var/log/build/build.bin.log.gz && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
