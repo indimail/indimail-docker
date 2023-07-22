@@ -7,6 +7,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& version_id=$(grep VERSION_ID /etc/os-release|cut -d= -f2) \
+	&& dnf config-manager --add-repo \
+			https://download.opensuse.org/repositories/home:mbhangui/Fedora_"$(grep VERSION_ID /etc/os-release|cut -d= -f2)"/home:mbhangui.repo \
 	&& dnf -y update \
 	&& dnf -y install gnupg2 binutils hostname initscripts less mailx \
 		man-db man-pages net-tools openssl openssh-clients procps psmisc \
@@ -19,6 +22,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 		libidn2-devel readline-devel tcl-devel tk-devel \
 	&& (set -e; \
+		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done; \
@@ -36,5 +40,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		./bootstrap; \
 		./configure --prefix=/usr; \
 		make; make install-strip; \
+		/bin/rm -f /usr/local/srctmp/incomplete; \
 		) > /var/log/build/build.log 2>&1 \
-	&& (echo "Build Succeeded" && gzip /var/log/build/build.log) || (echo "Build Failed" && cat /var/log/build/build.log && exit 1)
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.log)
