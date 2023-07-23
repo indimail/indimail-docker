@@ -14,7 +14,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
 		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
-		mysql-community-server mysql-devel pkgconf patch tcl-devel tk-devel \
+		mysql-community-server mysql-devel pkgconf patch \
 		openssl-devel openldap-devel ncurses-devel libidn-devel pcre-devel pcre2-devel \
 		findutils libsodium-devel libdb-devel libgcrypt-devel krb5-devel \
 		diffutils coreutils which chkconfig procps psmisc less cronie \

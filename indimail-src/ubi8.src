@@ -30,7 +30,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		https://vault.centos.org/centos/8/AppStream/x86_64/os/Packages/telnet-0.17-76.el8.x86_64.rpm \
 		http://repo.okay.com.mx/centos/8/x86_64/release/docbook-style-xsl-1.79.2-8.el8.noarch.rpm \
 	&& dnf -y install --allowerasing gcc gcc-c++ make automake autoconf libtool git \
-		mysql-community-server mysql-devel pkgconf patch tcl-devel tk-devel \
+		mysql-community-server mysql-devel pkgconf patch \
 		openssl-devel openldap-devel ncurses-devel gdbm-devel libidn-devel pcre-devel pcre2-devel \
 		libsodium-devel libdb-devel pam-devel libgcrypt-devel \
 		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
