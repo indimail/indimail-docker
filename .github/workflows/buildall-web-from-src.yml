@@ -23,7 +23,7 @@ jobs:
         run: |
           set +e
           flag=""
-          for i in indimail-src/*.indimail-web.bin
+          for i in indimail-src/*web.bin
           do
             name=$(basename $i |cut -d. -f1)
             echo "Building web container for $name"
