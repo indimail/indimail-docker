@@ -13,12 +13,14 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		apk-tools-doc openrc-doc dcron-doc inetutils-syslogd-doc \
 		openssl openssl-dev musl-fts-dev mariadb-connector-c mysql-dev \
 		musl-nscd musl-nscd-dev libidn libidn-dev libidn2 libidn2-dev \
-		libgcrypt-dev gnutls-dev gnutls krb5-dev \
+		libgcrypt-dev gnutls-dev gnutls krb5-dev tk-dev tcl-dev \
 		pcre pcre-dev pcre2-dev libtirpc libtirpc-dev ncurses-libs \
 		ncurses-dev linux-pam linux-pam-dev gdbm gdbm-dev db db-dev \
 		gsl gsl-dev libev libev-dev libsodium libsodium-dev \
 		mysql mysql-client mrtg libgcrypt krb5-libs \
-	&& (cd /usr/local/srctmp; \
+	&& (set -e; \
+		touch /usr/local/srctmp/incomplete; \
+		cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
@@ -33,5 +35,6 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		make; make install-strip; \
+		/bin/rm -f /usr/local/srctmp/incomplete; \
 		) > /var/log/build/build.log 2>&1 \
-	&& (echo "Build Succeeded" && gzip /var/log/build/build.log) || (echo "Build Failed" && cat /var/log/build/build.log && exit 1)
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.log)

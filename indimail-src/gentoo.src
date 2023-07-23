@@ -4,7 +4,9 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
 
 RUN mkdir -p /root /usr/local/srctmp /var/log/build \
-	&& (set -e;cd /usr/local/srctmp; \
+	&& (set -e; \
+		touch /usr/local/srctmp/incomplete; \
+		cd /usr/local/srctmp; \
 		echo "emaint -ay sync"; \
 		emaint -ay sync > /var/log/build/emaint.log; \
 		echo "emerge-webrsync"; \
@@ -16,7 +18,8 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 			app-portage/portage-utils sys-process/cronie sys-process/lsof app-admin/rsyslog \
 			dev-libs/libev dev-libs/libsodium dev-libs/libpcre2 sys-libs/gdbm sys-libs/pam \
 			sys-libs/db sys-libs/ncurses net-libs/libtirpc sci-libs/gsl mail-client/mailx \
-			dev-util/strace app-editors/vim net-misc/telnet-bsd mit-krb5; \
+			dev-util/strace app-editors/vim net-misc/telnet-bsd mit-krb5 dev-lang/tcl \
+			dev-lang/tk; \
 		do \
 				grep -w $i /tmp/qlist.txt >/dev/null 2>&1; \
 				if [ $? -eq 0 ] ; then \
@@ -37,6 +40,6 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		cd /usr/local/srctmp/gsasl-2.2.0; \
 		./configure --prefix=/usr --libdir=/usr/lib64 --with-libgcrypt --enable-gs2 --with-gssapi-impl=mit; \
 		make && make install-strip; \
-		echo "Build Completed"; \
+		/bin/rm -f /usr/local/srctmp/incomplete; \
 		) > /var/log/build/build.log 2>&1 \
-	&& (echo "Build Succeeded" && gzip /var/log/build/build.log) || (echo "Build Failed" && cat /var/log/build/build.log && exit 1)
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.log)

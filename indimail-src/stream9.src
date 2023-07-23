@@ -19,8 +19,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		krb5-devel diffutils coreutils which chkconfig procps psmisc flex \
 		less cronie xmlto file sed wget bzip2 bison perl-Pod-MinimumVersion.noarch \
 		binutils gnupg2 hostname man-db man-pages net-tools openssl openssh-clients  \
-		rsync systemd telnet vim strace lsof syslog-ng mrtg patch \
+		rsync systemd telnet vim strace lsof syslog-ng mrtg patch tcl-devel tk-devel \
 	&& (set -e; \
+		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done; \
@@ -43,5 +44,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		wget -nv \
 		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
 			-O roundcubemail.tar.gz; \
+		/bin/rm -f /usr/local/srctmp/incomplete; \
 		) > /var/log/build/build.log 2>&1 \
-	&& (echo "Build Succeeded" && gzip /var/log/build/build.log) || (echo "Build Failed" && cat /var/log/build/build.log && exit 1)
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.log)
