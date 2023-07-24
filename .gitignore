@@ -5,3 +5,4 @@ fc35
 centos7
 *-centos7.yml
 .gitignore
+.notest
