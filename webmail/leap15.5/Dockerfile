@@ -59,6 +59,7 @@ RUN export HOSTNAME=indimail.org \
 		php7-intl \
 		php7-xmlrpc \
 		php7-zip \
+		php7-curl \
 		roundcubemail \
 		mailx \
 	&& echo "Creating self-signed certificate" \

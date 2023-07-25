@@ -78,10 +78,10 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		echo "Start roundcube config"; \
 		cd /usr/share; \
 		tar xfz /usr/local/srctmp/roundcubemail.tar.gz; \
-		mv roundcubemail/plugins/* roundcubemail-1.6.0/plugins; \
+		mv roundcubemail/plugins/* roundcubemail-1.6.2/plugins; \
 		cd /; \
 		/bin/rm -rf roundcubemail; \
-		mv roundcubemail-1.6.0 roundcubemail; \
+		mv roundcubemail-1.6.2 roundcubemail; \
 		chown -R root:root roundcubemail; \
 		chown apache:apache roundcubemail/temp roundcubemail/logs; \
 		cd roundcubemail; \

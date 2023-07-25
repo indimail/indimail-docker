@@ -80,13 +80,13 @@ RUN export HOSTNAME=indimail.org \
 	&& (set -e; \
 		systemctl enable httpd php-fpm; \
 		wget -nv \
-			https://github.com/roundcube/roundcubemail/releases/download/1.4.11/roundcubemail-1.4.11-complete.tar.gz \
+			https://github.com/roundcube/roundcubemail/releases/download/1.6.2/roundcubemail-1.6.2-complete.tar.gz \
 			-O /root/Downloads/roundcubemail.tar.gz; \
 		cd /usr/share; \
 		tar xfz /root/Downloads/roundcubemail.tar.gz; \
-		mv roundcubemail/plugins/* roundcubemail-1.4.11/plugins; \
+		mv roundcubemail/plugins/* roundcubemail-1.6.2/plugins; \
 		/bin/rm -rf roundcubemail; \
-		mv roundcubemail-1.4.11 roundcubemail; \
+		mv roundcubemail-1.6.2 roundcubemail; \
 		chown -R root:root roundcubemail; \
 		chown apache:apache roundcubemail/temp roundcubemail/logs; \
 		chmod 775 roundcubemail/temp roundcubemail/logs; \
