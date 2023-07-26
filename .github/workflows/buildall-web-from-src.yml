@@ -28,7 +28,7 @@ jobs:
             name=$(basename $i |cut -d. -f1,2)
             os=$(basename $i |cut -d. -f1)
             image=$(basename $i |cut -d. -f2)
-            echo "Building web container for $os"
+            echo "Building web container for $name"
             cp $i Dockerfile
             docker build --tag "ghcr.io/${{ github.repository_owner }}/$image:$os" . > $name.log 2>&1
             if [ $? -eq 0 ] ; then
