@@ -62,10 +62,10 @@ do
 		fi
 	fi
 	cp $i ./Dockerfile
-	echo "Building cprogrammer/$pkg:$tag"
-	$command build -t  cprogrammer/$pkg:$tag .
-	$command image tag cprogrammer/$pkg:$tag ghcr.io/$github_owner/$pkg:$tag
-	$command image tag cprogrammer/$pkg:$tag docker.io/cprogrammer/$pkg:$tag
+	echo "Building cprogrammer/$pkg:$tag.s"
+	$command build -t  cprogrammer/$pkg:$tag.s .
+	$command image tag cprogrammer/$pkg:$tag.s ghcr.io/$github_owner/$pkg:$tag.s
+	$command image tag cprogrammer/$pkg:$tag.s docker.io/cprogrammer/$pkg:$tag.s
 	if [ $non_interactive -eq 0 ] ; then
 		echo -n "$i: Push src to ghcr.io (Y/N) - "
 		read key

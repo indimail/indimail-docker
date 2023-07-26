@@ -30,12 +30,12 @@ jobs:
             image=$(basename $i |cut -d. -f2)
             echo "Building web container for $name"
             cp $i Dockerfile
-            docker build --tag "ghcr.io/${{ github.repository_owner }}/$image:$os" . > $name.log 2>&1
+            docker build --tag "ghcr.io/${{ github.repository_owner }}/$image:$os.s" . > $name.log 2>&1
             if [ $? -eq 0 ] ; then
-              echo "docker push ghcr.io/${{ github.repository_owner }}/$image:$os"
-              docker push "ghcr.io/${{ github.repository_owner }}/$image:$os"
-              docker image tag "ghcr.io/${{ github.repository_owner }}/$image:$os" docker.io/cprogrammer/$image:$os
-              echo "docker push docker.io/cprogrammer/$image:$os"
+              echo "docker push ghcr.io/${{ github.repository_owner }}/$image:$os.s"
+              docker push "ghcr.io/${{ github.repository_owner }}/$image:$os.s"
+              docker image tag "ghcr.io/${{ github.repository_owner }}/$image:$os.s" docker.io/cprogrammer/$image:$os
+              echo "docker push docker.io/cprogrammer/$image:$os.s"
               docker push docker.io/cprogrammer/$image:$os
             else
               cat $name.log
