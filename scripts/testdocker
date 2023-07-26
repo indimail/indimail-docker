@@ -37,12 +37,12 @@ function check_service()
 			echo "Service $2 is not up. unable to get service status" 1>&2
 			return 2
 		fi
-		echo $str | grep -i warning: > /dev/null
+		echo $str | grep -E -i "warning:|Error:" > /dev/null
 		if [ $? -ne 0 ] ; then
 			t=$(echo $str | awk '{print $2}')
 			s=$(echo $str | awk '{print $3}')
 		else
-			[ $verbose -eq 1 ] && echo "svscan is down"
+			[ $verbose -eq 1 ] && echo "svscan maybe down or just starting: [$str]"
 			sleep 5;
 			count=$(expr $count + 1)
 			if [ $count -gt 12 ] ; then
@@ -52,7 +52,7 @@ function check_service()
 		fi
 		if [ "$t" = "up" ] ; then
 			if [ $s -ge 10 ] ; then
-				[ $verbose -eq 1 ] && echo "Service $2 is up [$str]"
+				[ $verbose -eq 1 ] && echo "Service $2 is up: [$str]"
 				return 0
 			else
 				sleep $(expr 10 - $s)
@@ -63,7 +63,7 @@ function check_service()
 				continue
 			fi
 		elif [ "$t" = "wait" -a $s -gt 0 ] ; then
-			[ $verbose -eq 1 ] && echo "Service $2 is waiting [$str]"
+			[ $verbose -eq 1 ] && echo "Service $2 is waiting for $s secs: [$str]"
 			sleep $s
 			count=$(expr $count + 1)
 			if [ $count -gt 12 ] ; then
@@ -71,12 +71,10 @@ function check_service()
 			fi
 			continue
 		elif [ "$t" = "down" -o $s -eq 0 ] ; then
-			[ $verbose -eq 1 ] && echo "Service $2 is down [$str]"
+			[ $verbose -eq 1 ] && echo "Service $2 is down: [$str]"
 			count=$(expr $count + 1)
 		else
-			echo "Service $2 is not up. str=$str, t=$t, s=$s" 1>&2
-			echo "Press ENTER"
-			read key
+			echo "Service $2 is not up: [$str]" 1>&2
 			return 2
 		fi
 		sleep 5;
@@ -84,7 +82,7 @@ function check_service()
 			break
 		fi
 	done
-	echo "Service $2 is not up. str=$str, t=$t, s=$s" 1>&2
+	echo "Service $2 is not up: [$str]" 1>&2
 	return 1
 }
 
@@ -314,50 +312,56 @@ test_docker()
 	else
 		vol="$homedir:/home/mail"
 	fi
+	if [ "$what" = "indimail-web" -o "$what" = "indimail-mta-web" ] ; then
+		name="webmail"
+	else
+		name="$what"
+	fi
 	if [ $verbose -eq 1 ] ; then
 		extra="--cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
-		echo "podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $vol $id -d $domain2"
-		podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $vol $id -d $domain2
+		echo "podman run $extra -d --rm -h $domain2 --name $name -p 8000:80 -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 $name"
+		podman run $extra -d --rm -h $domain2 --name $name -p 8000:80 -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 $name
 	else
 		extra="-q --cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
-		podman run $extra -d --rm -h $domain2 --name $what -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 >/dev/null
+		podman run $extra -d --rm -h $domain2 --name $name -p 8000:80 -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 $name >/dev/null
 	fi
 	if [ $? -ne 0 ] ; then
 		echo "Failed to run $what:$image"
 		return 1
 	fi
-	if [ "$what" = "indimail" -o "$what" = "indimail-web" ] ; then
+	if [ "$name" = "indimail" -o "$name" = "webmail" ] ; then
 		case $image in
 		jammy)
 			for i in qmail-send.25 slowq-send inlookup.infifo indisrvr.4000
 			do
-				podman exec -ti $what /bin/rm -f /service/$i/variables/MYSQL_OPT_RECONNECT
-				podman exec -ti $what svc -r /service/$i
+				podman exec -ti $name /bin/rm -f /service/$i/variables/MYSQL_OPT_RECONNECT
+				podman exec -ti $name svc -r /service/$i
 			done
 		;;
 		#stream9)
-		#podman exec -ti $what setcap -r /usr/libexec/mysqld
+		#podman exec -ti $name setcap -r /usr/libexec/mysqld
 		#;;
 		esac
 	fi
 	case $image in
 		bionic)
-			podman exec -ti $what sh -c "echo 209715200 > /service/qmail-smtpd.25/variables/SOFT_MEM"
-			podman exec -ti $what svc -r /service/qmail-smtpd.25
+			podman exec -ti $name sh -c "echo 209715200 > /service/qmail-smtpd.25/variables/SOFT_MEM"
+			podman exec -ti $name svc -r /service/qmail-smtpd.25
 		;;
 	esac
 	if [ $verbose -eq 1 ] ; then
 		podman ps
 	fi
 
-	if [ "$what" = "indimail-mta" -o "$what" = "indimail-mta-web" ] ; then
+	if [ "$name" = "indimail-mta" ] ; then
 		ret=0
 		(
-		podman exec -ti $what sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
-		podman exec -ti $what sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
-		podman exec -ti $what touch /etc/indimail/control/chkrcptdomains
-		podman exec -ti $what svc -h /service/qmail-smtpd.25
+		podman exec -ti $name sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
+		podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+		podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
+		podman exec -ti $name svc -h /service/qmail-smtpd.25
 		sleep $sleep_int
+		[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain2 from testuser01@example.com"
 		if [ $verbose -eq 1 ] ; then
 			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
 		else
@@ -365,22 +369,25 @@ test_docker()
 		fi
 		) > $logdir/podman/$what.$image.log 2>&1
 	else
-		check_service indimail mysql.3306
+		check_service $name mysql.3306
 		ret=$?
 		if [ $ret -eq 0 ] ; then
+			[ $verbose -eq 1 ] && echo "adding domain $domain3, user $user@$domain3"
 			(
-			podman exec -ti $what sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
-			podman exec -ti $what touch /etc/indimail/control/chkrcptdomains
-			podman exec -ti $what svc -h /service/qmail-smtpd.25
+			podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+			podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
+			podman exec -ti $name svc -h /service/qmail-smtpd.25
 			echo "podman commands vadddomain, vadduser"
-			podman exec -ti $what vadddomain $domain3 $password
-			podman exec -ti $what vadduser $user@$domain3 $password
+			podman exec -ti $name vadddomain $domain3 $password
+			podman exec -ti $name vadduser $user@$domain3 $password
 			echo "------------------"
 			) > $logdir/podman/$what.$image.log 2>&1
-			check_service indimail inlookup.infifo
+			check_service $name inlookup.infifo
 			ret=$?
 			if [ $ret -eq 0 ] ; then
 				(
+				sleep $sleep_int
+				[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain3 from testuser01@example.com"
 				if [ $verbose -eq 1 ] ; then
 					swaks    --to $user@$domain3 --from testuser01@example.com -s 127.0.0.1 -p 2025
 				else
@@ -398,15 +405,17 @@ test_docker()
 		sleep $sleep_int
 		(
 		echo "------ qmail-smtpd log ------"
-		podman exec -ti $what cat /var/log/svc/smtpd.25/current
+		podman exec -ti $name cat /var/log/svc/smtpd.25/current
 		echo "------ qmail-send  log ------"
-		podman exec -ti $what cat /var/log/svc/deliver.25/current
+		podman exec -ti $name cat /var/log/svc/deliver.25/current
 		echo "------ --------------- ------"
 		) >> $logdir/podman/$what.$image.log 2>&1
-		if [ "$what" = "indimail-mta" -o "$what" = "indimail-mta-web" ] ; then
+		if [ "$name" = "indimail-mta" ] ; then
+			[ $verbose -eq 1 ] && echo "Checking mail receipt in $maildir"
 			check_mail $maildir
 		else
-			t=$(podman exec -ti $what vuserinfo -d $user@$domain3|awk '{print $3}')
+			t=$(podman exec -ti $name vuserinfo -d $user@$domain3|awk '{print $3}')
+			[ $verbose -eq 1 ] && echo "Checking mail receipt in "$testdir""$t"/Maildir"
 			check_mail "$testdir"$t/Maildir
 		fi
 		if [ $? -eq 0 ] ; then
@@ -419,9 +428,9 @@ test_docker()
 			echo "  testing mail send+receive via podman container $what.$image failed"
 			cat $logdir/podman/$what.$image.log
 			if [ -z "$failed" ] ; then
-				failed="$what"
+				failed="$what:$image"
 			else
-				failed="$failed $what"
+				failed="$failed $what:$image"
 			fi
 			echo "Press ENTER"
 			read key
@@ -433,9 +442,9 @@ test_docker()
 		fcount=$(expr $fcount + 1)
 		echo "  testing mail send+receive via podman container $what.$image failed"
 		if [ -z "$failed" ] ; then
-			failed="$what"
+			failed="$what:$image"
 		else
-			failed="$failed $what"
+			failed="$failed $what:$image"
 		fi
 		echo "Press ENTER"
 		read key
@@ -443,9 +452,41 @@ test_docker()
 			doquit=1
 		fi
 	fi
+	if [ "$name" = "webmail" ] ; then
+		[ $verbose -eq 1 ] && echo "Checking Roundcube Login as user $user@$domain3"
+		podman cp scripts/test_roundcube $name:/usr/bin
+		podman cp scripts/rclogin.php $name:/usr/bin
+		case $image in
+			leap15.4|leap15.5|tumbleweed)
+			sleep $sleep_int
+			;;
+			*)
+			check_service $name php-fpm
+			check_service $name httpd
+			;;
+		esac
+		podman exec -ti $name /usr/bin/test_roundcube "http://localhost/indimail/" "$user@$domain3" "$password"
+		if [ $? -eq 0 ] ; then
+			tcount=$(expr $tcount + 1)
+			echo "  testing webmail login via podman container $what.$image succeeded"
+		else
+			fcount=$(expr $fcount + 1)
+			echo "  testing webmail login via podman container $what.$image failed"
+			if [ -z "$failed" ] ; then
+				failed="$what:$image"
+			else
+				failed="$failed $what:$image"
+			fi
+			echo "Press ENTER"
+			read key
+			if [ "$key" = "quit" ] ; then
+				doquit=1
+			fi
+		fi
+	fi
 	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
 	(
-	podman stop $what
+	podman stop $name
 	if [ $ret -eq 0 -a $delete -eq 1 ] ; then
 		[ $verbose -eq 1 ] && echo "Deleting $image container"
 		podman rmi $id
