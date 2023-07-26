@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ $# -ne 3 ] ; then
+	echo "USAGE: test_roundcube url user password" 1>&2
+	exit 1
+fi
+#php /usr/bin/rclogin.php 'http://localhost/indimail/' 'testuser01@example.com' 'pass';
+php /usr/bin/rclogin.php $1 $2 $3
+if [ $? -eq 0 ] ; then
+    echo "  OK - Roundcube login succeeded"
+    exit 0
+else
+    echo "  CRITICAL - Roundcube login failed"
+    exit 1
+fi
