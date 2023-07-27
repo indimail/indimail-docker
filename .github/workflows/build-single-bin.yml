@@ -28,14 +28,17 @@ jobs:
             echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
             tag=$(echo ${{ github.event.inputs.binName }}|cut -d. -f1)
             tag_prefix=$(echo ${{ github.event.inputs.binName }}|cut -d. -f2)
+            if [ -d indimail-mta/$tag -o -d indimail/$tag ] ; then
+              tag="$tag".s
+            fi
             echo docker build --tag "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag" .
-            docker build --tag "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag.s" .
-            echo docker image tag "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag.s" "docker.io/cprogrammer/$tag_prefix:$tag.s"
-            docker image tag "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag" "docker.io/cprogrammer/$tag_prefix:$tag.s"
-            echo docker push "docker.io/cprogrammer/$tag_prefix:$tag.s"
-            docker push "docker.io/cprogrammer/$tag_prefix:$tag.s"
-            echo docker push "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag.s"
-            docker push "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag.s"
+            docker build --tag "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag" .
+            echo docker image tag "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag" "docker.io/cprogrammer/$tag_prefix:$tag"
+            docker image tag "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag" "docker.io/cprogrammer/$tag_prefix:$tag"
+            echo docker push "docker.io/cprogrammer/$tag_prefix:$tag"
+            docker push "docker.io/cprogrammer/$tag_prefix:$tag"
+            echo docker push "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag"
+            docker push "ghcr.io/${{ github.repository_owner }}/$tag_prefix:$tag"
             /bin/rm -f Dockerfile
           else
             echo "indimail-src/"${{ github.event.inputs.binName }}".bin not found" 

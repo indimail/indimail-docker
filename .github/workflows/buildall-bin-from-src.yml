@@ -51,16 +51,21 @@ jobs:
             do
               echo "Using indimail-src/$i.$j.bin for build"
               cp indimail-src/$i.$j.bin Dockerfile
-              docker build --tag "ghcr.io/${{ github.repository_owner }}/$j:$i.s" . > $i.$j.log 2>&1
+              if [ -d indimail-mta/$tag -o -d indimail/$tag ] ; then
+                tag="$i".s
+              else
+                tag="$i"
+              fi
+              docker build --tag "ghcr.io/${{ github.repository_owner }}/$j:$tag" . > $i.$j.log 2>&1
               if [ $? -eq 0 ] ; then
-                echo "docker push ghcr.io/${{ github.repository_owner }}/$j:$i.s"
-                docker push "ghcr.io/${{ github.repository_owner }}/$j:$i.s"
-                docker image tag "ghcr.io/${{ github.repository_owner }}/$j:$i.s" docker.io/cprogrammer/$j:$i
-                echo "docker push docker.io/cprogrammer/$j:$i.s"
-                docker push docker.io/cprogrammer/$j:$i
+                echo "docker push ghcr.io/${{ github.repository_owner }}/$j:$tag"
+                docker push "ghcr.io/${{ github.repository_owner }}/$j:$tag"
+                docker image tag "ghcr.io/${{ github.repository_owner }}/$j:$tag" docker.io/cprogrammer/$j:$tag
+                echo "docker push docker.io/cprogrammer/$j:$tag"
+                docker push docker.io/cprogrammer/$j:$tag
               else
                 cat $i.$j.log
-                flag="$flag $j:$i.s"
+                flag="$flag $j:$i"
               fi
               /bin/rm -f Dockerfile
               gzip $i.$j.log

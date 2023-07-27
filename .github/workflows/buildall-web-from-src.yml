@@ -39,17 +39,20 @@ jobs:
           for i $distro
           do
             name=$(basename $i |cut -d. -f1,2)
-            os=$(basename $i |cut -d. -f1)
+            tag=$(basename $i |cut -d. -f1)
             image=$(basename $i |cut -d. -f2)
+            if [ -d indimail-web/$tag ] ; then
+              tag="$tag".s
+            fi
             echo "Building web container for $name"
             cp $i Dockerfile
-            docker build --tag "ghcr.io/${{ github.repository_owner }}/$image:$os.s" . > $name.log 2>&1
+            docker build --tag "ghcr.io/${{ github.repository_owner }}/$image:$tag" . > $name.log 2>&1
             if [ $? -eq 0 ] ; then
-              echo "docker push ghcr.io/${{ github.repository_owner }}/$image:$os.s"
-              docker push "ghcr.io/${{ github.repository_owner }}/$image:$os.s"
-              docker image tag "ghcr.io/${{ github.repository_owner }}/$image:$os.s" docker.io/cprogrammer/$image:$os
-              echo "docker push docker.io/cprogrammer/$image:$os.s"
-              docker push docker.io/cprogrammer/$image:$os
+              echo "docker push ghcr.io/${{ github.repository_owner }}/$image:$tag"
+              docker push "ghcr.io/${{ github.repository_owner }}/$image:$tag"
+              docker image tag "ghcr.io/${{ github.repository_owner }}/$image:$tag" docker.io/cprogrammer/$image:$tag
+              echo "docker push docker.io/cprogrammer/$image:$tag"
+              docker push docker.io/cprogrammer/$image:$tag
             else
               cat $name.log
               flag="$flag $name"
