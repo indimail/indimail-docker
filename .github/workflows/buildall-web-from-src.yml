@@ -36,7 +36,7 @@ jobs:
             distros="${{ github.event.inputs.distro_list }}"
           fi
           flag=""
-          for i $distro
+          for i in $distro
           do
             name=$(basename $i |cut -d. -f1,2)
             tag=$(basename $i |cut -d. -f1)
