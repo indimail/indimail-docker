@@ -60,7 +60,7 @@ jobs:
                 docker push docker.io/cprogrammer/$j:$i
               else
                 cat $i.$j.log
-                flag="$flag $j:$i"
+                flag="$flag $j:$i.s"
               fi
               /bin/rm -f Dockerfile
               gzip $i.$j.log
