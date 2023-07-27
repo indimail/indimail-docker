@@ -1,4 +1,5 @@
 # docker build -f dockerfile.stream9 -t cprogrammer/indimail-mta:stream9
+# vim: wrap
 FROM cprogrammer/indimail-src:stream9
 MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
@@ -7,7 +8,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		dnf -y update; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
@@ -73,9 +73,8 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		dnf -y erase gcc autoconf automake make git \
 			xmlto docbook-dtds sgml-common docbook-style-xsl; \
 		/bin/rm -rf /run/* || true; \
-		/bin/rm -f /usr/local/srctmp/incomplete; \
 	) > /var/log/build/build.bin.log 2>&1 \
-	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log)
+	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]

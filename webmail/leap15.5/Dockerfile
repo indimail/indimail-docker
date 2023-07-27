@@ -54,12 +54,15 @@ RUN export HOSTNAME=indimail.org \
 		ircube \
 		apache2-mod_php7 \
 		php7-ctype \
+		php7-curl \
+		php7-exif \
+		php7-fileinfo \
 		php7-gd \
 		php7-imagick \
 		php7-intl \
+		php-xmlwriter \
 		php7-xmlrpc \
 		php7-zip \
-		php7-curl \
 		roundcubemail \
 		mailx \
 	&& echo "Creating self-signed certificate" \
@@ -67,7 +70,7 @@ RUN export HOSTNAME=indimail.org \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& mkdir -p /var/log/build \
 	&& (cp -rp /usr/share/roundcubemail/plugins/* /srv/www/roundcubemail/plugins; \
-		systemctl disable sshd; systemctl disable mysqld; \
+		systemctl disable sshd mariadb; \
 		a2enmod php7; \
 		sed -e 's{^${LoadModule php7_module /usr/lib64/apache2-prefork/mod_php7.so{' /etc/apache2/loadmodule.conf; \
 		/usr/libexec/indimail/roundcube_config) >/var/log/build/roundcube.log 2>&1 \

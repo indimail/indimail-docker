@@ -50,13 +50,25 @@ RUN export HOSTNAME=indimail.org \
 		iwebadmin \
 		ircube \
 		roundcubemail \
+		php-ctype \
+		php-curl \
+		php-exif \
+		php-fileinfo \
+		php-gd \
+		php-imagick \
+		php-intl \
+		php-xmlwriter \
+		php-zip \
 		mailx \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& mkdir -p /var/log/build \
-	&& systemctl disable sshd mariadb \
-	&& /usr/libexec/indimail/roundcube_config >/var/log/build/roundcube.log 2>&1 \
+	&& (cp -rp /usr/share/roundcubemail/plugins/* /srv/www/roundcubemail/plugins; \
+		systemctl disable sshd mariadb; \
+		a2enmod php8; \
+		sed -e 's{^${LoadModule php_module /usr/lib64/apache2-prefork/mod_php8.so{' /etc/apache2/loadmodule.conf; \
+		/usr/libexec/indimail/roundcube_config) >/var/log/build/roundcube.log 2>&1 \
 	&& (echo "Build Succeeded" && gzip /var/log/build/roundcube.log) || (echo "Build Failed" && cat /var/log/build/roundcube.log && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
 		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/roundcube.log.gz && exit 1)

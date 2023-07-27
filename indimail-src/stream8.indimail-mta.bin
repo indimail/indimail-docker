@@ -9,7 +9,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& (set -e; \
 		dnf -y update; \
 		cd /usr/local/srctmp; \
-		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \
 		# libqmail
