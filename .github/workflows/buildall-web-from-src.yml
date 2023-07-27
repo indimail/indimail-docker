@@ -5,6 +5,13 @@ name: buildall-web-from-src push script
 
 on:
   workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      distro_list:
+        # Friendly description to be shown in the UI instead of 'name'
+        Distro List: 'distro list'
+        # Input has to be provided for the workflow to run
+        required: false
 
 jobs:
   build_and_push:
@@ -22,8 +29,14 @@ jobs:
       - name: build
         run: |
           set +e
+          echo "Input=${{ github.event.inputs.distro_list }}"
+          if [ -z "${{ github.event.inputs.distro_list }}"  ] ; then
+            distro=indimail-src/*web.bin
+          else
+            distros="${{ github.event.inputs.distro_list }}"
+          fi
           flag=""
-          for i in indimail-src/*web.bin
+          for i $distro
           do
             name=$(basename $i |cut -d. -f1,2)
             os=$(basename $i |cut -d. -f1)
