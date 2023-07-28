@@ -28,6 +28,7 @@ RUN export HOSTNAME=indimail.org \
 		lsof \
 		cron \
 		gzip \
+		curl \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.5/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo \

@@ -27,6 +27,8 @@ RUN export HOSTNAME=indimail.org \
 		strace \
 		lsof \
 		cron \
+		gzip \
+		curl \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo \
