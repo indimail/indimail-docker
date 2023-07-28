@@ -274,6 +274,83 @@ function do_svscan_without_svscanlog()
 	svpid=$(sed -n '$p' $servicedir/.svscan.pid)
 }
 
+function test_iwebadmin()
+{
+	u=$1
+	d=$2
+	p=$3
+
+	if [ "$u" = "postmaster" ] ; then
+		echo "Executing curl to test iwebadmin admin login"
+	else
+		echo "Executing curl to test iwebadmin user  login"
+	fi
+	podman exec -ti $name /usr/bin/curl "http://localhost/cgi-bin/iwebadmin" -d \
+		"username="$u"&domain="$d"&password="$p"&returnhttp=&returntext=" \
+		> $logdir/podman/roundcube.log 2>&1
+	if [ $? -ne 0 ] ; then
+		fcount=$(expr $fcount + 1)
+		if [ "$u" = "postmaster" ] ; then
+			echo "  testing iwebadmin admin login via podman container $what.$image failed"
+		else
+			echo "  testing iwebadmin user  login via podman container $what.$image failed"
+		fi
+		if [ -z "$failed" ] ; then
+			failed="iwebadmin-$what:$image"
+		else
+			failed="$failed iwebadmin-$what:$image"
+		fi
+		echo "Press ENTER or quit to quit"
+		read key
+		if [ "$key" = "quit" ] ; then
+			doquit=1
+		fi
+	fi
+
+	t1=0
+	t2=0
+	grep "<h2>Invalid Login" $logdir/podman/roundcube.log >/dev/null
+	t1=$?
+	if [ "$u" = "postmaster" ] ; then
+		grep "background=\"/images/iwebadmin/main.png\"" $logdir/podman/roundcube.log > /dev/null
+	else
+		grep "<b>Modify User: $u@$d</b>" $logdir/podman/roundcube.log >/dev/null
+	fi
+	t2=$?
+
+	if [ $t2 -eq 0 -a $t1 -ne 0 ] ; then
+		tcount=$(expr $tcount + 1)
+		if [ "$u" = "postmaster" ] ; then
+			echo "  testing iwebadmin admin login via podman container $what.$image succeeded"
+		else
+			echo "  testing iwebadmin user  login via podman container $what.$image succeeded"
+		fi
+	elif [ $t1 -eq 0 -a $t2 -ne 0 ] ; then
+		fcount=$(expr $fcount + 1)
+		if [ "$u" = "postmaster" ] ; then
+			echo "  testing iwebadmin admin login via podman container $what.$image failed"
+		else
+			echo "  testing iwebadmin user  login via podman container $what.$image failed"
+		fi
+		if [ -z "$failed" ] ; then
+			failed="iwebadmin-$what:$image"
+		else
+			failed="$failed iwebadmin-$what:$image"
+		fi
+		cat $logdir/podman/roundcube.log
+		echo "Press ENTER or quit to quit"
+		read key
+		if [ "$key" = "quit" ] ; then
+			doquit=1
+		fi
+	else
+		cat $logdir/podman/roundcube.log
+	fi
+	logout=$(grep logout $logdir/podman/roundcube.log | sed -e "s{.*a href={{" -e "s{>Log Out.*{{" -e "s{\"{{g")
+	podman exec -ti $name /usr/bin/curl -X GET $url > /dev/null
+	/bin/rm -f $logdir/podman/roundcube.log
+}
+
 test_docker()
 {
 	if [ $doquit -eq 1 ] ; then
@@ -428,11 +505,11 @@ test_docker()
 			echo "  testing mail send+receive via podman container $what.$image failed"
 			cat $logdir/podman/$what.$image.log
 			if [ -z "$failed" ] ; then
-				failed="$what:$image"
+				failed="mail-$what:$image"
 			else
-				failed="$failed $what:$image"
+				failed="$failed mail-$what:$image"
 			fi
-			echo "Press ENTER"
+			echo "Press ENTER or quit to quit"
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
@@ -442,11 +519,11 @@ test_docker()
 		fcount=$(expr $fcount + 1)
 		echo "  testing mail send+receive via podman container $what.$image failed"
 		if [ -z "$failed" ] ; then
-			failed="$what:$image"
+			failed="mail-$what:$image"
 		else
-			failed="$failed $what:$image"
+			failed="$failed mail-$what:$image"
 		fi
-		echo "Press ENTER"
+		echo "Press ENTER or quit to quit"
 		read key
 		if [ "$key" = "quit" ] ; then
 			doquit=1
@@ -473,16 +550,20 @@ test_docker()
 			fcount=$(expr $fcount + 1)
 			echo "  testing webmail login via podman container $what.$image failed"
 			if [ -z "$failed" ] ; then
-				failed="$what:$image"
+				failed="roundcube-$what:$image"
 			else
-				failed="$failed $what:$image"
+				failed="$failed roundcube-$what:$image"
 			fi
-			echo "Press ENTER"
+			echo "Press ENTER or quit to quit"
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
 			fi
 		fi
+		[ $verbose -eq 1 ] && echo "Checking iwebadmin user  Login $user@$domain3"
+		test_iwebadmin $user $domain3 "$password"
+		[ $verbose -eq 1 ] && echo "Checking iwebadmin admin Login postmaster@$domain3"
+		test_iwebadmin "postmaster" $domain3 "$password"
 	fi
 	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
 	(
@@ -557,6 +638,7 @@ do
 	;;
 	-h | --help)
 	usage
+	shift
 	;;
 	-u | --update)
 	do_update=1

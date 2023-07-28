@@ -1,4 +1,32 @@
 #!/bin/sh
+options=$(getopt -a -n test_roundcube -o "v" -l verbose -- "$@")
+if [ $? != 0 ]; then
+	(
+	echo "invalid usage"
+	echo "test_roundcube [-v ] url user password" 
+	) 1>&2
+	exit 1
+fi
+verbose=0
+eval set -- "$options"
+while :
+do
+	case "$1" in
+	-v)
+	verbose=1
+	shift
+	;;
+	--) # end of options
+	shift
+	break
+	;;
+	*)
+	echo "Unexpected option [$1]: this should'nt happen." 1>&2
+	exit 1
+	;;
+	esac
+done
+
 if [ $# -ne 3 ] ; then
 	echo "USAGE: test_roundcube url user password" 1>&2
 	exit 1
@@ -6,9 +34,13 @@ fi
 #php /usr/bin/rclogin.php 'http://localhost/indimail/' 'testuser01@example.com' 'pass';
 php /usr/bin/rclogin.php $1 $2 $3
 if [ $? -eq 0 ] ; then
-    echo "  OK - Roundcube login succeeded"
+	if [ $verbose -eq 1 ] ; then
+    	echo "  OK - Roundcube login succeeded"
+	fi
     exit 0
 else
-    echo "  CRITICAL - Roundcube login failed"
+	if [ $verbose -eq 1 ] ; then
+    	echo "  CRITICAL - Roundcube login failed"
+	fi
     exit 1
 fi

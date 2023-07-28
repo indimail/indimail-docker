@@ -30,6 +30,7 @@ do
 
 	-y)
 	non_interactive=1
+	shift
 	;;
 
 	-d | --distro)

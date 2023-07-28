@@ -35,6 +35,7 @@ do
 
 	-y)
 	non_interactive=1
+	shift
 	;;
 
 	--) # end of options
