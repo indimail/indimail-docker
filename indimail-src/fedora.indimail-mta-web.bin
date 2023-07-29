@@ -71,6 +71,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 			libidn2-devel readline-devel tcl-devel tk-devel; \
 		dnf -y autoremove; \
+		/bin/rm -rf /run/*; \
 		/bin/rm -f /usr/local/srctmp/incomplete; \
 	) >/var/log/build/build.bin.log 2>&1 \
 	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) \
