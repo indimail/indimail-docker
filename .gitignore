@@ -3,6 +3,9 @@ dockerfile
 .gentoo.webmail.bin
 fc35
 centos7
+indimail/archlinux
+indimail-mta/archlinux
+webmail/stream9
 *-centos7.yml
 .gitignore
 .notest
