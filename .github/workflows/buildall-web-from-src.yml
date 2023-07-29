@@ -31,12 +31,12 @@ jobs:
           set +e
           echo "Input=${{ github.event.inputs.distro_list }}"
           if [ -z "${{ github.event.inputs.distro_list }}"  ] ; then
-            distro=indimail-src/*web.bin
+            distros=indimail-src/*web.bin
           else
             distros="${{ github.event.inputs.distro_list }}"
           fi
           flag=""
-          for i in $distro
+          for i in $distros
           do
             name=$(basename $i |cut -d. -f1,2)
             tag=$(basename $i |cut -d. -f1)
@@ -44,7 +44,7 @@ jobs:
             if [ -d indimail-web/$tag ] ; then
               tag="$tag".s
             fi
-            echo "Building web container for $name"
+            echo "Building web container for $name $image:$tag"
             cp $i Dockerfile
             docker build --tag "ghcr.io/${{ github.repository_owner }}/$image:$tag" . > $name.log 2>&1
             if [ $? -eq 0 ] ; then
