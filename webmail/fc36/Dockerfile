@@ -49,6 +49,7 @@ RUN export HOSTNAME=indimail.org \
 		iwebadmin \
 		httpd \
 		mod_ssl \
+		php \
 		php-fpm \
 		roundcubemail \
 		php-mysqlnd \
