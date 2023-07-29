@@ -280,10 +280,12 @@ function test_iwebadmin()
 	d=$2
 	p=$3
 
-	if [ "$u" = "postmaster" ] ; then
-		echo "Executing curl to test iwebadmin admin login"
-	else
-		echo "Executing curl to test iwebadmin user  login"
+	if [ $verbose -eq 1 ] ; then
+		if [ "$u" = "postmaster" ] ; then
+			echo "Executing curl to test iwebadmin admin login"
+		else
+			echo "Executing curl to test iwebadmin user  login"
+		fi
 	fi
 	podman exec -ti $name /usr/bin/curl "http://localhost/cgi-bin/iwebadmin" -d \
 		"username="$u"&domain="$d"&password="$p"&returnhttp=&returntext=" \
@@ -398,11 +400,14 @@ test_docker()
 		extra="--cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
 		echo "podman run $extra -d --rm -h $domain2 --name $name -p 8000:80 -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 $name"
 		podman run $extra -d --rm -h $domain2 --name $name -p 8000:80 -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 $name
+		ret=$?
 	else
 		extra="-q --cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
 		podman run $extra -d --rm -h $domain2 --name $name -p 8000:80 -p 2025:25 -p 2587:587 -v $vol $id -d $domain2 $name >/dev/null
+		ret=$?
 	fi
-	if [ $? -ne 0 ] ; then
+	pid=$(podman ps --noheading)
+	if [ $ret -ne 0 -o -z "$pid" ] ; then
 		echo "Failed to run $what:$image"
 		return 1
 	fi
@@ -426,9 +431,6 @@ test_docker()
 			podman exec -ti $name svc -r /service/qmail-smtpd.25
 		;;
 	esac
-	if [ $verbose -eq 1 ] ; then
-		podman ps
-	fi
 
 	if [ "$name" = "indimail-mta" ] ; then
 		ret=0
@@ -498,11 +500,11 @@ test_docker()
 		if [ $? -eq 0 ] ; then
 			ret=0
 			tcount=$(expr $tcount + 1)
-			echo "  testing mail send+receive via podman container $what.$image succeeded"
+			echo "  testing mail send+receive     via podman container $what.$image succeeded"
 		else
 			ret=1
 			fcount=$(expr $fcount + 1)
-			echo "  testing mail send+receive via podman container $what.$image failed"
+			echo "  testing mail send+receive     via podman container $what.$image failed"
 			cat $logdir/podman/$what.$image.log
 			if [ -z "$failed" ] ; then
 				failed="mail-$what:$image"
@@ -517,7 +519,7 @@ test_docker()
 		fi
 	else
 		fcount=$(expr $fcount + 1)
-		echo "  testing mail send+receive via podman container $what.$image failed"
+		echo "  testing mail send+receive     via podman container $what.$image failed"
 		if [ -z "$failed" ] ; then
 			failed="mail-$what:$image"
 		else
@@ -545,10 +547,10 @@ test_docker()
 		podman exec -ti $name /usr/bin/test_roundcube "http://localhost/indimail/" "$user@$domain3" "$password"
 		if [ $? -eq 0 ] ; then
 			tcount=$(expr $tcount + 1)
-			echo "  testing webmail login via podman container $what.$image succeeded"
+			echo "  testing webmail   user  login via podman container $what.$image succeeded"
 		else
 			fcount=$(expr $fcount + 1)
-			echo "  testing webmail login via podman container $what.$image failed"
+			echo "  testing webmail   user  login via podman container $what.$image failed"
 			if [ -z "$failed" ] ; then
 				failed="roundcube-$what:$image"
 			else
