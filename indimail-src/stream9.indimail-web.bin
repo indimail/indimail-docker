@@ -14,8 +14,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		&& dnf -y install perl httpd mod_ssl php php-fpm php-mysqlnd \
 			php-imagick php-mcrypt php-mbstring php-xml php-xmlrpc \
 			php-gd php-intl php-json php-zip php-cli; \
-		cd /usr/local/srctmp; \
-		# indimail-mta ###############################################
+		# Git
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \
@@ -23,7 +22,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		cd /usr/local/srctmp/libqmail; \
 		./default.configure; \
 		make && make install-strip; \
-		# indimail-mta
+		# indimail-mta ###############################################
 		cd /usr/local/srctmp/indimail-mta; \
 		for i in libdkim2 libsrs2 indimail-mta ucspi-tcp daemontools; do cd $i-x;./default.configure; \
 			if [ -f conf.ld ] ; then sed -i 's/^cc/cc -s/' conf-ld; fi; \
@@ -50,7 +49,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
 			indium-x nssd-x fetchmail-x logalert-x procmail-x \
 			iwebadmin-x ircube-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
-		# configure indimail-mta ###############################
+		# configure indimail ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		setcap -r /usr/libexec/mysqld; \
 		./create_services --add-boot --mbase=/home/mail --mysqlPrefix=/usr; \
@@ -79,7 +78,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		cd /usr/share; \
 		tar xfz /usr/local/srctmp/roundcubemail.tar.gz; \
 		mv roundcubemail/plugins/* roundcubemail-1.6.2/plugins; \
-		cd /; \
 		/bin/rm -rf roundcubemail; \
 		mv roundcubemail-1.6.2 roundcubemail; \
 		chown -R root:root roundcubemail; \

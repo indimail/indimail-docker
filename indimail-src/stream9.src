@@ -42,7 +42,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		# roundcube
 		cd /usr/local/srctmp; \
 		wget -nv \
-		https://github.com/roundcube/roundcubemail/releases/download/1.6.0/roundcubemail-1.6.0-complete.tar.gz \
+		https://github.com/roundcube/roundcubemail/releases/download/1.6.2/roundcubemail-1.6.2-complete.tar.gz \
 			-O roundcubemail.tar.gz; \
 		/bin/rm -f /usr/local/srctmp/incomplete; \
 		) > /var/log/build/build.log 2>&1 \
