@@ -43,6 +43,7 @@ RUN export HOSTNAME=indimail.org \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl disable sshd \
 	&& unset HOSTNAME \
+	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
