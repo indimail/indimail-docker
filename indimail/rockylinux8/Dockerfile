@@ -32,6 +32,7 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
+		passwd \
 		perl \
 		mysql-community-server \
 		mysql-community-client \

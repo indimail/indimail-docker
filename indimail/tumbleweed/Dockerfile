@@ -26,6 +26,7 @@ RUN export HOSTNAME=indimail.org \
 		sudo \
 		strace \
 		lsof \
+		iputils \
 		patch \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \

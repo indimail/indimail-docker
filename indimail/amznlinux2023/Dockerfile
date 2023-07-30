@@ -43,6 +43,7 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
+		passwd \
 		indimail-mta \
 		logalert \
 		procmail \

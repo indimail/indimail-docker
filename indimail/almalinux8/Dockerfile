@@ -34,6 +34,7 @@ RUN export HOSTNAME=indimail.org \
 		strace \
 		lsof \
 		perl \
+		passwd \
 		mysql-community-server \
 		mysql-community-client \
 		mysql-community-libs \
