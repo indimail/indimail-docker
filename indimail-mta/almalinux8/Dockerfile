@@ -32,6 +32,8 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
+		passwd \
+		iputils \
 		perl \
 		mysql-community-libs \
 	&& wget https://download.opensuse.org/repositories/home:mbhangui/AlmaLinux_8/home:mbhangui.repo -O /etc/yum.repos.d/indimail.repo \

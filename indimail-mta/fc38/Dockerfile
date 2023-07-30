@@ -33,6 +33,8 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
+		passwd \
+		iputils \
 		deltarpm \
 		indimail-mta \
 		logalert \

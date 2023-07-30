@@ -30,6 +30,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		telnet \
 		strace \
 		lsof \
+		inetutils-ping \
 		vim \
 		indimail-mta \
 		logalert \
