@@ -26,6 +26,7 @@ RUN export HOSTNAME=indimail.org \
 		sudo \
 		strace \
 		lsof \
+		iputils \
 		cron \
 		gzip \
 		curl \
