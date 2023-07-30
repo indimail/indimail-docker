@@ -7,7 +7,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
 		dnf -y update && dnf -y install mysql-server mariadb httpd mod_ssl \
-			php php-fpm roundcubemail php-mysqlnd php-imagick; \
+			php php-fpm roundcubemail php-mysqlnd php-imagick passwd iputils; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \

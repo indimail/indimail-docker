@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docke
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
-		dnf -y update && dnf -y install mysql-server mariadb; \
+		dnf -y update && dnf -y install passwd iputils mysql-server mariadb; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \

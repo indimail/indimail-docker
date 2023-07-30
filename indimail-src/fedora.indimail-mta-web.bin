@@ -7,9 +7,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
 		dnf -y update && dnf -y install mysql-server mariadb httpd mod_ssl \
-			php php-fpm roundcubemail php-mysqlnd php-imagick passwd; \
+			php php-fpm roundcubemail php-mysqlnd php-imagick passwd iputils; \
 		cd /usr/local/srctmp; \
-		for i in libqmail indimail-mta tinydnssec indimail-virtualdomains indimail-docker; \
+		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \
 		# libqmail
 		cd /usr/local/srctmp/libqmail; \
@@ -28,6 +28,14 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		/usr/sbin/svctool \
 			--config=cert --postmaster=postmaster@indimail.org \
 			--common_name=indimail.org > /dev/null 2>/var/log/build/cert.log; \
+		# ezmlm-idx ##############################
+		cd /usr/local/srctmp/ezmlm-idx/ezmlm-idx-x; \
+		./default.configure; \
+		sed -i 's/^cc/cc -s/' conf-ld; \
+		sed -i 's/^cc/cc -s/' conf-ldso; \
+		sed -i 's/ -g//' conf-cc; \
+		make && make install-strip; \
+		make mysql install-strip; \
 		# indimail-virtualdomains ##############################
 		cd /usr/local/srctmp/indimail-virtualdomains/indimail-x; \
 		./default.configure; \
@@ -61,6 +69,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
+		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \
 		cd /; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
