@@ -12,7 +12,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		wget \
 		gnupg2 \
 		apt-utils \
-	&& wget -nv https://download.opensuse.org/repositories/home:mbhangui/Debian_122Release.key -O - | apt-key add - \
+	&& wget -nv https://download.opensuse.org/repositories/home:mbhangui/Debian_12/Release.key -O - | apt-key add - \
 	&& printf "deb http://download.opensuse.org/repositories/home:/mbhangui/Debian_12/ /\n" > /etc/apt/sources.list.d/indimail.list  \
 	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"         > /etc/apt/preferences.d/preferences \
 	&& apt-get -y update \
