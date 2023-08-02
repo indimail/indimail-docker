@@ -1,0 +1,62 @@
+# docker build -f dockerfile.lunar -t cprogrammer/indimail:lunar
+# run dpkg-reconfigure tzdata after starting the container
+# ubuntu 23.04
+From ubuntu:lunar
+MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:lunar
+
+# Freshen RUN apt-get -y update
+RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
+	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+	&& mkdir -p /root/Downloads \
+	&& sed -i 's:^path-exclude=/usr/share/man:#path-exclude=/usr/share/man:' \
+		/etc/dpkg/dpkg.cfg.d/excludes \
+	&& apt-get -y update \
+	&& apt-get -y install curl gnupg2 apt-utils \
+	&& curl -fsSL https://dev.mysql.com/get/mysql-apt-config_0.8.26-1_all.deb -o /root/Downloads/mysql-apt_config.deb \
+	&& apt-get -y install /root/Downloads/mysql-apt_config.deb \
+	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_23.04/Release.key | \
+		gpg --dearmor > /etc/apt/trusted.gpg.d/home_mbhangui.gpg \
+	&& printf "deb http://download.opensuse.org/repositories/home:/mbhangui/xUbuntu_23.04/ /\n" > /etc/apt/sources.list.d/indimail.list \
+	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"             > /etc/apt/preferences.d/preferences \
+	&& apt-get -y update \
+	&& apt-get -y install \
+		libmysqlclient21 \
+		debianutils \
+		binutils \
+		cron \
+		less \
+		man-db \
+		net-tools \
+		openssl \
+		openssh-client \
+		procps \
+		psmisc \
+		systemd \
+		systemd-sysv \
+		telnet \
+		strace \
+		lsof \
+		inetutils-ping \
+		vim \
+		indimail-mta \
+		logalert \
+		procmail \
+		indimail \
+		indimail-auth \
+		indimail-access \
+		indimail-utils \
+		bogofilter-wordlist \
+		ezmlm-idx \
+		ezmlm-idx-cgi \
+		ezmlm-idx-mysql \
+		bsd-mailx \
+	&& apt-get -y install \
+		indimail-spamfilter \
+	&& echo "Creating self-signed certificate" \
+	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
+	&& /bin/rm -rf /run /root/Downloads \
+	&& echo "Build Completed" 
+COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["indimail"]
