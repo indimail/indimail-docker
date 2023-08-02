@@ -1,0 +1,33 @@
+name: indimail:debian12 container image
+
+on:
+  push:
+    paths:
+      - '**/indimail/debian12/**'
+      - .github/workflows/indimail-debian12.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io   --username "${{ github.repository_owner }}" --password-stdin
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          cp indimail/debian12/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail:debian12" .
+
+      - name: push
+        run: |
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail:debian12"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail:debian12" docker.io/cprogrammer/indimail:debian12
+          docker push docker.io/cprogrammer/indimail:debian12
