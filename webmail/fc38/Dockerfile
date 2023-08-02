@@ -57,6 +57,9 @@ RUN export HOSTNAME=indimail.org \
 		php-mysqlnd \
 		php-imagick \
 		ircube \
+		perl-Authen-SASL \
+		perl-Digest-HMAC \
+		perl-Digest-SHA \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org \

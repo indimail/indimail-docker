@@ -48,6 +48,9 @@ RUN export HOSTNAME=indimail.org \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+		perl-Authen-SASL \
+		perl-Digest-HMAC \
+		perl-Digest-SHA \
 	&& dnf -y install \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
