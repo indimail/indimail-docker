@@ -26,6 +26,12 @@ RUN export HOSTNAME=indimail.org \
 		sudo \
 		strace \
 		lsof \
+		perl-Authen-SASL \
+		perl-Digest-HMAC \
+		perl-Digest-MD5 \
+		perl-Digest-SHA1 \
+		perl-Net-SSLeay \
+		perl-IO-Socket-INET6 \
 		iputils \
 		patch \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.5/home:mbhangui.repo \
