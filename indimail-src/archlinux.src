@@ -11,6 +11,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		openssl openssh openldap mysql libidn2 wget gd man-db man-pages \
 		binutils cronie net-tools strace lsof vim syslog-ng logrotate \
 		inetutils which libidn libev libsodium libgcrypt pcre tcl tk \
+		perl-authen-sasl perl-net-ssleay perl-digest-hmac perl-io-socket-inet6 \
 	&& pacman -S  --noconfirm --refresh --sysupgrade \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
