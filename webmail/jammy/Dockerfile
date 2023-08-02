@@ -12,8 +12,9 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& sed -i 's:^path-exclude=/usr/share/man:#path-exclude=/usr/share/man:' \
 		/etc/dpkg/dpkg.cfg.d/excludes \
 	&& apt-get -y update \
-	&& apt-get -y install \
-		curl wget gnupg2 apt-utils \
+	&& apt-get -y install curl wget gnupg2 apt-utils \
+	&& curl -fsSL https://dev.mysql.com/get/mysql-apt-config_0.8.26-1_all.deb -o /root/Downloads/mysql-apt_config.deb \
+	&& apt-get -y install /root/Downloads/mysql-apt_config.deb \
 	&& (apt-get -y install mailutils || apt-get -y remove postfix cpio || exit 0) \
 	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_22.04/Release.key | \
 		gpg --dearmor > /etc/apt/trusted.gpg.d/home_mbhangui.gpg \
@@ -93,7 +94,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		systemctl disable mariadb; \
 		systemctl stop mariadb; \
 		/usr/libexec/indimail/roundcube_config; \
-		/bin/rm -r /root/Downloads) >/var/log/build/roundcube.log 2>&1 \
+		/bin/rm -r /run /root/Downloads) >/var/log/build/roundcube.log 2>&1 \
 	&& (echo "Build Succeeded" && gzip /var/log/build/roundcube.log) || (echo "Build Failed" && cat /var/log/build/roundcube.log && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
 		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/roundcube.log.gz && exit 1)

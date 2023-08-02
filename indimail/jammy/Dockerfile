@@ -7,17 +7,20 @@ LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:jammy
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
-	&& mkdir -p /root \
+	&& mkdir -p /root/Downloads \
 	&& sed -i 's:^path-exclude=/usr/share/man:#path-exclude=/usr/share/man:' \
 		/etc/dpkg/dpkg.cfg.d/excludes \
 	&& apt-get -y update \
 	&& apt-get -y install curl gnupg2 apt-utils \
+	&& curl -fsSL https://dev.mysql.com/get/mysql-apt-config_0.8.26-1_all.deb -o /root/Downloads/mysql-apt_config.deb \
+	&& apt-get -y install /root/Downloads/mysql-apt_config.deb \
 	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_22.04/Release.key | \
 		gpg --dearmor > /etc/apt/trusted.gpg.d/home_mbhangui.gpg \
 	&& printf "deb http://download.opensuse.org/repositories/home:/mbhangui/xUbuntu_22.04/ /\n" > /etc/apt/sources.list.d/indimail.list \
 	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"             > /etc/apt/preferences.d/preferences \
 	&& apt-get -y update \
 	&& apt-get -y install \
+		libmysqlclient21 \
 		debianutils \
 		binutils \
 		cron \
@@ -51,7 +54,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
-	&& /bin/rm -rf /run \
+	&& /bin/rm -rf /run /root/Downloads \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
