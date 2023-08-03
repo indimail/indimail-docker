@@ -32,7 +32,8 @@ jobs:
           echo "Input=${{ github.event.inputs.distro_list }}"
           if [ -z "${{ github.event.inputs.distro_list }}"  ] ; then
             distros="almalinux8 oracle8 rockylinux8 almalinux9 oracle9 rockylinux9 stream8 stream9"
-            distros="$distros debian10 debian11 bionic focal jammy fc37 fc38 leap15.4 tumbleweed"
+            distros="$distros debian10 debian11 debian12 bionic focal jammy lunar"
+            distros="fc37 fc38 leap15.4 tumbleweed"
           else
             distros="${{ github.event.inputs.distro_list }}"
           fi
