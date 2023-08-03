@@ -51,6 +51,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		libauthen-sasl-perl \
 		libdigest-perl-md5-perl \
 		libdigest-hmac-perl \
+		gsasl \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
 	&& apt-get -y install \
 		mailutils libgsasl7 \
