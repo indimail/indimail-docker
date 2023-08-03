@@ -49,6 +49,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		libauthen-sasl-perl \
 		libdigest-perl-md5-perl \
 		libdigest-hmac-perl \
+		gsasl \
 	&& apt-get -y install \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
