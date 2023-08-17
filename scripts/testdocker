@@ -1,24 +1,26 @@
 #!/bin/sh
 #
 # The way this works is like this
-# on the host      we have a local   domain $domain1 with user  $user
-# on the container we have a local   domain $domain2 with alias $user
-# on the container we have a virtual domain $domain3 with user  $user
-# on the host homedir=$testdir/home/mail is a shared as /home/mail on container.A
+# on the host      we create a local   domain $domain1 with user  $user
+# on the container we create a local   domain $domain2 with alias $user
+# on the container we create a virtual domain $domain3 with user  $user
+# on the host we create basedir=$testdir/home and share it as /home on container.
 # on the host we have assign file for user $user with home as $testdir/$user
-# we create smtproute on container to route mails for $domain1 to localhost:25
-# the alias $user@$domain2 forwards mails to $user@$domain1
+# on the host we run qmail-smtpd on $localip:$smtp_port
+# on the container we create smtproute to route mails for $domain1 to $localip:$smtp_port
+# on hte container we create alias $user@$domain2 forwards mails to $user@$domain1
 #   so checking $testdir/$user/Maildir is good enough to test mail receipt
 # since /home/mail on container is accessible in $testdir/home/mail, we can test
-# mail receipt locally for user Maildirs on the container.
+# mail receipt locally for user's Maildirs on the container.
 #
-localip=192.168.2.127
+localip=192.168.2.107
 #
+raw_url=https://raw.githubusercontent.com/mbhangui/indimail-virtualdomains/master/indimail-x/tests/testindimail-virtual
 testdir=/tmp/qmail-test
 user=$(whoami)
 localuser=luser
 maildir=$testdir/$user/Maildir
-homedir=$testdir/home
+basedir=$testdir/home
 servicedir=$testdir/service
 sysconfdir=$testdir/etc/indimail
 cntrldir=$sysconfdir/control
@@ -144,7 +146,7 @@ test_pop3()
 		fcount=$(expr $fcount + 1)
 		printf "  testing email to POP3 account %s failed\n" "$1"
 		cat $logdir/pop3d/pop3d.log
-		[ -z $failed ] && failed="swaks:2587-sendmail-$what:$image" || failed="$failed swaks:2587-sendmail-$what:$image"
+		[ -z "$failed" ] && failed="swaks:2587-sendmail-$what:$image" || failed="$failed swaks:2587-sendmail-$what:$image"
 		return 1
 	fi
 	(
@@ -693,8 +695,8 @@ start_svscan_without_svscanlog()
 do_setup()
 {
 	# basic setup for maildir, assign config and queue
-	sudo /bin/rm -rf $homedir/$localuser
-	mkdir -p $homedir
+	sudo /bin/rm -rf $basedir/$localuser
+	mkdir -p $basedir
 	sudo /bin/rm -rf $logdir
 	mkdir -p $logdir/setup
 	mkdir -p $logdir/mail
@@ -837,11 +839,9 @@ test_docker()
 	id=$(podman image list -q cprogrammer/$what:$image)
 	echo "Testing $what:$image id=$id"
 	if [ $selinux_enabled -eq 1 ] ; then
-		#vol="$homedir:/home/mail:z"
-		vol="$homedir:/home:z"
+		vol="$basedir:/home:z"
 	else
-		#vol="$homedir:/home/mail"
-		vol="$homedir:/home"
+		vol="$basedir:/home"
 	fi
 	if [ "$what" = "indimail-web" -o "$what" = "indimail-mta-web" ] ; then
 		name="webmail"
@@ -892,17 +892,16 @@ test_docker()
 	create_useradd
 	podman cp /tmp/testuseradd.sh $name:/usr/bin
 	/bin/rm -f /tmp/testuseradd.sh
+	podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
+	podman exec -ti $name svc -h /service/qmail-smtpd.25 /service/qmail-smtpd.587 # remove this later
 	podman exec -ti $name sh -c "/usr/bin/testuseradd.sh"
-	podman exec -ti $name sh -c "chmod 644 /etc/indimail/control/nodnscheck" # remove this later
-	podman exec -ti $name sh -c "chmod 4755 /usr/libexec/indimail/imapmodules/authshadow" # remove this later
-	podman exec -ti $name sh -c "chmod 4755 /usr/libexec/indimail/imapmodules/authimap" # remove this later
 	podman exec -ti $name svc -h /service/qmail-send.25
 	) > $logdir/podman/$what.$image.log 2>&1
 	check_service $name qmail-smtpd.587
-	test_pop3 $localuser $password $user@$domain1 $homedir/$localuser/Maildir
-	sudo sh -c "/bin/rm -rf $homedir/$localuser/Maildir/new/* $homedir/$localuser/Maildir/cur/*"
-	test_imap $localuser $password $user@$domain1 $homedir/$localuser/Maildir
-	sudo sh -c "/bin/rm -rf $homedir/$localuser/Maildir/new/* $homedir/$localuser/Maildir/cur/*"
+	test_pop3 $localuser $password $user@$domain1 $basedir/$localuser/Maildir
+	sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
+	test_imap $localuser $password $user@$domain1 $basedir/$localuser/Maildir
+	sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
 	if [ "$what" = "indimail-mta" ] ; then
 		ret=0
 		check_service $name qmail-smtpd.25
@@ -1065,14 +1064,16 @@ test_docker()
 
 	if [ "$what" = "indimail-web" -o "$what" = "indimail" ] ; then
 		if [ $extensive -eq 1 ] ; then
-			podman cp scripts/testindimail-virtual $name:/usr/bin
+			wget -nv $raw_url
+			podman cp testindimail-virtual $name:/usr/bin
+			/bin/rm -f testindimail-virtual
 			podman exec -ti $name setuidgid -s $localuser /usr/bin/testindimail-virtual -y -c
 		else
 			# test pop3, imap for virtual user
 			test_pop3 $user@$domain3 $password $postmaster@$domain3 "$testdir"$vdir/Maildir 1
-			sudo sh -c "/bin/rm -rf $homedir/$localuser/Maildir/new/* $homedir/$localuser/Maildir/cur/*"
+			sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
 			test_imap $user@$domain3 $password $postmaster@$domain3 $"$testdir"$vdir/Maildir 1
-			sudo sh -c "/bin/rm -rf $homedir/$localuser/Maildir/new/* $homedir/$localuser/Maildir/cur/*"
+			sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
 		fi
 	fi
 	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
