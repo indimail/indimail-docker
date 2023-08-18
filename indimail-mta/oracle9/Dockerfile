@@ -33,6 +33,10 @@ RUN export HOSTNAME=indimail.org \
 		strace \
 		lsof \
 		perl \
+		perl-Authen-SASL \
+		perl-Digest-HMAC \
+		perl-Digest-SHA \
+		perl-Net-SSLeay \
 		mysql-community-libs \
 	&& wget https://download.opensuse.org/repositories/home:mbhangui/AlmaLinux_9/home:mbhangui.repo -O /etc/yum.repos.d/indimail.repo \
 	&& dnf -y install \
