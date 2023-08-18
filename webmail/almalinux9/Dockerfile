@@ -41,6 +41,10 @@ RUN export HOSTNAME=indimail.org \
 		passwd \
 		iputils \
 		perl \
+		perl-Authen-SASL \
+		perl-Digest-HMAC \
+		perl-Digest-SHA \
+		perl-Net-SSLeay \
 		mysql-community-server \
 		mysql-community-libs \
 		mysql-community-client \

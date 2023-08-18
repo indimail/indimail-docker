@@ -33,6 +33,10 @@ RUN export HOSTNAME=indimail.org \
 		strace \
 		lsof \
 		perl \
+		perl-Authen-SASL \
+		perl-Digest-HMAC \
+		perl-Digest-SHA \
+		perl-Net-SSLeay \
 		passwd \
 		mysql-community-server \
 		mysql-community-client \
