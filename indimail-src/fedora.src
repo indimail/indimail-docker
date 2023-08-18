@@ -21,7 +21,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		openssl-devel openldap-devel ncurses-devel gdbm-devel pcre-devel pcre2-devel \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 		libidn2-devel readline-devel tcl-devel tk-devel perl-Authen-SASL \
-		perl-Digest-HMAC perl-Digest-SHA \
+		perl-Digest-HMAC perl-Digest-SHA perl-Net-SSLeay \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \

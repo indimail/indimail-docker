@@ -17,7 +17,10 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		pcre pcre-dev pcre2-dev libtirpc libtirpc-dev ncurses-libs \
 		ncurses-dev linux-pam linux-pam-dev gdbm gdbm-dev db db-dev \
 		gsl gsl-dev libev libev-dev libsodium libsodium-dev \
-		mysql mysql-client mrtg libgcrypt krb5-libs \
+		mysql mysql-client mrtg libgcrypt krb5-libs perl \
+		perl-authen-sasl perl-digest-hmac perl-digest-md5 perl-digest-sha1 \
+		perl-digest-sha3 perl-net-ssleay perl-io-socket-inet6 \
+		perl-authen-ntlm perl-net-dns \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
