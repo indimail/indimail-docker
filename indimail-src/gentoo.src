@@ -19,7 +19,8 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 			dev-libs/libev dev-libs/libsodium dev-libs/libpcre2 sys-libs/gdbm sys-libs/pam \
 			sys-libs/db sys-libs/ncurses net-libs/libtirpc sci-libs/gsl mail-client/mailx \
 			dev-util/strace app-editors/vim net-misc/telnet-bsd mit-krb5 dev-lang/tcl \
-			dev-lang/tk; \
+			dev-perl/Authen-SASL dev-perl/Digest-Perl-MD5 dev-perl/IO-Socket-INET6 \
+			dev-perl/Net-DNS dev-perl/Authen-NTLM dev-lang/tk; \
 		do \
 				grep -w $i /tmp/qlist.txt >/dev/null 2>&1; \
 				if [ $? -eq 0 ] ; then \
