@@ -1,0 +1,42 @@
+# This script builds runtime images from the source docker image
+name: dockertest push script
+
+on:
+  workflow_dispatch:
+    # Inputs the workflow accepts.
+    inputs:
+      test_args:
+        # Friendly description to be shown in the UI instead of 'name'
+        source Name: 'arguments for test docker script'
+        # Input has to be provided for the workflow to run
+        required: false
+
+jobs:
+  build_and_push:
+    name: Test container images
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: test
+        run: |
+          sudo apt-get install podman
+          sudo apt-get -y update
+          sudo apt-get -y install curl gnupg2 apt-utils
+          curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_22.04/Release.key | gpg --dearmor > home_mbhangui.gpg
+          sudo mv home_mbhangui.gpg /etc/apt/trusted.gpg.d/home_mbhangui.gpg
+          printf "deb http://download.opensuse.org/repositories/home:/mbhangui/xUbuntu_22.04/ /\n" > indimail.list
+          printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n" > preferences
+          sudo mv indimail.list /etc/apt/sources.list.d
+          sudo mv preferences /etc/apt/preferences.d
+          sudo apt-get -y update
+          sudo apt-get -y install indimail-mta gsasl libnet-ssleay-perl libauthen-sasl-perl libdigest-perl-md5-perl libdigest-hmac-perl
+          cd scripts
+          if [ -z "${{ github.event.inputs.test_args }}" ] ; then
+            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker -y -d -c indimail-mta
+            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker -y -d -c indimail
+            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker -y -d -c webmail
+          else
+            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker ${{ github.event.inputs.test_args }}
+          fi
