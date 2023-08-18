@@ -40,7 +40,7 @@ domain1=argos.indimail.org
 domain2=podman.indimail.org
 domain3=virtual.indimail.org
 domain4=example.com
-password="abcdefgh12"
+password="aBcdefgh12@34"
 
 MYSQL_USER=indimail
 MYSQL_PASS="ssh-1.5-"
@@ -57,10 +57,16 @@ create_useradd()
 	echo "password=$password"
 	echo "getent passwd \$localuser >/dev/null"
 	echo "if [ \$? -eq 2 ] ; then"
-	echo "	useradd \$localuser"
+	echo "	if [ -f /etc/alpine-release ] ; then"
+	echo "	  adduser \$localuser -D"
+	echo "	else"
+	echo "	  useradd \$localuser"
+	echo "	fi"
 	echo "	mkdir -p /home/\$localuser"
 	echo "	if [ -f /etc/redhat-release ] ; then"
 	echo "		echo \$password | passwd --stdin \$localuser"
+	echo "	elif [ -f /etc/gentoo-release ] ; then"
+	echo "		echo \"\$localuser:\$password\" | chpasswd"
 	echo "	else"
 	echo "		printf \"%s\\n%s\\n\" \$password \$password | passwd \$localuser"
 	echo "	fi"
@@ -68,23 +74,24 @@ create_useradd()
 	echo "if [ ! -d /home/\$localuser/Maildir ] ; then"
 	echo "	qmaildirmake /home/\$localuser/Maildir"
 	echo "fi"
-	echo "chown -R \$localuser:\$localuser /home/\$localuser"
+	echo "gid=\$(id -g $localuser)"
+	echo "chown -R \$localuser:\$gid /home/\$localuser"
 	echo "/usr/sbin/usermod -aG qcerts \$localuser"
 	echo "/usr/sbin/usermod -aG indimail \$localuser"
 	echo "if [ -d /etc/sudoers.d -a ! -f /etc/sudoers.d/01-\$localuser ] ; then"
 	echo "	echo \"\$localuser  ALL=(ALL)   NOPASSWD: ALL\" > /etc/sudoers.d/01-\$localuser"
 	echo "fi"
-	echo "if [ -x /usr/bin/dnf ] ; then"
-	echo "	dnf -y install perl-Authen-SASL gsasl"
-	echo "elif [ -x /usr/bin/yum ] ; then"
-	echo "	yum -y install perl-Authen-SASL perl-Net-SSLeay gsasl"
-	echo "elif [ -x /usr/bin/apt-get ] ; then"
-	echo "	env DEBIAN_FRONTEND=noninteractive apt-get -y install libnet-ssleay-perl libauthen-sasl-perl libdigest-perl-md5-perl libdigest-hmac-perl gsasl"
-	echo "elif [ -x /sbin/apk ] ; then"
-	echo "	/sbin/apk install perl-Authen-SASL gsasl"
-	echo "elif [ -x /usr/sbin/pacman ] ; then"
-	echo "	pacman -S --noconfirm perl-authen-sasl perl-net-ssleay perl-digest-hmac perl-io-socket-inet6 gsasl"
-	echo "fi"
+	#echo "if [ -x /usr/bin/dnf ] ; then"
+	#echo "	dnf -y install perl-Authen-SASL passwd"
+	#echo "elif [ -x /usr/bin/yum ] ; then"
+	#echo "	yum -y install perl-Authen-SASL perl-Net-SSLeay"
+	#echo "elif [ -x /usr/bin/apt-get ] ; then"
+	#echo "	env DEBIAN_FRONTEND=noninteractive apt-get -y install libnet-ssleay-perl libauthen-sasl-perl libdigest-perl-md5-perl libdigest-hmac-perl"
+	#echo "elif [ -x /sbin/apk ] ; then"
+	#echo "	/sbin/apk install perl-Authen-SASL"
+	#echo "elif [ -x /usr/sbin/pacman ] ; then"
+	#echo "	pacman -S --noconfirm perl-authen-sasl perl-net-ssleay perl-digest-hmac perl-io-socket-inet6"
+	#echo "fi"
 	echo "if [ -f /usr/bin/sudo ] ; then"
 	echo "	exit 0"
 	echo "fi"
@@ -97,10 +104,9 @@ create_useradd()
 	echo "elif [ -x /sbin/apk ] ; then"
 	echo "	/sbin/apk install sudo"
 	echo "fi"
-	echo "echo \"\$localuser  ALL=(ALL)   NOPASSWD: ALL\" > /etc/sudoers.d/01-\$localuser"
 	) > $out
-	mv $out /tmp/testuseradd.sh
-	chmod +x /tmp/testuseradd.sh
+	mv $out /tmp/create_testuser
+	chmod +x /tmp/create_testuser
 }
 
 check_relay()
@@ -147,6 +153,7 @@ test_pop3()
 		printf "  testing email to POP3 account %s failed\n" "$1"
 		cat $logdir/pop3d/pop3d.log
 		[ -z "$failed" ] && failed="swaks:2587-sendmail-$what:$image" || failed="$failed swaks:2587-sendmail-$what:$image"
+		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
 	(
@@ -234,7 +241,7 @@ test_pop3()
 	echo "fi"
 	) > $testdir/tcpclient.pop3
 	chmod +x $testdir/tcpclient.pop3
-	check_service $name qmail-pop3d.110
+	check_service $name qmail-pop3d.110 3
 	tcpclient -a 10 -vDHR 127.0.0.1 2110 /tmp/qmail-test/tcpclient.pop3 2>$logdir/pop3d/pop3d.log
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
@@ -243,6 +250,7 @@ test_pop3()
 		printf "  testing POP3  login %s and mail retrieval failed\n" "$1"
 		cat $logdir/pop3d/pop3d.log
 		[ -z "$failed" ] && failed="pop3d:2110-$what:$image" || failed="$failed pop3d:2110-$what:$image"
+		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
 	if [ $do_relay -eq 1 ] ; then
@@ -256,6 +264,7 @@ test_pop3()
 			delete_relay
 			cat $logdir/pop3d/pop3d.log
 			[ -z "$failed" ] && failed="relay-pop3d-$what:$image" || failed="$failed relay-pop3d-$what:$image"
+			[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 			return 1
 		fi
 		swaks -S --to tuser01@$domain4 --from $from --server 127.0.0.1 --port 2025 >> $logdir/pop3d/pop3d.log 2>&1
@@ -271,11 +280,12 @@ test_pop3()
 			delete_relay
 			cat $logdir/pop3d/pop3d.log
 			[ -z "$failed" ] && failed="relay-pop3d-$what:$image" || failed="$failed relay-pop3d-$what:$image"
+			[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 			return 1
 		fi
 	fi
 
-	check_service $name qmail-pop3d-ssl.995
+	check_service $name qmail-pop3d-ssl.995 3
 	tcpclient -a 10 -n "" -vDHR 127.0.0.1 2995 /tmp/qmail-test/tcpclient.pop3 2>$logdir/pop3d-ssl/pop3d-ssl.log
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
@@ -287,6 +297,7 @@ test_pop3()
 		printf "  testing POP3S login %s and mail retrieval failed\n" "$1"
 		cat $logdir/pop3d-ssl/pop3d-ssl.log
 		[ -z "$failed" ] && failed="pop3s:2995-$what:$image" || failed="$failed pop3s:2995-$what:$image"
+		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
 	if [ $do_relay -eq 1 ] ; then
@@ -304,6 +315,7 @@ test_pop3()
 			delete_relay
 			cat $logdir/pop3d-ssl/pop3d-ssl.log
 			[ -z "$failed" ] && failed="relay-pop3d-$what:$image" || failed="$failed relay-pop3d-$what:$image"
+			[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 			return 1
 		fi
 	fi
@@ -328,6 +340,7 @@ test_imap()
 		printf "  testing email to IMAP account %s failed\n" "$1"
 		cat $logdir/imapd/imapd.log
 		[ -z "$failed" ] && failed="swaks:2587-sendmail-$what:$image" || failed="$failed swaks:2587-sendmail-$what:$image"
+		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
 	(
@@ -393,7 +406,7 @@ test_imap()
 	) > $testdir/tcpclient.imap
 	chmod +x $testdir/tcpclient.imap
 
-	check_service $name qmail-imapd.143
+	check_service $name qmail-imapd.143 3
 	tcpclient -a 10 -vDHR 127.0.0.1 2143 /tmp/qmail-test/tcpclient.imap 2>$logdir/imapd/imapd.log
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
@@ -403,6 +416,7 @@ test_imap()
 		printf "  testing IMAP  login %s and mail retrieval failed\n" "$1"
 		cat $logdir/imapd/imapd.log
 		[ -z "$failed" ] && failed="imapd:2143-$what:$image" || failed="$failed imapd:2143-$what:$image"
+		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
 	if [ $do_relay -eq 1 ] ; then
@@ -417,6 +431,7 @@ test_imap()
 			delete_relay
 			cat $logdir/imapd/imapd.log
 			[ -z "$failed" ] && failed="relay-imapd-$what:$image" || failed="$failed relay-imapd-$what:$image"
+			[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 			return 1
 		fi
 		swaks -S --to tuser01@$domain4 --from $from --server 127.0.0.1 --port 2025 >> $logdir/imapd/imapd.log 2>&1
@@ -434,11 +449,12 @@ test_imap()
 			delete_relay
 			cat $logdir/imapd/imapd.log
 			[ -z "$failed" ] && failed="relay-imapd-$what:$image" || failed="$failed relay-imapd-$what:$image"
+			[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 			return 1
 		fi
 	fi
 
-	check_service $name qmail-imapd-ssl.993
+	check_service $name qmail-imapd-ssl.993 3
 	tcpclient -a 10 -n "" -vDHR 127.0.0.1 2993 /tmp/qmail-test/tcpclient.imap 2>$logdir/imapd-ssl/imapd-ssl.log
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
@@ -451,6 +467,7 @@ test_imap()
 		printf "  testing IMAPS login %s and mail retrieval failed\n" "$1"
 		cat $logdir/imapd-ssl/imapd-ssl.log
 		[ -z "$failed" ] && failed="imaps:2993-$what:$image" || failed="$failed imaps:2993-$what:$image"
+		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
 	if [ $do_relay -eq 1 ] ; then
@@ -469,6 +486,7 @@ test_imap()
 			delete_relay
 			cat $logdir/imapd-ssl/imapd-ssl.log
 			[ -z "$failed" ] && failed="relay-imapd-$what:$image" || failed="$failed relay-imapd-$what:$image"
+			[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 			return 1
 		fi
 	fi
@@ -476,6 +494,11 @@ test_imap()
 
 check_service()
 {
+	if [ $# -eq 3 ] ; then
+		min_up=$3
+	else
+		min_up=10
+	fi
 	count=1
 	while true
 	do
@@ -499,11 +522,11 @@ check_service()
 			continue
 		fi
 		if [ "$t" = "up" ] ; then
-			if [ $s -ge 10 ] ; then
+			if [ $s -ge $min_up ] ; then
 				[ $verbose -eq 1 ] && echo "Service $2 is up: [$str]"
 				return 0
 			else
-				sleep $(expr 10 - $s)
+				sleep $(expr $min_up - $s)
 				count=$(expr $count + 1)
 				if [ $count -gt 12 ] ; then
 					break
@@ -864,6 +887,7 @@ test_docker()
 	if [ $ret -ne 0 -o -z "$pid" ] ; then
 		echo "Failed to run $what:$image"
 		[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
+		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 	fi
 	if [ "$name" = "indimail" -o "$name" = "webmail" ] ; then
 		case $image in
@@ -890,21 +914,21 @@ test_docker()
 	[ $verbose -eq 1 ] && echo "adding user $localuser"
 	(
 	create_useradd
-	podman cp /tmp/testuseradd.sh $name:/usr/bin
-	/bin/rm -f /tmp/testuseradd.sh
+	podman cp /tmp/create_testuser $name:/usr/bin
+	/bin/rm -f /tmp/create_testuser
 	podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
 	podman exec -ti $name svc -h /service/qmail-smtpd.25 /service/qmail-smtpd.587 # remove this later
-	podman exec -ti $name sh -c "/usr/bin/testuseradd.sh"
+	podman exec -ti $name sh -c "/usr/bin/create_testuser"
 	podman exec -ti $name svc -h /service/qmail-send.25
 	) > $logdir/podman/$what.$image.log 2>&1
-	check_service $name qmail-smtpd.587
+	check_service $name qmail-smtpd.587 3
 	test_pop3 $localuser $password $user@$domain1 $basedir/$localuser/Maildir
 	sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
 	test_imap $localuser $password $user@$domain1 $basedir/$localuser/Maildir
 	sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
 	if [ "$what" = "indimail-mta" ] ; then
 		ret=0
-		check_service $name qmail-smtpd.25
+		check_service $name qmail-smtpd.25 3
 		(
 		podman exec -ti $name sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
 		podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
@@ -935,7 +959,7 @@ test_docker()
 			check_service $name inlookup.infifo
 			ret=$?
 			if [ $ret -eq 0 ] ; then
-				check_service $name qmail-smtpd.25
+				check_service $name qmail-smtpd.25 3
 				(
 				[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain3 from testuser01@example.com"
 				if [ $verbose -eq 1 ] ; then
@@ -954,7 +978,7 @@ test_docker()
 		check_service $name mysql.3306
 		ret=$?
 		if [ $ret -eq 0 ] ; then
-		check_service $name qmail-smtpd.25
+		check_service $name qmail-smtpd.25 3
 		(
 		podman exec -ti $name sh -c "printf \"&$user@$domain1\n\" > /var/indimail/alias/.qmail-$user"
 		podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
@@ -1030,8 +1054,8 @@ test_docker()
 			sleep $sleep_int
 			;;
 			*)
-			check_service $name php-fpm
-			check_service $name httpd
+			check_service $name php-fpm 3
+			check_service $name httpd 3
 			;;
 		esac
 		if [ "$what" = "indimail-web" ] ; then
@@ -1096,7 +1120,7 @@ test_docker()
 usage()
 {
 	(
-	echo "testdocker [-y|--nprompt] [-u|--update] [-v|--verbose] [-d|--delete] [-c catalog|--catalog catalog]"
+	echo "testdocker [-y|--noprompt] [-u|--update] [-v|--verbose] [-d|--delete] [-c catalog|--catalog catalog]"
 	echo ""
 	echo "   where catalog is one of indimail, indimail-mta, indimail-mta-web, indimail-web"
 	echo "   if -c is not provided, all four (indimail, indimail-mta, indimail-mta-web, indimail-web) will be processed"
@@ -1113,8 +1137,9 @@ delete=0
 do_update=0
 verbose=0
 extensive=0
+halt_on_error=0
 catalog=""
-localip=$(ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
+localip=$(/usr/libexec/indimail/ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
 if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
@@ -1140,7 +1165,7 @@ if [ ! -x /usr/bin/podman -a ! -x /usr/bin/docker ] ; then
 	echo "podman/docker command not found" 1>&2
 	exit 1
 fi
-options=$(getopt -a -n testdocker -o "hyuvdec:" -l help,noprompt,update,verbose,delete,catalog -- "$@")
+options=$(getopt -a -n testdocker -o "hHyuvdec:" -l help,halt,noprompt,update,verbose,delete,catalog -- "$@")
 if [ $? != 0 ]; then
   usage
 fi
@@ -1158,6 +1183,10 @@ do
 	;;
 	-h | --help)
 	usage
+	shift
+	;;
+	-H | --halt)
+	halt_on_error=1
 	shift
 	;;
 	-u | --update)
