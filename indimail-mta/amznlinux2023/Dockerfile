@@ -39,6 +39,9 @@ RUN export HOSTNAME=indimail.org \
 		indimail-access \
 		indimail-utils \
 		bogofilter-wordlist \
+		passwd \
+		perl \
+		perl-Authen-SASL perl-Net-SSLeay \
 	&& dnf -y install \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \
