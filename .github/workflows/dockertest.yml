@@ -15,12 +15,42 @@ jobs:
   build_and_push:
     name: Test container images
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout repository
+      - name: extra_packages
+        run: |
+          sudo apt-get install libmysqlclient-dev libc6 libc6-dev libgsasl7-dev
+        env:
+          OS: ${{ matrix.host }}
+
+      - name: checkout_indimail-docker
         uses: actions/checkout@v2
 
-      - name: test
+      - name: checkout_indimail-mta
+        uses: actions/checkout@v2
+        with:
+          repository: mbhangui/indimail-mta
+          path: mta
+
+      - name: checkout_qmail
+        uses: actions/checkout@v2
+        with:
+          repository: mbhangui/libqmail
+          path: libqmail
+
+      - name: install_libqmail
+        run: cd libqmail;env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./default.configure; env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" make; sudo make install-strip
+      - name: install_libdkim2
+        run: cd mta/libdkim2-x; env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./default.configure; env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" make; sudo make install-strip
+      - name: install_libsrs2
+        run: cd mta/libsrs2-x; ./default.configure; make; sudo make install-strip
+      - name: build_indimail-mta
+        run: cd mta/indimail-mta-x; env CFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./default.configure; env CFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./qmake
+
+      - name: testdocker
         run: |
+          sudo hostname local.indimail.org
+          export HOSTNAME=$hostname
           sudo apt-get install podman
           sudo apt-get -y update
           sudo apt-get -y install curl gnupg2 apt-utils
@@ -32,11 +62,14 @@ jobs:
           sudo mv preferences /etc/apt/preferences.d
           sudo apt-get -y update
           sudo apt-get -y install indimail-mta gsasl libnet-ssleay-perl libauthen-sasl-perl libdigest-perl-md5-perl libdigest-hmac-perl
+          sudo /usr/sbin/svctool --config=cert --postmaster=postmaster@local.indimail.org --common_name=local.indimail.org
+          sudo chown -R $(id -u) /etc/indimail/certs
+          sudo cp mta/indimail-mta-x/qmail-smtpd /usr/sbin
           cd scripts
           if [ -z "${{ github.event.inputs.test_args }}" ] ; then
-            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker -y -d -c indimail-mta
-            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker -y -d -c indimail
-            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker -y -d -c webmail
+            ./testdocker -y -d -c indimail-mta
+            ./testdocker -y -d -c indimail
+            ./testdocker -y -d -c webmail
           else
-            env TLS_CIPHER_LIST=TLS_AES_128_GCM_SHA256 ./testdocker ${{ github.event.inputs.test_args }}
+            ./testdocker ${{ github.event.inputs.test_args }}
           fi

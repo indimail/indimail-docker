@@ -8,7 +8,7 @@
 # on the host we have assign file for user $user with home as $testdir/$user
 # on the host we run qmail-smtpd on $localip:$smtp_port
 # on the container we create smtproute to route mails for $domain1 to $localip:$smtp_port
-# on hte container we create alias $user@$domain2 forwards mails to $user@$domain1
+# on the container we create alias $user@$domain2 forwards mails to $user@$domain1
 #   so checking $testdir/$user/Maildir is good enough to test mail receipt
 # since /home/mail on container is accessible in $testdir/home/mail, we can test
 # mail receipt locally for user's Maildirs on the container.
@@ -18,6 +18,8 @@ localip=192.168.2.107
 raw_url=https://raw.githubusercontent.com/mbhangui/indimail-virtualdomains/master/indimail-x/tests/testindimail-virtual
 testdir=/tmp/qmail-test
 user=$(whoami)
+myuid=$(id -u)
+mygid=$(id -g)
 localuser=luser
 maildir=$testdir/$user/Maildir
 basedir=$testdir/home
@@ -36,7 +38,7 @@ smtp_port=2050
 sleep_int=2
 HOSTNAME=$(uname -n)
 
-domain1=argos.indimail.org
+domain1=local.indimail.org
 domain2=podman.indimail.org
 domain3=virtual.indimail.org
 domain4=example.com
@@ -146,7 +148,7 @@ test_pop3()
 		to=$1
 	fi
 	swaks --tls --to $to --from $from --server 127.0.0.1 --port 2587 -a LOGIN -au $1 -ap "$2" >> $logdir/pop3d/pop3d.log 2>&1
-	[ $verbose -eq 1 ] && echo "Checking mail receipt in $4"
+	[ $verbose -eq 1 ] && echo "test_pop3: Checking mail receipt in $4"
 	check_mail $4 no-delete
 	if [ $? -ne 0 ] ; then
 		fcount=$(expr $fcount + 1)
@@ -333,7 +335,7 @@ test_imap()
 		to=$1
 	fi
 	swaks -S --tls --to $to --from $from --server 127.0.0.1 --port 2587 -a LOGIN -au $1 -ap "$2" >> $logdir/imapd/imapd.log 2>&1
-	[ $verbose -eq 1 ] && echo "Checking mail receipt in $4"
+	[ $verbose -eq 1 ] && echo "test_imap: Checking mail receipt in $4"
 	check_mail $4 no-delete
 	if [ $? -ne 0 ] ; then
 		fcount=$(expr $fcount + 1)
@@ -616,8 +618,8 @@ setup_assign()
 {
 	echo "Creating $sysconfdir/users/assign" 1>&2
 	(
-	echo "=$user:$user:1000:1000:$testdir/$user:::"
-	echo "+$user-:$user:1000:1000:$testdir/$user:-::"
+	echo "=$user:$user:$myuid:$mygid:$testdir/$user:::"
+	echo "+$user-:$user:$myuid:$mygid:$testdir/$user:-::"
 	echo "."
 	) > $sysconfdir/users/assign
 	echo "Creating $sysconfdir/users/cdb" 1>&2
@@ -627,13 +629,19 @@ setup_assign()
 setup_queue()
 {
 	echo "Creating queue in $testdir/queue" 1>&2
-	sudo queue-fix $testdir/queue
+	sudo queue-fix -s 23 -b 0 $testdir/queue
 }
 
 setup_config()
 {
 	[ $verbose -eq 1 ] && echo "Creating default config files in $cntrldir" 1>&3
 	env CONTROLDIR=$cntrldir config-fast $domain1 
+	[ $verbose -eq 1 ] && echo "Creating qmail config" 1>&3
+	sudo /usr/sbin/svctool --cntrldir=$cntrldir --config=qmail
+	[ $verbose -eq 1 ] && echo "Creating openssl certificates" 1>&3
+	sudo /usr/sbin/svctool --certdir=$certdir    --config=cert \
+		--postmaster=postmaster@$HOSTNAME --common_name=$HOSTNAME
+	sudo chown -R $user $cntrldir
 
 	echo ./Maildir/                > $cntrldir/defaultdelivery
 	echo TLSv1_3                   > $cntrldir/tlsclientmethod
@@ -641,14 +649,11 @@ setup_config()
 	echo blocked@$HOSTNAME         > $cntrldir/badmailfrom
 	echo blocked@$HOSTNAME         > $cntrldir/badrcptto
 	echo "$domain2:127.0.0.1:2025" > $cntrldir/smtproute
+	echo "$domain1"                >>$cntrldir/rcpthosts
+	echo "$domain1"                >>$cntrldir/locals
 
-	[ $verbose -eq 1 ] && echo "Creating qmail config" 1>&3
-	sudo /usr/sbin/svctool --cntrldir=$cntrldir --config=qmail
-	[ $verbose -eq 1 ] && echo "Creating openssl certificates" 1>&3
-	sudo /usr/sbin/svctool --certdir=$certdir    --config=cert \
-		--postmaster=postmaster@$HOSTNAME --common_name=$HOSTNAME
-	sudo chown -R $user $cntrldir
 	echo @$HOSTNAME > $cntrldir/nodnscheck
+	sudo /bin/rm -f $cntrldir/libmysql $cntrldir/libindimail
 }
 
 setup_svscan_without_svscanlog()
@@ -741,6 +746,7 @@ do_setup()
 	[ $verbose -eq 1 ] && echo "Creating queue" 1>&3
 	setup_queue
 	) > $logdir/setup/setup.log 2>&1
+	[ $verbose -eq 1 ] && echo "--- setup.log ---" && cat $logdir/setup/setup.log
 }
 
 do_svscan_without_svscanlog()
@@ -932,8 +938,8 @@ test_docker()
 		(
 		podman exec -ti $name sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
 		podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
-		podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
-		podman exec -ti $name svc -h /service/qmail-smtpd.25
+		#podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
+		#podman exec -ti $name svc -h /service/qmail-smtpd.25
 		[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain2 from testuser01@example.com"
 		if [ $verbose -eq 1 ] ; then
 			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
@@ -996,19 +1002,12 @@ test_docker()
 		fi
 	fi
 	if [ $ret -eq 0 ] ; then
-		(
-		echo "------ qmail-smtpd log ------"
-		podman exec -ti $name cat /var/log/svc/smtpd.25/current
-		echo "------ qmail-send  log ------"
-		podman exec -ti $name cat /var/log/svc/deliver.25/current
-		echo "------ --------------- ------"
-		) >> $logdir/podman/$what.$image.log 2>&1
 		if [ "$what" = "indimail-mta" -o "$what" = "indimail-mta-web" ] ; then
-			[ $verbose -eq 1 ] && echo "Checking mail receipt in $maildir"
+			[ $verbose -eq 1 ] && echo "test_docker: Checking mail receipt in $maildir"
 			check_mail $maildir
 		else
 			vdir=$(podman exec -ti $name vuserinfo -d $user@$domain3|awk '{print $3}')
-			[ $verbose -eq 1 ] && echo "Checking mail receipt in "$testdir""$t"/Maildir"
+			[ $verbose -eq 1 ] && echo "test_docker: Checking mail receipt in "$testdir""$t"/Maildir"
 			check_mail "$testdir"$vdir/Maildir
 		fi
 		if [ $? -eq 0 ] ; then
@@ -1032,6 +1031,7 @@ test_docker()
 	else
 		fcount=$(expr $fcount + 1)
 		echo "  testing mail send+receive     via podman container $what.$image failed"
+		cat $logdir/podman/$what.$image.log
 		[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 		if [ $prompt -eq 1 ] ; then
 			echo "Press ENTER or quit to quit"
@@ -1109,7 +1109,22 @@ test_docker()
 	fi
 	) >> $logdir/podman/$what.$image.log 2>&1
 	if [ $verbose -eq 1 ] ; then
+		(
+		echo "------ container qmail-smtpd log ------"
+		podman exec -ti $name cat /var/log/svc/smtpd.25/current
+		echo
+		echo "------ container qmail-send  log ------"
+		podman exec -ti $name cat /var/log/svc/deliver.25/current
+		echo
+		echo "------ local qmail-smtpd log ------"
+		cat $logdir/smtpd/current
+		echo
+		echo "------ local qmail-send log ------"
+		cat $logdir/qmail-send/current
+		echo
+		echo "------ $what.$image.log ------"
 		cat $logdir/podman/$what.$image.log
+		)
 	fi
 	end=$(date +'%s')
 	secs=$(($end-$start))
@@ -1124,6 +1139,8 @@ usage()
 	echo ""
 	echo "   where catalog is one of indimail, indimail-mta, indimail-mta-web, indimail-web"
 	echo "   if -c is not provided, all four (indimail, indimail-mta, indimail-mta-web, indimail-web) will be processed"
+	echo " or"
+	echo "testdocker [-y|--noprompt] [-u|--update] [-v|--verbose] [-d|--delete] catalog:image"
 	) 1>&2
 	exit 1
 }
