@@ -894,6 +894,7 @@ test_docker()
 		echo "Failed to run $what:$image"
 		[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
+		return 1
 	fi
 	if [ "$name" = "indimail" -o "$name" = "webmail" ] ; then
 		case $image in
