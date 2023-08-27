@@ -17,35 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: extra_packages
-        run: |
-          sudo apt-get install libmysqlclient-dev libc6 libc6-dev libgsasl7-dev
-        env:
-          OS: ${{ matrix.host }}
-
       - name: checkout_indimail-docker
         uses: actions/checkout@v2
-
-      - name: checkout_indimail-mta
-        uses: actions/checkout@v2
-        with:
-          repository: mbhangui/indimail-mta
-          path: mta
-
-      - name: checkout_qmail
-        uses: actions/checkout@v2
-        with:
-          repository: mbhangui/libqmail
-          path: libqmail
-
-      - name: install_libqmail
-        run: cd libqmail;env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./default.configure; env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" make; sudo make install-strip
-      - name: install_libdkim2
-        run: cd mta/libdkim2-x; env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./default.configure; env CPPFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" make; sudo make install-strip
-      - name: install_libsrs2
-        run: cd mta/libsrs2-x; ./default.configure; make; sudo make install-strip
-      - name: build_indimail-mta
-        run: cd mta/indimail-mta-x; env CFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./default.configure; env CFLAGS="-I/usr/local/opt/openssl@1.1/include" LDFLAGS="-L/usr/local/opt/openssl@1.1/lib" ./qmake
 
       - name: testdocker
         run: |
@@ -60,11 +33,12 @@ jobs:
           printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n" > preferences
           sudo mv indimail.list /etc/apt/sources.list.d
           sudo mv preferences /etc/apt/preferences.d
+          sudo apt-get clean
           sudo apt-get -y update
           sudo apt-get -y install indimail-mta gsasl libnet-ssleay-perl libauthen-sasl-perl libdigest-perl-md5-perl libdigest-hmac-perl
-          sudo /usr/sbin/svctool --config=cert --postmaster=postmaster@local.indimail.org --common_name=local.indimail.org
-          sudo chown -R $(id -u) /etc/indimail/certs
-          sudo cp mta/indimail-mta-x/qmail-smtpd /usr/sbin
+          #sudo /usr/sbin/svctool --config=cert --postmaster=postmaster@local.indimail.org --common_name=local.indimail.org
+          #sudo chown -R $(id -u) /etc/indimail/certs
+          sudo /bin/rm -rf /tmp/qmail-test
           cd scripts
           if [ -z "${{ github.event.inputs.test_args }}" ] ; then
             ./testdocker -y -d -c indimail-mta
@@ -72,4 +46,8 @@ jobs:
             ./testdocker -y -d -c webmail
           else
             ./testdocker ${{ github.event.inputs.test_args }}
+            echo "controlfiles list"
+            ls -l /tmp/qmail-test/etc/indimail/control
+            echo "controlfiles global list"
+            ls -l /tmp/qmail-test/etc/indimail/control/global_vars
           fi
