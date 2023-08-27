@@ -641,18 +641,19 @@ setup_config()
 	[ $verbose -eq 1 ] && echo "Creating openssl certificates" 1>&3
 	sudo /usr/sbin/svctool --certdir=$certdir    --config=cert \
 		--postmaster=postmaster@$HOSTNAME --common_name=$HOSTNAME
-	sudo chown -R $user $cntrldir
 
 	echo ./Maildir/                > $cntrldir/defaultdelivery
-	echo TLSv1_3                   > $cntrldir/tlsclientmethod
-	echo TLSv1_3                   > $cntrldir/tlsservermethod
+	#echo TLSv1_3                   > $cntrldir/tlsclientmethod
+	#echo TLSv1_3                   > $cntrldir/tlsservermethod
+	echo TLSv1_2:TLSv1_3           > $cntrldir/tlsclientmethod
+	echo TLSv1_2:TLSv1_3           > $cntrldir/tlsservermethod
 	echo blocked@$HOSTNAME         > $cntrldir/badmailfrom
 	echo blocked@$HOSTNAME         > $cntrldir/badrcptto
 	echo "$domain2:127.0.0.1:2025" > $cntrldir/smtproute
 	echo "$domain1"                >>$cntrldir/rcpthosts
 	echo "$domain1"                >>$cntrldir/locals
-
 	echo @$HOSTNAME > $cntrldir/nodnscheck
+	sudo chown -R $user $cntrldir
 	sudo /bin/rm -f $cntrldir/libmysql $cntrldir/libindimail
 }
 
@@ -896,6 +897,7 @@ test_docker()
 		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
+	podman exec -ti $name /bin/rm -f /etc/indimail/control/global_vars/TLS_CIPHER_SUITE # remove this later
 	if [ "$name" = "indimail" -o "$name" = "webmail" ] ; then
 		case $image in
 		jammy)
@@ -911,9 +913,17 @@ test_docker()
 		esac
 	fi
 	case $image in
+		focal)
+			t1=$(cat $cntrldir/servercipherlist)
+			t2=$(cat $cntrldir/serverciphersuite)
+			podman exec -ti $name sh -c "echo $t1:$t2 > /etc/indimail/control/serverciphersuite"
+		;;
 		bionic)
+			t1=$(cat $cntrldir/servercipherlist)
+			t2=$(cat $cntrldir/serverciphersuite)
 			podman exec -ti $name sh -c "echo 209715200 > /service/qmail-smtpd.25/variables/SOFT_MEM"
 			podman exec -ti $name sh -c "echo 209715200 > /service/qmail-smtpd.587/variables/SOFT_MEM"
+			#podman exec -ti $name sh -c "echo $t1:$t2 > /etc/indimail/control/serverciphersuite"
 			podman exec -ti $name svc -r /service/qmail-smtpd.25 /service/qmail-smtpd.587
 		;;
 	esac
@@ -1101,18 +1111,13 @@ test_docker()
 			sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
 		fi
 	fi
-	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
-	(
-	podman stop $name
-	if [ $ret -eq 0 -a $delete -eq 1 ] ; then
-		[ $verbose -eq 1 ] && echo "Deleting $image container"
-		podman rmi $id
-	fi
-	) >> $logdir/podman/$what.$image.log 2>&1
 	if [ $verbose -eq 1 ] ; then
 		(
-		echo "------ container qmail-smtpd log ------"
+		echo "------ container qmail-smtpd.25 log ------"
 		podman exec -ti $name cat /var/log/svc/smtpd.25/current
+		echo
+		echo "------ container qmail-smtpd.587 log ------"
+		podman exec -ti $name cat /var/log/svc/smtpd.587/current
 		echo
 		echo "------ container qmail-send  log ------"
 		podman exec -ti $name cat /var/log/svc/deliver.25/current
@@ -1127,6 +1132,14 @@ test_docker()
 		cat $logdir/podman/$what.$image.log
 		)
 	fi
+	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
+	(
+	podman stop $name
+	if [ $ret -eq 0 -a $delete -eq 1 ] ; then
+		[ $verbose -eq 1 ] && echo "Deleting $image container"
+		podman rmi $id
+	fi
+	) >> $logdir/podman/$what.$image.log 2>&1
 	end=$(date +'%s')
 	secs=$(($end-$start))
 	printf '%d days, %d hours, %d minutes, %d seconds\n' $((secs/86400)) $((secs%86400/3600)) $((secs%3600/60)) \
@@ -1283,6 +1296,9 @@ if [ $# -eq 0 ] ; then
 		for i in indimail-src/*.indimail-mta.bin
 		do
 			image=$(echo $i | cut -d/ -f2 | cut -d. -f1)
+			if [ -f indimail-src/$image.indimail-mta.notest ] ; then
+				continue
+			fi
 			test_docker $image indimail-mta
 			if [ $doquit -eq 1 ] ; then
 				break
@@ -1307,6 +1323,9 @@ if [ $# -eq 0 ] ; then
 		for i in indimail-src/*.indimail.bin
 		do
 			image=$(echo $i | cut -d/ -f2 | cut -d. -f1)
+			if [ -f indimail-src/$image.indimail.notest ] ; then
+				continue
+			fi
 			test_docker $image indimail
 			if [ $doquit -eq 1 ] ; then
 				break
@@ -1331,6 +1350,9 @@ if [ $# -eq 0 ] ; then
 		for i in indimail-src/*.indimail-web.bin
 		do
 			image=$(echo $i | cut -d/ -f2 | cut -d. -f1)
+			if [ -f indimail-src/$image.indimail-web.notest ] ; then
+				continue
+			fi
 			test_docker $image indimail-web
 			if [ $doquit -eq 1 ] ; then
 				break
