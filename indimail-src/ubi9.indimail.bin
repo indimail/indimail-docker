@@ -38,6 +38,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make && make install; \
 		# indimail-virtualdomains ##############################
 		cd /usr/local/srctmp/indimail-virtualdomains; \
+		sed -i 's{with-authpam{without-authpam{g' courier-imap-x/default.configure; \
 		for i in indimail-x altermime-x ripmime-x mpack-x flash-x fortune-x pam-multi-x \
 			bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
 			nssd-x fetchmail-x logalert-x procmail-x; do cd $i; \
