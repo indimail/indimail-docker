@@ -35,7 +35,10 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make indimail_config.h && make libindimail.la && make install-includeHEADERS && \
 		make install-libindimailLTLIBRARIES; \
 		cd ..; \
-		sed -i 's{with-authpam{without-authpam{g' courier-imap-x/default.configure; \
+		sed -i 's{with-authpam{without-authpam{g' \
+					courier-imap-x/default.configure; \
+		sed -i '/sbin_PROGRAM/d' \
+					courier-imap-x/libs/authlib/Makefile.am; \
 		for i in altermime-x ripmime-x mpack-x flash-x fortune-x \
 			pam-multi-x bogofilter-wordlist-x courier-imap-x indimail-spamfilter-x \
 			fetchmail-x logalert-x procmail-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
