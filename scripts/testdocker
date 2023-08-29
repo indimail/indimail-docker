@@ -83,17 +83,6 @@ create_useradd()
 	echo "if [ -d /etc/sudoers.d -a ! -f /etc/sudoers.d/01-\$localuser ] ; then"
 	echo "	echo \"\$localuser  ALL=(ALL)   NOPASSWD: ALL\" > /etc/sudoers.d/01-\$localuser"
 	echo "fi"
-	#echo "if [ -x /usr/bin/dnf ] ; then"
-	#echo "	dnf -y install perl-Authen-SASL passwd"
-	#echo "elif [ -x /usr/bin/yum ] ; then"
-	#echo "	yum -y install perl-Authen-SASL perl-Net-SSLeay"
-	#echo "elif [ -x /usr/bin/apt-get ] ; then"
-	#echo "	env DEBIAN_FRONTEND=noninteractive apt-get -y install libnet-ssleay-perl libauthen-sasl-perl libdigest-perl-md5-perl libdigest-hmac-perl"
-	#echo "elif [ -x /sbin/apk ] ; then"
-	#echo "	/sbin/apk install perl-Authen-SASL"
-	#echo "elif [ -x /usr/sbin/pacman ] ; then"
-	#echo "	pacman -S --noconfirm perl-authen-sasl perl-net-ssleay perl-digest-hmac perl-io-socket-inet6"
-	#echo "fi"
 	echo "if [ -f /usr/bin/sudo ] ; then"
 	echo "	exit 0"
 	echo "fi"
@@ -134,6 +123,71 @@ delete_relay()
 	echo "DELETE from relay where 1=1" | \
 		mysql -s -u $MYSQL_USER -p$MYSQL_PASS -h $MYSQL_HOST -P $MYSQL_PORT $MYSQL_DB 2>/dev/null
 	return $?
+}
+
+check_service()
+{
+	if [ $# -eq 3 ] ; then
+		min_up=$3
+	else
+		min_up=10
+	fi
+	count=1
+	while true
+	do
+		[ $verbose -eq 1 ] && echo "Checking Service $2 count=$count" 1>&2
+		str=$($podcmd exec $1 svstat /service/$2 2>&1)
+		if [ -z "$str" ] ; then
+			echo "Service $2 is not up. unable to get service status" 1>&2
+			return 2
+		fi
+		echo $str | grep -E -i "warning:|Error:" > /dev/null
+		if [ $? -ne 0 ] ; then
+			t=$(echo $str | awk '{print $2}')
+			s=$(echo $str | awk '{print $3}')
+		else
+			[ $verbose -eq 1 ] && echo "svscan maybe down or just starting: [$str]"
+			sleep 5;
+			count=$(expr $count + 1)
+			if [ $count -gt 12 ] ; then
+				break
+			fi
+			continue
+		fi
+		if [ "$t" = "up" ] ; then
+			if [ $s -ge $min_up ] ; then
+				[ $verbose -eq 1 ] && echo "Service $2 is up: [$str]"
+				return 0
+			else
+				sleep $(expr $min_up - $s)
+				count=$(expr $count + 1)
+				if [ $count -gt 12 ] ; then
+					break
+				fi
+				continue
+			fi
+		elif [ "$t" = "wait" -a $s -gt 0 ] ; then
+			[ $verbose -eq 1 ] && echo "Service $2 is waiting for $s secs: [$str]"
+			sleep $s
+			count=$(expr $count + 1)
+			if [ $count -gt 12 ] ; then
+				break
+			fi
+			continue
+		elif [ "$t" = "down" -o $s -eq 0 ] ; then
+			[ $verbose -eq 1 ] && echo "Service $2 is down: [$str]"
+			count=$(expr $count + 1)
+		else
+			echo "Service $2 is not up: [$str]" 1>&2
+			return 2
+		fi
+		sleep 5;
+		if [ $count -gt 12 ] ; then
+			break
+		fi
+	done
+	echo "Service $2 is not up: [$str]" 1>&2
+	return 1
 }
 
 test_pop3()
@@ -494,71 +548,6 @@ test_imap()
 	fi
 }
 
-check_service()
-{
-	if [ $# -eq 3 ] ; then
-		min_up=$3
-	else
-		min_up=10
-	fi
-	count=1
-	while true
-	do
-		[ $verbose -eq 1 ] && echo "Checking Service $2 count=$count" 1>&2
-		str=$(podman exec $1 svstat /service/$2 2>&1)
-		if [ -z "$str" ] ; then
-			echo "Service $2 is not up. unable to get service status" 1>&2
-			return 2
-		fi
-		echo $str | grep -E -i "warning:|Error:" > /dev/null
-		if [ $? -ne 0 ] ; then
-			t=$(echo $str | awk '{print $2}')
-			s=$(echo $str | awk '{print $3}')
-		else
-			[ $verbose -eq 1 ] && echo "svscan maybe down or just starting: [$str]"
-			sleep 5;
-			count=$(expr $count + 1)
-			if [ $count -gt 12 ] ; then
-				break
-			fi
-			continue
-		fi
-		if [ "$t" = "up" ] ; then
-			if [ $s -ge $min_up ] ; then
-				[ $verbose -eq 1 ] && echo "Service $2 is up: [$str]"
-				return 0
-			else
-				sleep $(expr $min_up - $s)
-				count=$(expr $count + 1)
-				if [ $count -gt 12 ] ; then
-					break
-				fi
-				continue
-			fi
-		elif [ "$t" = "wait" -a $s -gt 0 ] ; then
-			[ $verbose -eq 1 ] && echo "Service $2 is waiting for $s secs: [$str]"
-			sleep $s
-			count=$(expr $count + 1)
-			if [ $count -gt 12 ] ; then
-				break
-			fi
-			continue
-		elif [ "$t" = "down" -o $s -eq 0 ] ; then
-			[ $verbose -eq 1 ] && echo "Service $2 is down: [$str]"
-			count=$(expr $count + 1)
-		else
-			echo "Service $2 is not up: [$str]" 1>&2
-			return 2
-		fi
-		sleep 5;
-		if [ $count -gt 12 ] ; then
-			break
-		fi
-	done
-	echo "Service $2 is not up: [$str]" 1>&2
-	return 1
-}
-
 check_mail()
 {
 	count=0
@@ -641,18 +630,17 @@ setup_config()
 	[ $verbose -eq 1 ] && echo "Creating openssl certificates" 1>&3
 	sudo /usr/sbin/svctool --certdir=$certdir    --config=cert \
 		--postmaster=postmaster@$HOSTNAME --common_name=$HOSTNAME
+	sudo chown -R $user $cntrldir $certdir
 
 	echo ./Maildir/                > $cntrldir/defaultdelivery
-	#echo TLSv1_3                   > $cntrldir/tlsclientmethod
-	#echo TLSv1_3                   > $cntrldir/tlsservermethod
 	echo TLSv1_2:TLSv1_3           > $cntrldir/tlsclientmethod
 	echo TLSv1_2:TLSv1_3           > $cntrldir/tlsservermethod
 	echo blocked@$HOSTNAME         > $cntrldir/badmailfrom
 	echo blocked@$HOSTNAME         > $cntrldir/badrcptto
+	echo @$HOSTNAME                > $cntrldir/nodnscheck
 	echo "$domain2:127.0.0.1:2025" > $cntrldir/smtproute
 	echo "$domain1"                >>$cntrldir/rcpthosts
 	echo "$domain1"                >>$cntrldir/locals
-	echo @$HOSTNAME > $cntrldir/nodnscheck
 	sudo chown -R $user $cntrldir $certdir
 	sudo /bin/rm -f $cntrldir/libmysql $cntrldir/libindimail
 }
@@ -737,7 +725,7 @@ do_setup()
 	mkdir -p $logdir/qmail-send
 	mkdir -p $logdir/svscan
 	mkdir -p $logdir/smtpd
-	mkdir -p $logdir/podman
+	mkdir -p $logdir/$podcmd
 	(
 	[ $verbose -eq 1 ] && echo "Creating maildir" 1>&3
 	setup_maildir
@@ -773,15 +761,15 @@ test_iwebadmin()
 			echo "Executing curl to test iwebadmin user  login"
 		fi
 	fi
-	podman exec -ti $name /usr/bin/curl "http://localhost/cgi-bin/iwebadmin" -d \
+	$podcmd exec -ti $name /usr/bin/curl "http://localhost/cgi-bin/iwebadmin" -d \
 		"username="$u"&domain="$d"&password="$p"&returnhttp=&returntext=" \
-		>> $logdir/podman/roundcube.log 2>&1
+		>> $logdir/$podcmd/roundcube.log 2>&1
 	if [ $? -ne 0 ] ; then
 		fcount=$(expr $fcount + 1)
 		if [ "$u" = "postmaster" ] ; then
-			echo "  testing iwebadmin admin login via podman container $what.$image failed"
+			echo "  testing iwebadmin admin login via $podcmd container $what.$image failed"
 		else
-			echo "  testing iwebadmin user  login via podman container $what.$image failed"
+			echo "  testing iwebadmin user  login via $podcmd container $what.$image failed"
 		fi
 		[ -z "$failed" ] && failed="iwebadmin-$what:$image" || failed="$failed iwebadmin-$what:$image"
 		if [ $prompt -eq 1 ] ; then
@@ -795,31 +783,31 @@ test_iwebadmin()
 
 	t1=0
 	t2=0
-	grep "<h2>Invalid Login" $logdir/podman/roundcube.log >/dev/null
+	grep "<h2>Invalid Login" $logdir/$podcmd/roundcube.log >/dev/null
 	t1=$?
 	if [ "$u" = "postmaster" ] ; then
-		grep "background=\"/images/iwebadmin/main.png\"" $logdir/podman/roundcube.log > /dev/null
+		grep "background=\"/images/iwebadmin/main.png\"" $logdir/$podcmd/roundcube.log > /dev/null
 	else
-		grep "<b>Modify User: $u@$d</b>" $logdir/podman/roundcube.log >/dev/null
+		grep "<b>Modify User: $u@$d</b>" $logdir/$podcmd/roundcube.log >/dev/null
 	fi
 	t2=$?
 
 	if [ $t2 -eq 0 -a $t1 -ne 0 ] ; then
 		tcount=$(expr $tcount + 1)
 		if [ "$u" = "postmaster" ] ; then
-			echo "  testing iwebadmin admin login via podman container $what.$image succeeded"
+			echo "  testing iwebadmin admin login via $podcmd container $what.$image succeeded"
 		else
-			echo "  testing iwebadmin user  login via podman container $what.$image succeeded"
+			echo "  testing iwebadmin user  login via $podcmd container $what.$image succeeded"
 		fi
 	elif [ $t1 -eq 0 -a $t2 -ne 0 ] ; then
 		fcount=$(expr $fcount + 1)
 		if [ "$u" = "postmaster" ] ; then
-			echo "  testing iwebadmin admin login via podman container $what.$image failed"
+			echo "  testing iwebadmin admin login via $podcmd container $what.$image failed"
 		else
-			echo "  testing iwebadmin user  login via podman container $what.$image failed"
+			echo "  testing iwebadmin user  login via $podcmd container $what.$image failed"
 		fi
 		[ -z "$failed" ] && failed="iwebadmin-$what:$image" || failed="$failed iwebadmin-$what:$image"
-		cat $logdir/podman/roundcube.log
+		cat $logdir/$podcmd/roundcube.log
 		if [ $prompt -eq 1 ] ; then
 			echo "Press ENTER or quit to quit"
 			read key
@@ -828,11 +816,11 @@ test_iwebadmin()
 			fi
 		fi
 	else
-		cat $logdir/podman/roundcube.log
+		cat $logdir/$podcmd/roundcube.log
 	fi
-	logout=$(grep logout $logdir/podman/roundcube.log | sed -e "s{.*a href={{" -e "s{>Log Out.*{{" -e "s{\"{{g")
-	podman exec -ti $name /usr/bin/curl -X GET $url > /dev/null
-	/bin/rm -f $logdir/podman/roundcube.log
+	logout=$(grep logout $logdir/$podcmd/roundcube.log | sed -e "s{.*a href={{" -e "s{>Log Out.*{{" -e "s{\"{{g")
+	$podcmd exec -ti $name /usr/bin/curl -X GET $url > /dev/null
+	/bin/rm -f $logdir/$podcmd/roundcube.log
 }
 
 test_docker()
@@ -856,18 +844,25 @@ test_docker()
 	start=$(date +'%s')
 	update=0
 	if [ $do_update -eq 0 ] ; then
-		podman image exists cprogrammer/$what:$image
-		if [ $? -ne 0 ] ; then
-			update=1
+		if [ "$podcmd" = "podman" ] ; then
+			$podcmd image exists cprogrammer/$what:$image
+			if [ $? -ne 0 ] ; then
+				update=1
+			fi
+		else
+			z=$($podcmd image ls cprogrammer/$what:$image|sed -n '2,$p')
+			if [ -z "$z" ] ; then
+				update=1
+			fi
 		fi
 	else
 		update=1
 	fi
 	if [ $update -eq 1 ] ; then
-		[ $verbose -eq 1 ] && echo "podman pull cprogrammer/$what:$image"
-		podman pull cprogrammer/$what:$image > /dev/null
+		[ $verbose -eq 1 ] && echo "$podcmd pull cprogrammer/$what:$image"
+		$podcmd pull cprogrammer/$what:$image > /dev/null
 	fi
-	id=$(podman image list -q cprogrammer/$what:$image)
+	id=$($podcmd image list -q cprogrammer/$what:$image)
 	echo "Testing $what:$image id=$id"
 	if [ $selinux_enabled -eq 1 ] ; then
 		vol="$basedir:/home:z"
@@ -883,33 +878,37 @@ test_docker()
 	ports="$ports -p 2143:143 -p 2993:993 -p 2995:995 -p 3307:3306"
 	if [ $verbose -eq 1 ] ; then
 		extra="--cap-add IPC_LOCK --cap-add SYS_RESOURCE --cap-add=NET_ADMIN --cap-add=CAP_NET_RAW --cap-add=SYS_NICE --cap-add=SYS_PTRACE"
-		echo "podman run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name"
-		podman run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name
+		echo "$podcmd run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name"
+		$podcmd run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name
 		ret=$?
 	else
 		extra="-q --cap-add IPC_LOCK --cap-add SYS_RESOURCE --cap-add=NET_ADMIN --cap-add=CAP_NET_RAW --cap-add=SYS_NICE --cap-add=SYS_PTRACE"
-		podman run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name >/dev/null
+		$podcmd run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name >/dev/null
 		ret=$?
 	fi
-	pid=$(podman ps --noheading)
+	if [ "$podcmd" = "podman" ] ; then
+		pid=$($podcmd ps --noheading)
+	else
+		pid=$($podcmd ps -q)
+	fi
 	if [ $ret -ne 0 -o -z "$pid" ] ; then
 		echo "Failed to run $what:$image"
 		[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
-	podman exec -ti $name /bin/rm -f /etc/indimail/control/global_vars/TLS_CIPHER_SUITE # remove this later
+	$podcmd exec -ti $name /bin/rm -f /etc/indimail/control/global_vars/TLS_CIPHER_SUITE # remove this later
 	if [ "$name" = "indimail" -o "$name" = "webmail" ] ; then
 		case $image in
 		jammy)
 			for i in qmail-send.25 slowq-send inlookup.infifo indisrvr.4000
 			do
-				podman exec -ti $name /bin/rm -f /service/$i/variables/MYSQL_OPT_RECONNECT
-				podman exec -ti $name svc -r /service/$i
+				$podcmd exec -ti $name /bin/rm -f /service/$i/variables/MYSQL_OPT_RECONNECT
+				$podcmd exec -ti $name svc -r /service/$i
 			done
 		;;
 		#stream9)
-		#podman exec -ti $name setcap -r /usr/libexec/mysqld
+		#$podcmd exec -ti $name setcap -r /usr/libexec/mysqld
 		#;;
 		esac
 	fi
@@ -917,28 +916,29 @@ test_docker()
 		focal)
 			t1=$(cat $cntrldir/servercipherlist)
 			t2=$(cat $cntrldir/serverciphersuite)
-			podman exec -ti $name sh -c "echo $t1:$t2 > /etc/indimail/control/serverciphersuite"
+			$podcmd exec -ti $name sh -c "echo $t1:$t2 > /etc/indimail/control/serverciphersuite"
+			$podcmd exec -ti $name svc -r /service/qmail-smtpd.25 /service/qmail-smtpd.587
 		;;
 		bionic)
 			t1=$(cat $cntrldir/servercipherlist)
 			t2=$(cat $cntrldir/serverciphersuite)
-			podman exec -ti $name sh -c "echo 209715200 > /service/qmail-smtpd.25/variables/SOFT_MEM"
-			podman exec -ti $name sh -c "echo 209715200 > /service/qmail-smtpd.587/variables/SOFT_MEM"
-			#podman exec -ti $name sh -c "echo $t1:$t2 > /etc/indimail/control/serverciphersuite"
-			podman exec -ti $name svc -r /service/qmail-smtpd.25 /service/qmail-smtpd.587
+			$podcmd exec -ti $name sh -c "echo 209715200 > /service/qmail-smtpd.25/variables/SOFT_MEM"
+			$podcmd exec -ti $name sh -c "echo 209715200 > /service/qmail-smtpd.587/variables/SOFT_MEM"
+			$podcmd exec -ti $name sh -c "echo $t1:$t2 > /etc/indimail/control/serverciphersuite"
+			$podcmd exec -ti $name svc -r /service/qmail-smtpd.25 /service/qmail-smtpd.587
 		;;
 	esac
 
 	[ $verbose -eq 1 ] && echo "adding user $localuser"
 	(
 	create_useradd
-	podman cp /tmp/create_testuser $name:/usr/bin
+	$podcmd cp /tmp/create_testuser $name:/usr/bin
 	/bin/rm -f /tmp/create_testuser
-	podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
-	podman exec -ti $name svc -h /service/qmail-smtpd.25 /service/qmail-smtpd.587 # remove this later
-	podman exec -ti $name sh -c "/usr/bin/create_testuser"
-	podman exec -ti $name svc -h /service/qmail-send.25
-	) > $logdir/podman/$what.$image.log 2>&1
+	$podcmd exec -ti $name touch /etc/indimail/control/chkrcptdomains
+	$podcmd exec -ti $name svc -h /service/qmail-smtpd.25 /service/qmail-smtpd.587 # remove this later
+	$podcmd exec -ti $name sh -c "/usr/bin/create_testuser"
+	$podcmd exec -ti $name svc -h /service/qmail-send.25
+	) > $logdir/$podcmd/$what.$image.log 2>&1
 	check_service $name qmail-smtpd.587 3
 	test_pop3 $localuser $password $user@$domain1 $basedir/$localuser/Maildir
 	sudo sh -c "/bin/rm -rf $basedir/$localuser/Maildir/new/* $basedir/$localuser/Maildir/cur/*"
@@ -948,32 +948,30 @@ test_docker()
 		ret=0
 		check_service $name qmail-smtpd.25 3
 		(
-		podman exec -ti $name sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
-		podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
-		#podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
-		#podman exec -ti $name svc -h /service/qmail-smtpd.25
+		$podcmd exec -ti $name sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
+		$podcmd exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
 		[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain2 from testuser01@example.com"
 		if [ $verbose -eq 1 ] ; then
 			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
 		else
 			swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
 		fi
-		) >> $logdir/podman/$what.$image.log 2>&1
+		) >> $logdir/$podcmd/$what.$image.log 2>&1
 	elif [ "$what" = "indimail-web" -o "$what" = "indimail" ] ; then
-		check_service $name mysql.3306
+		check_service $name mysql.3306 20
 		ret=$?
 		if [ $ret -eq 0 ] ; then
 			[ $verbose -eq 1 ] && echo "adding domain $domain3, user $user@$domain3"
 			(
-			podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
-			podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
-			podman exec -ti $name svc -h /service/qmail-smtpd.25
-			echo "podman commands vadddomain, vadduser"
-			podman exec -ti $name vadddomain $domain3 $password
-			podman exec -ti $name vadduser $user@$domain3 $password
-			podman exec -ti $name sh -c "svc -r /service/qmail-smtpd.*"
+			$podcmd exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+			$podcmd exec -ti $name touch /etc/indimail/control/chkrcptdomains
+			$podcmd exec -ti $name svc -h /service/qmail-smtpd.25
+			echo "$podcmd commands vadddomain, vadduser"
+			$podcmd exec -ti $name vadddomain $domain3 $password
+			$podcmd exec -ti $name vadduser $user@$domain3 $password
+			$podcmd exec -ti $name sh -c "svc -r /service/qmail-smtpd.*"
 			echo "------------------"
-			) >> $logdir/podman/$what.$image.log 2>&1
+			) >> $logdir/$podcmd/$what.$image.log 2>&1
 			check_service $name inlookup.infifo
 			ret=$?
 			if [ $ret -eq 0 ] ; then
@@ -985,32 +983,35 @@ test_docker()
 				else
 					swaks -S --to $user@$domain3 --from testuser01@example.com -s 127.0.0.1 -p 2025
 				fi
-				) >> $logdir/podman/$what.$image.log 2>&1
+				) >> $logdir/$podcmd/$what.$image.log 2>&1
 			else
 				echo "Did not find a running inlookup service" 1>&2
+				$podcmd exec -ti $name sh -c "svstat /service/inlookup.infifo"
 			fi
 		else
 			echo "Did not find a running MySQL service" 1>&2
+			$podcmd exec -ti $name sh -c "svstat /service/mysql.3306"
 		fi
 	elif [ "$what" = "indimail-mta-web" ] ; then
-		check_service $name mysql.3306
+		check_service $name mysql.3306 20
 		ret=$?
 		if [ $ret -eq 0 ] ; then
 		check_service $name qmail-smtpd.25 3
 		(
-		podman exec -ti $name sh -c "printf \"&$user@$domain1\n\" > /var/indimail/alias/.qmail-$user"
-		podman exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
-		podman exec -ti $name touch /etc/indimail/control/chkrcptdomains
-		podman exec -ti $name svc -h /service/qmail-smtpd.25
+		$podcmd exec -ti $name sh -c "printf \"&$user@$domain1\n\" > /var/indimail/alias/.qmail-$user"
+		$podcmd exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+		$podcmd exec -ti $name touch /etc/indimail/control/chkrcptdomains
+		$podcmd exec -ti $name svc -h /service/qmail-smtpd.25
 		[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain2 from testuser01@example.com"
 		if [ $verbose -eq 1 ] ; then
 			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
 		else
 			swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
 		fi
-		) >> $logdir/podman/$what.$image.log 2>&1
+		) >> $logdir/$podcmd/$what.$image.log 2>&1
 		else
 			echo "Did not find a running MySQL service" 1>&2
+			$podcmd exec -ti $name sh -c "svstat /service/mysql.3306"
 		fi
 	fi
 	if [ $ret -eq 0 ] ; then
@@ -1018,19 +1019,19 @@ test_docker()
 			[ $verbose -eq 1 ] && echo "test_docker: Checking mail receipt in $maildir"
 			check_mail $maildir
 		else
-			vdir=$(podman exec -ti $name vuserinfo -d $user@$domain3|awk '{print $3}')
+			vdir=$($podcmd exec -ti $name vuserinfo -d $user@$domain3|awk '{print $3}')
 			[ $verbose -eq 1 ] && echo "test_docker: Checking mail receipt in "$testdir""$t"/Maildir"
 			check_mail "$testdir"$vdir/Maildir
 		fi
 		if [ $? -eq 0 ] ; then
 			ret=0
 			tcount=$(expr $tcount + 1)
-			echo "  testing mail send+receive     via podman container $what.$image succeeded"
+			echo "  testing mail send+receive     via $podcmd container $what.$image succeeded"
 		else
 			ret=1
 			fcount=$(expr $fcount + 1)
-			echo "  testing mail send+receive     via podman container $what.$image failed"
-			cat $logdir/podman/$what.$image.log
+			echo "  testing mail send+receive     via $podcmd container $what.$image failed"
+			cat $logdir/$podcmd/$what.$image.log
 			[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 			if [ $prompt -eq 1 ] ; then
 				echo "Press ENTER or quit to quit"
@@ -1042,8 +1043,8 @@ test_docker()
 		fi
 	else
 		fcount=$(expr $fcount + 1)
-		echo "  testing mail send+receive     via podman container $what.$image failed"
-		cat $logdir/podman/$what.$image.log
+		echo "  testing mail send+receive     via $podcmd container $what.$image failed"
+		cat $logdir/$podcmd/$what.$image.log
 		[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 		if [ $prompt -eq 1 ] ; then
 			echo "Press ENTER or quit to quit"
@@ -1059,8 +1060,8 @@ test_docker()
 		elif [ "$what" = "indimail-mta-web" ] ; then
 			[ $verbose -eq 1 ] && echo "Checking Roundcube Login as user $localuser"
 		fi
-		podman cp scripts/test_roundcube $name:/usr/bin
-		podman cp scripts/rclogin.php $name:/usr/bin
+		$podcmd cp scripts/test_roundcube $name:/usr/bin
+		$podcmd cp scripts/rclogin.php $name:/usr/bin
 		case $image in
 			leap15.4|leap15.5|tumbleweed)
 			sleep $sleep_int
@@ -1071,16 +1072,16 @@ test_docker()
 			;;
 		esac
 		if [ "$what" = "indimail-web" ] ; then
-			podman exec -ti $name /usr/bin/test_roundcube "http://localhost/indimail/" "$user@$domain3" "$password"
+			$podcmd exec -ti $name /usr/bin/test_roundcube "http://localhost/indimail/" "$user@$domain3" "$password"
 		elif [ "$what" = "indimail-mta-web" ] ; then
-			podman exec -ti $name /usr/bin/test_roundcube "http://localhost/indimail/" "$localuser" "$password"
+			$podcmd exec -ti $name /usr/bin/test_roundcube "http://localhost/indimail/" "$localuser" "$password"
 		fi
 		if [ $? -eq 0 ] ; then
 			tcount=$(expr $tcount + 1)
-			echo "  testing webmail   user  login via podman container $what.$image succeeded"
+			echo "  testing webmail   user  login via $podcmd container $what.$image succeeded"
 		else
 			fcount=$(expr $fcount + 1)
-			echo "  testing webmail   user  login via podman container $what.$image failed"
+			echo "  testing webmail   user  login via $podcmd container $what.$image failed"
 			[ -z "$failed" ] && failed="roundcube-$what:$image" || failed="$failed roundcube-$what:$image"
 			if [ $prompt -eq 1 ] ; then
 				echo "Press ENTER or quit to quit"
@@ -1101,9 +1102,9 @@ test_docker()
 	if [ "$what" = "indimail-web" -o "$what" = "indimail" ] ; then
 		if [ $extensive -eq 1 ] ; then
 			wget -nv $raw_url
-			podman cp testindimail-virtual $name:/usr/bin
+			$podcmd cp testindimail-virtual $name:/usr/bin
 			/bin/rm -f testindimail-virtual
-			podman exec -ti $name setuidgid -s $localuser /usr/bin/testindimail-virtual -y -c
+			$podcmd exec -ti $name setuidgid -s $localuser /usr/bin/testindimail-virtual -y -c
 		else
 			# test pop3, imap for virtual user
 			test_pop3 $user@$domain3 $password $postmaster@$domain3 "$testdir"$vdir/Maildir 1
@@ -1115,13 +1116,13 @@ test_docker()
 	if [ $verbose -eq 1 ] ; then
 		(
 		echo "------ container qmail-smtpd.25 log ------"
-		podman exec -ti $name cat /var/log/svc/smtpd.25/current
+		$podcmd exec -ti $name cat /var/log/svc/smtpd.25/current
 		echo
 		echo "------ container qmail-smtpd.587 log ------"
-		podman exec -ti $name cat /var/log/svc/smtpd.587/current
+		$podcmd exec -ti $name cat /var/log/svc/smtpd.587/current
 		echo
 		echo "------ container qmail-send  log ------"
-		podman exec -ti $name cat /var/log/svc/deliver.25/current
+		$podcmd exec -ti $name cat /var/log/svc/deliver.25/current
 		echo
 		echo "------ local qmail-smtpd log ------"
 		cat $logdir/smtpd/current
@@ -1130,17 +1131,17 @@ test_docker()
 		cat $logdir/qmail-send/current
 		echo
 		echo "------ $what.$image.log ------"
-		cat $logdir/podman/$what.$image.log
+		cat $logdir/$podcmd/$what.$image.log
 		)
 	fi
 	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
 	(
-	podman stop $name
+	$podcmd stop $name
 	if [ $ret -eq 0 -a $delete -eq 1 ] ; then
 		[ $verbose -eq 1 ] && echo "Deleting $image container"
-		podman rmi $id
+		$podcmd rmi $id
 	fi
-	) >> $logdir/podman/$what.$image.log 2>&1
+	) >> $logdir/$podcmd/$what.$image.log 2>&1
 	end=$(date +'%s')
 	secs=$(($end-$start))
 	printf '%d days, %d hours, %d minutes, %d seconds\n' $((secs/86400)) $((secs%86400/3600)) $((secs%3600/60)) \
@@ -1170,6 +1171,7 @@ do_update=0
 verbose=0
 extensive=0
 halt_on_error=0
+podcmd="podman"
 catalog=""
 localip=$(/usr/libexec/indimail/ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
 if [ $(basename $PWD) != "scripts" ] ; then
@@ -1197,7 +1199,7 @@ if [ ! -x /usr/bin/podman -a ! -x /usr/bin/docker ] ; then
 	echo "podman/docker command not found" 1>&2
 	exit 1
 fi
-options=$(getopt -a -n testdocker -o "hHyuvdec:" -l help,halt,noprompt,update,verbose,delete,catalog -- "$@")
+options=$(getopt -a -n testdocker -o "hHyuvdec:C:" -l help,halt,noprompt,update,verbose,delete,catalog,command -- "$@")
 if [ $? != 0 ]; then
   usage
 fi
@@ -1232,6 +1234,10 @@ do
 	-d | --delete)
 	delete=1
 	shift
+	;;
+	-C | --command)
+	podcmd=$2
+	shift 2
 	;;
 	-c | --catalog)
 	if [ -z "$catalog" ] ; then
