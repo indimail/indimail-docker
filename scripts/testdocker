@@ -288,7 +288,7 @@ test_pop3()
 	fi
 
 	check_service $name qmail-pop3d-ssl.995 3
-	tcpclient -a 10 -n "" -vDHR 127.0.0.1 2995 /tmp/qmail-test/tcpclient.pop3 2>$logdir/pop3d-ssl/pop3d-ssl.log
+	tcpclient -a 10 -n $certdir/clientcert.pem -vDHR 127.0.0.1 2995 /tmp/qmail-test/tcpclient.pop3 2>$logdir/pop3d-ssl/pop3d-ssl.log
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
 		printf "  testing POP3S login %s and mail retrieval succeeded\n" "$1"
@@ -457,7 +457,7 @@ test_imap()
 	fi
 
 	check_service $name qmail-imapd-ssl.993 3
-	tcpclient -a 10 -n "" -vDHR 127.0.0.1 2993 /tmp/qmail-test/tcpclient.imap 2>$logdir/imapd-ssl/imapd-ssl.log
+	tcpclient -a 10 -n $certdir/clientcert.pem -vDHR 127.0.0.1 2993 /tmp/qmail-test/tcpclient.imap 2>$logdir/imapd-ssl/imapd-ssl.log
 	if [ $? -eq 0 ] ; then
 		tcount=$(expr $tcount + 1)
 		printf "  testing IMAPS login %s and mail retrieval succeeded\n" "$1"
@@ -653,7 +653,7 @@ setup_config()
 	echo "$domain1"                >>$cntrldir/rcpthosts
 	echo "$domain1"                >>$cntrldir/locals
 	echo @$HOSTNAME > $cntrldir/nodnscheck
-	sudo chown -R $user $cntrldir
+	sudo chown -R $user $cntrldir $certdir
 	sudo /bin/rm -f $cntrldir/libmysql $cntrldir/libindimail
 }
 
@@ -672,6 +672,7 @@ setup_svscan_without_svscanlog()
 	echo $cntrldir      > $servicedir/smtpd/variables/CONTROLDIR
 	echo $testdir/queue > $servicedir/smtpd/variables/QUEUEDIR
 	echo $certdir       > $servicedir/smtpd/variables/CERTDIR
+	echo 1              > $servicedir/smtpd/variables/DISABLE_PLUGIN
 	printf "#!/bin/sh\nexec envdir ./variables $tcpserver -u qmaild -g qmail -v -HR 0 $smtp_port $qmail_smtpd 2>&1\n" > $servicedir/smtpd/run
 	printf "#!/bin/sh\nexec /usr/sbin/multilog t $logdir/smtpd\n" > $servicedir/smtpd/log/run
 	chmod +x $servicedir/smtpd/run
@@ -881,12 +882,12 @@ test_docker()
 	ports="-p 8000:80 -p 2025:25 -p 2587:587 -p 2110:110"
 	ports="$ports -p 2143:143 -p 2993:993 -p 2995:995 -p 3307:3306"
 	if [ $verbose -eq 1 ] ; then
-		extra="--cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
+		extra="--cap-add IPC_LOCK --cap-add SYS_RESOURCE --cap-add=NET_ADMIN --cap-add=CAP_NET_RAW --cap-add=SYS_NICE --cap-add=SYS_PTRACE"
 		echo "podman run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name"
 		podman run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name
 		ret=$?
 	else
-		extra="-q --cap-add IPC_LOCK   --cap-add SYS_RESOURCE --cap-add=NET_ADMIN  --cap-add=CAP_NET_RAW --cap-add=SYS_NICE"
+		extra="-q --cap-add IPC_LOCK --cap-add SYS_RESOURCE --cap-add=NET_ADMIN --cap-add=CAP_NET_RAW --cap-add=SYS_NICE --cap-add=SYS_PTRACE"
 		podman run $extra -d --rm -h $domain2 --name $name $ports -v $vol $id -d $domain2 $name >/dev/null
 		ret=$?
 	fi

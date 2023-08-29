@@ -33,11 +33,8 @@ jobs:
           printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n" > preferences
           sudo mv indimail.list /etc/apt/sources.list.d
           sudo mv preferences /etc/apt/preferences.d
-          sudo apt-get clean
           sudo apt-get -y update
           sudo apt-get -y install indimail-mta gsasl libnet-ssleay-perl libauthen-sasl-perl libdigest-perl-md5-perl libdigest-hmac-perl
-          #sudo /usr/sbin/svctool --config=cert --postmaster=postmaster@local.indimail.org --common_name=local.indimail.org
-          #sudo chown -R $(id -u) /etc/indimail/certs
           sudo /bin/rm -rf /tmp/qmail-test
           cd scripts
           if [ -z "${{ github.event.inputs.test_args }}" ] ; then
@@ -46,8 +43,4 @@ jobs:
             ./testdocker -y -d -c webmail
           else
             ./testdocker ${{ github.event.inputs.test_args }}
-            echo "controlfiles list"
-            ls -l /tmp/qmail-test/etc/indimail/control
-            echo "controlfiles global list"
-            ls -l /tmp/qmail-test/etc/indimail/control/global_vars
           fi
