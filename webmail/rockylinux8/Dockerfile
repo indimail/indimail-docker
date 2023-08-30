@@ -42,6 +42,7 @@ RUN export HOSTNAME=indimail.org \
 		which \
 		strace \
 		lsof \
+		passwd \
 		perl \
 		perl-Authen-SASL \
 		perl-Digest-HMAC \
