@@ -62,7 +62,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		make; \
 		make install-strip; \
 		cd ..; ./dnssvc; \
-		dnf -y install passwd iptuils s-nail; \
+		dnf -y install passwd iputils s-nail; \
 		cd /; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib/libeps.la /usr/lib/libindimail.la \
 			/usr/lib/libqmail.la /usr/lib/libdkim2.la /usr/lib/libflash.la \

@@ -13,7 +13,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		&& dnf -y update \
 		&& dnf -y install perl httpd mod_ssl php php-fpm php-mysqlnd \
 			php-imagick php-mcrypt php-mbstring php-xml php-xmlrpc \
-			php-gd php-intl php-json php-zip php-cli passwd iptuils ; \
+			php-gd php-intl php-json php-zip php-cli passwd iputils ; \
 		# Git
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \

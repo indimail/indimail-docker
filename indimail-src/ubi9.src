@@ -18,7 +18,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		openssl-devel openldap-devel ncurses-devel libidn-devel pcre-devel pcre2-devel \
 		findutils libsodium-devel libdb-devel libgcrypt-devel krb5-devel \
 		diffutils coreutils which chkconfig procps psmisc less cronie \
-		file sed wget bzip2 vim \
+		file sed wget bzip2 vim passwd \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
 		# mrtg

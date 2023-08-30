@@ -76,7 +76,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& update-alternatives --config mta \
 	&& mkdir -p /var/log/build \
 	&& (set -e; \
-		a2enmod proxy_fcgi setenvif; \
+		a2enmod proxy_fcgi setenvif ssl; \
 		a2enconf php7.2-fpm; \
 		systemctl enable apache2; \
 		wget -nv \
