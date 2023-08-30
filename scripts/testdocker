@@ -50,7 +50,7 @@ MYSQL_DB="indimail"
 MYSQL_HOST=localhost
 MYSQL_PORT=3307
 
-create_useradd()
+setup_localuser()
 {
 	out=$(mktemp -t testdockXXXXXXX)
 	(
@@ -201,6 +201,7 @@ test_pop3()
 		from=$1
 		to=$1
 	fi
+	[ $verbose -eq 1 ] && echo swaks --tls --to $to --from $from --server 127.0.0.1 --port 2587 -a LOGIN -au $1 -ap "$2"
 	swaks --tls --to $to --from $from --server 127.0.0.1 --port 2587 -a LOGIN -au $1 -ap "$2" >> $logdir/pop3d/pop3d.log 2>&1
 	[ $verbose -eq 1 ] && echo "test_pop3: Checking mail receipt in $4"
 	check_mail $4 no-delete
@@ -388,6 +389,7 @@ test_imap()
 		from=$1
 		to=$1
 	fi
+	[ $verbose -eq 1 ] && echo swaks --tls --to $to --from $from --server 127.0.0.1 --port 2587 -a LOGIN -au $1 -ap "$2"
 	swaks -S --tls --to $to --from $from --server 127.0.0.1 --port 2587 -a LOGIN -au $1 -ap "$2" >> $logdir/imapd/imapd.log 2>&1
 	[ $verbose -eq 1 ] && echo "test_imap: Checking mail receipt in $4"
 	check_mail $4 no-delete
@@ -628,8 +630,10 @@ setup_config()
 	[ $verbose -eq 1 ] && echo "Creating qmail config" 1>&3
 	sudo /usr/sbin/svctool --cntrldir=$cntrldir --config=qmail
 	[ $verbose -eq 1 ] && echo "Creating openssl certificates" 1>&3
-	sudo /usr/sbin/svctool --certdir=$certdir    --config=cert \
-		--postmaster=postmaster@$HOSTNAME --common_name=$HOSTNAME
+	if [ ! -f $certdir/servercert.pem ] ; then
+		sudo /usr/sbin/svctool --certdir=$certdir    --config=cert \
+			--postmaster=postmaster@$HOSTNAME --common_name=$HOSTNAME
+	fi
 	sudo chown -R $user $cntrldir $certdir
 
 	echo ./Maildir/                > $cntrldir/defaultdelivery
@@ -773,7 +777,7 @@ test_iwebadmin()
 		fi
 		[ -z "$failed" ] && failed="iwebadmin-$what:$image" || failed="$failed iwebadmin-$what:$image"
 		if [ $prompt -eq 1 ] ; then
-			echo "Press ENTER or quit to quit"
+			echo -n "Press ENTER or quit to quit "
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
@@ -809,7 +813,7 @@ test_iwebadmin()
 		[ -z "$failed" ] && failed="iwebadmin-$what:$image" || failed="$failed iwebadmin-$what:$image"
 		cat $logdir/$podcmd/roundcube.log
 		if [ $prompt -eq 1 ] ; then
-			echo "Press ENTER or quit to quit"
+			echo -n "Press ENTER or quit to quit "
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
@@ -931,7 +935,7 @@ test_docker()
 
 	[ $verbose -eq 1 ] && echo "adding user $localuser"
 	(
-	create_useradd
+	setup_localuser
 	$podcmd cp /tmp/create_testuser $name:/usr/bin
 	/bin/rm -f /tmp/create_testuser
 	$podcmd exec -ti $name touch /etc/indimail/control/chkrcptdomains
@@ -1034,7 +1038,7 @@ test_docker()
 			cat $logdir/$podcmd/$what.$image.log
 			[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 			if [ $prompt -eq 1 ] ; then
-				echo "Press ENTER or quit to quit"
+				echo -n "Press ENTER or quit to quit "
 				read key
 				if [ "$key" = "quit" ] ; then
 					doquit=1
@@ -1047,7 +1051,7 @@ test_docker()
 		cat $logdir/$podcmd/$what.$image.log
 		[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 		if [ $prompt -eq 1 ] ; then
-			echo "Press ENTER or quit to quit"
+			echo -n "Press ENTER or quit to quit "
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
@@ -1084,7 +1088,7 @@ test_docker()
 			echo "  testing webmail   user  login via $podcmd container $what.$image failed"
 			[ -z "$failed" ] && failed="roundcube-$what:$image" || failed="$failed roundcube-$what:$image"
 			if [ $prompt -eq 1 ] ; then
-				echo "Press ENTER or quit to quit"
+				echo -n "Press ENTER or quit to quit "
 				read key
 				if [ "$key" = "quit" ] ; then
 					doquit=1
@@ -1115,6 +1119,8 @@ test_docker()
 	fi
 	if [ $verbose -eq 1 ] ; then
 		(
+		echo "------ local $what.$image.log ------"
+		cat $logdir/$podcmd/$what.$image.log
 		echo "------ container qmail-smtpd.25 log ------"
 		$podcmd exec -ti $name cat /var/log/svc/smtpd.25/current
 		echo
@@ -1134,14 +1140,16 @@ test_docker()
 		cat $logdir/$podcmd/$what.$image.log
 		)
 	fi
+	[ $prompt -eq 1 ] && echo -n "Press ENTER or type quit to quit " && read key
+	if [ "$key" = "quit" ] ; then
+		doquit=1
+	fi
 	[ $verbose -eq 1 ] && echo -n "Stopping $image container"
-	(
-	$podcmd stop $name
+	$podcmd stop $name >/dev/null 2>&1
 	if [ $ret -eq 0 -a $delete -eq 1 ] ; then
 		[ $verbose -eq 1 ] && echo "Deleting $image container"
 		$podcmd rmi $id
 	fi
-	) >> $logdir/$podcmd/$what.$image.log 2>&1
 	end=$(date +'%s')
 	secs=$(($end-$start))
 	printf '%d days, %d hours, %d minutes, %d seconds\n' $((secs/86400)) $((secs%86400/3600)) $((secs%3600/60)) \
