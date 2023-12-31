@@ -1,7 +1,7 @@
 # docker build -f dockerfile.gentoo -t cprogrammer/indimail-src:gentoo
 From gentoo/stage3:latest
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
+LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e; \
@@ -32,7 +32,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		done; \
 		echo "Cloning git repositories"; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
-			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done; \
+			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/$i.git; done; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
 		tar xf gsasl-2.2.0.tar.gz; \

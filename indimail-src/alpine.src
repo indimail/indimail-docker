@@ -1,7 +1,7 @@
 # docker build -f dockerfile.alpine -t cprogrammer/indimail-src:alpine
 From alpine:latest
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
+LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& apk -U upgrade \
@@ -24,12 +24,12 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& (set -e; \
 		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/libqmail.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-mta.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/tinydnssec.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/ezmlm-idx.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-virtualdomains.git; \
-		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/indimail-docker.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/libqmail.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/indimail-mta.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/tinydnssec.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/ezmlm-idx.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/indimail-virtualdomains.git; \
+		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/indimail-docker.git; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
 		tar xf gsasl-2.2.0.tar.gz; \

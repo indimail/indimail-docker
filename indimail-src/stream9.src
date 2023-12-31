@@ -2,7 +2,7 @@
 # https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
 FROM quay.io/centos/centos:stream9 
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
+LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
@@ -25,7 +25,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
-			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/mbhangui/$i.git; done; \
+			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/$i.git; done; \
 		git clone git://linux-nfs.org/~steved/libtirpc; \
 		# gsasl
 		wget -nv https://ftpmirror.gnu.org/gsasl/gsasl-2.2.0.tar.gz; \
