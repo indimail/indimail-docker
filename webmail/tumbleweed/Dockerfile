@@ -1,7 +1,7 @@
 # docker build -f dockerfile.tumbleweed -t cprogrammer/indimail-web:tumbleweed
 FROM opensuse/tumbleweed
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:tumbleweed
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:tumbleweed
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
