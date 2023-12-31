@@ -41,7 +41,7 @@ RUN export HOSTNAME=indimail.org \
 		mysql-community-server \
 		mysql-community-client \
 		mysql-community-libs \
-	&& wget https://download.opensuse.org/repositories/home:mbhangui/RockyLinux_8/home:mbhangui.repo -O /etc/yum.repos.d/indimail.repo \
+	&& wget https://download.opensuse.org/repositories/home:mbhangui/AlmaLinux_8/home:mbhangui.repo -O /etc/yum.repos.d/indimail.repo \
 	&& dnf -y install \
 		indimail-mta \
 		logalert \
