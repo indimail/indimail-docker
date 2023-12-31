@@ -2,7 +2,7 @@
 # vim: wrap
 FROM cprogrammer/indimail-src:stream9
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
+LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
