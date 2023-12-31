@@ -1,7 +1,7 @@
 # docker build -f dockerfile.mageia8 -t cprogrammer/indimail:mageia8
 FROM mageia:8
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:mageia8
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:mageia8
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \

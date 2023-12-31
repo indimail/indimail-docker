@@ -1,7 +1,7 @@
 # docker build -f dockerfile.amazonlinux -t cprogrammer/indimail:amazonlinux
 FROM amazonlinux:2023
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:amazonlinux
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:amazonlinux
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \

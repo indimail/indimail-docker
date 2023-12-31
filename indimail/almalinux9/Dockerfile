@@ -1,7 +1,7 @@
 # docker build -f dockerfile.almalinux9 -t cprogrammer/indimail:almalinux9
 FROM almalinux:9
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:almalinux9
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:almalinux9
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \

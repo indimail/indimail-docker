@@ -1,7 +1,7 @@
 # docker build -f dockerfile.stream8 -t cprogrammer/indimail-web:stream8
 FROM quay.io/centos/centos:stream8 
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:stream8
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:stream8
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
