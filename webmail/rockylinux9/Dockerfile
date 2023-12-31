@@ -1,7 +1,7 @@
 # docker build -f dockerfile.rockylinux9 -t cprogrammer/indimail-web:rockylinux9
 FROM rockylinux:9
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:rockylinux9
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:rockylinux9
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
