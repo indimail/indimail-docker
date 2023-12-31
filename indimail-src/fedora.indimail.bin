@@ -1,7 +1,7 @@
 # docker build -f fedora.indimail.bin -t cprogrammer/indimail:fedora
 FROM cprogrammer/indimail-src:fedora
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source https://github.com/mbhangui/indimail-docker
+LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
