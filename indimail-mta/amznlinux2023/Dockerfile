@@ -1,7 +1,7 @@
 # docker build -f dockerfile.amazonlinux -t cprogrammer/indimail-mta:amazonlinux
 FROM amazonlinux:2023
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:amazonlinux
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-mta:amazonlinux
 
 RUN export HOSTNAME=indimail.org \
 	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \

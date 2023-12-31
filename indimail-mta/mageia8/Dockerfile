@@ -1,7 +1,7 @@
 # docker build -f dockerfile.mageia8 -t cprogrammer/indimail-mta:mageia8
 FROM mageia:8
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:mageia8
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-mta:mageia8
 
 RUN export HOSTNAME=indimail.org \
 	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
