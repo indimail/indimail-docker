@@ -1,7 +1,7 @@
 # docker build -f dockerfile.debian12 -t cprogrammer/indimail:debian12
 FROM debian:12
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:debian12
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:debian12
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

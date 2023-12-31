@@ -3,7 +3,7 @@
 # ubuntu 23.04
 From ubuntu:lunar
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:lunar
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:lunar
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
