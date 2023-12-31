@@ -1,7 +1,7 @@
 # docker build -f dockerfile.fc38 -t cprogrammer/indimail:fc38
 FROM fedora:38
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:fc38
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:fc38
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \

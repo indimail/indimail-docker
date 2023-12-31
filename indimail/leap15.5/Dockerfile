@@ -1,7 +1,7 @@
 # docker build -f dockerfile.leap15.5 -t cprogrammer/indimail:leap15.5
 FROM opensuse/leap:15.5
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:leap15.5
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:leap15.5
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \

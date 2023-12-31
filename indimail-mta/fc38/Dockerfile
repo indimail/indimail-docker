@@ -1,7 +1,7 @@
 # docker build -f dockerfile.fc38 -t cprogrammer/indimail-mta:fc38
 FROM fedora:38
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:fc38
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-mta:fc38
 
 RUN export HOSTNAME=indimail.org \
 	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \

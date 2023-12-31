@@ -1,7 +1,7 @@
 # docker build -f dockerfile.leap15.5 -t cprogrammer/indimail-mta:leap15.5
 FROM opensuse/leap:15.5
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:leap15.5
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-mta:leap15.5
 
 RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
