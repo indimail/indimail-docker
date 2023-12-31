@@ -2,7 +2,7 @@
 # run dpkg-reconfigure tzdata after starting the container
 From ubuntu:jammy
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-mta:jammy
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-mta:jammy
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

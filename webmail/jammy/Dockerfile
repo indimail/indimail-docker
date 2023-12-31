@@ -3,7 +3,7 @@
 # ubuntu 22.04
 From ubuntu:jammy
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:jammy
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:jammy
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
