@@ -1,7 +1,7 @@
 # docker build -f dockerfile.bionic -t cprogrammer/indimail:bionic
 From ubuntu:bionic
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:bionic
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:bionic
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

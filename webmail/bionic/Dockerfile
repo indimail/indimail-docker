@@ -3,7 +3,7 @@
 # ubuntu 18.04
 From ubuntu:bionic
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:bionic
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:bionic
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

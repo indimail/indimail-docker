@@ -3,7 +3,7 @@
 # ubuntu 20.04
 From ubuntu:focal
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail-web:focal
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:focal
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
