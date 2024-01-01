@@ -12,7 +12,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/etc/dpkg/dpkg.cfg.d/excludes \
 	&& apt-get -y update \
 	&& apt-get -y install curl gnupg2 apt-utils \
-	&& curl -fsSL https://dev.mysql.com/get/mysql-apt-config_0.8.26-1_all.deb -o /root/Downloads/mysql-apt_config.deb \
+	&& curl -fsSL https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb -o /root/Downloads/mysql-apt_config.deb \
 	&& apt-get -y install /root/Downloads/mysql-apt_config.deb \
 	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_22.04/Release.key | \
 		gpg --dearmor > /etc/apt/trusted.gpg.d/home_mbhangui.gpg \
