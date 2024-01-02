@@ -6,8 +6,8 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		dnf -y update; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
