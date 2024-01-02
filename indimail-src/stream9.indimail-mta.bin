@@ -76,7 +76,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/bin/rm -rf /run/* || true; \
 		/bin/rm -f /usr/local/srctmp/incomplete; \
 	) > /var/log/build/build.bin.log 2>&1 \
-	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) \
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 VOLUME ["/sys/fs/cgroup"]
 VOLUME ["/run"]
