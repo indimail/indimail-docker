@@ -7,6 +7,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& sed -i '/tsflags=nodocs/d' /etc/dnf/dnf.conf \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& version_id=$(grep VERSION_ID /etc/os-release|cut -d= -f2) \
 	&& dnf config-manager --add-repo \
 			https://download.opensuse.org/repositories/home:mbhangui/Fedora_"$(grep VERSION_ID /etc/os-release|cut -d= -f2)"/home:mbhangui.repo \
@@ -23,7 +24,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		libidn2-devel readline-devel tcl-devel tk-devel perl-Authen-SASL \
 		perl-Digest-HMAC perl-Digest-SHA perl-Net-SSLeay \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/$i.git; done; \

@@ -7,6 +7,7 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& dnf config-manager --set-enabled ubi-8-baseos-source ubi-8-appstream-source \
 	&& dnf -y install \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
@@ -36,7 +37,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		diffutils coreutils which chkconfig procps psmisc flex less cronie xmlto \
 		file sed wget bzip2 vim passwd \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
 			-O /usr/local/srctmp/mrtg.tar.gz; \

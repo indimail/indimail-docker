@@ -4,6 +4,7 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& sed -i 's{usr/share/man/\*{{g' /etc/pacman.conf \
 	&& pacman -Sy --noconfirm --needed \
 	&& pacman -S  --noconfirm --needed archlinux-keyring \
@@ -14,7 +15,6 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		perl-authen-sasl perl-net-ssleay perl-digest-hmac perl-io-socket-inet6 \
 	&& pacman -S  --noconfirm --refresh --sysupgrade \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
 			-O /usr/local/srctmp/mrtg.tar.gz; \

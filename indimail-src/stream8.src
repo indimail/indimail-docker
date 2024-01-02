@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& dnf -y install 'dnf-command(config-manager)' \
 	&& dnf config-manager --set-enabled powertools \
 	&& dnf -y module disable mysql \
@@ -21,7 +22,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		rsync systemd telnet vim strace passwd lsof mrtg patch tcl-devel tk-devel \
 		perl-Authen-SASL perl-Digest-HMAC perl-Digest-SHA perl-Net-SSLeay \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/$i.git; done; \

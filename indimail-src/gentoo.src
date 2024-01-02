@@ -4,8 +4,8 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		echo "emaint -ay sync"; \
 		emaint -ay sync > /var/log/build/emaint.log; \

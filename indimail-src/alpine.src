@@ -4,6 +4,7 @@ MAINTAINER cprogrammer
 LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
 
 RUN mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& apk -U upgrade \
 	&& apk add bash gcc g++ make git autoconf automake libtool m4 sed \
 		pkgconfig openrc mailx busybox-extras vim lsof strace gettext \
@@ -22,7 +23,6 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		perl-digest-sha3 perl-net-ssleay perl-io-socket-inet6 \
 		perl-authen-ntlm perl-net-dns \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/libqmail.git; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/indimail-mta.git; \

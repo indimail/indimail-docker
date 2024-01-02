@@ -8,6 +8,7 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& dnf config-manager --set-enabled ubi-9-baseos-source ubi-9-appstream-source \
 	&& dnf -y erase subscription-manager \
 	&& dnf -y install \
@@ -20,7 +21,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		diffutils coreutils which chkconfig procps psmisc less cronie \
 		file sed wget bzip2 vim passwd \
 	&& (set -e; \
-		touch /usr/local/srctmp/incomplete; \
 		# mrtg
 		cd /usr/local/srctmp; \
 		wget -nv https://oss.oetiker.ch/mrtg/pub/mrtg.tar.gz \
