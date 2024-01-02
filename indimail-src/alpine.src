@@ -8,7 +8,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& apk add bash gcc g++ make git autoconf automake libtool m4 sed \
 		pkgconfig openrc mailx busybox-extras vim lsof strace gettext \
 		mandoc man-pages mandoc-apropos dcron dcron-openrc patch \
-		inetutils-syslogd inetutils-syslogd-openrc util-linux \
+		inetutils-syslogd inetutils-syslogd-openrc util-linux file \
 		openssh openssh-server openssh-server-common xmlto tzdata \
 		apk-tools-doc openrc-doc dcron-doc inetutils-syslogd-doc \
 		openssl openssl-dev musl-fts-dev mariadb-connector-c mysql-dev \
@@ -16,7 +16,7 @@ RUN mkdir -p /root /usr/local/srctmp /var/log/build \
 		libgcrypt-dev gnutls-dev gnutls krb5-dev tk-dev tcl-dev \
 		pcre pcre-dev pcre2-dev libtirpc libtirpc-dev ncurses-libs \
 		ncurses-dev linux-pam linux-pam-dev gdbm gdbm-dev db db-dev \
-		gsl gsl-dev libev libev-dev libsodium libsodium-dev \
+		gsl gsl-dev libev libev-dev libsodium libsodium-dev openldap-dev \
 		mysql mysql-client mrtg libgcrypt krb5-libs perl \
 		perl-authen-sasl perl-digest-hmac perl-digest-md5 perl-digest-sha1 \
 		perl-digest-sha3 perl-net-ssleay perl-io-socket-inet6 \
