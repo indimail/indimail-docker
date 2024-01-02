@@ -53,9 +53,9 @@ The following tags/images can be pulled by executing the commands
 **Docker**
 
 ```
-docker pull ghcr.io/mbhangui/indimail-mta:tag
-docker pull ghcr.io/mbhangui/indimail:tag
-docker pull ghcr.io/mbhangui/indimail-web:tag
+docker pull ghcr.io/indimail/indimail-mta:tag
+docker pull ghcr.io/indimail/indimail:tag
+docker pull ghcr.io/indimail/indimail-web:tag
 ```
 
 or
@@ -63,9 +63,9 @@ or
 **podman**
 
 ```
-podman pull ghcr.io/mbhangui/indimail-mta:tag
-podman pull ghcr.io/mbhangui/indimail:tag
-podman pull ghcr.io/mbhangui/indimail-web:tag
+podman pull ghcr.io/indimail/indimail-mta:tag
+podman pull ghcr.io/indimail/indimail:tag
+podman pull ghcr.io/indimail/indimail-web:tag
 ```
 Replace tag in the above command with one of the following tags from the below tables (built from Open Build Service or from github sources).
 
@@ -112,8 +112,8 @@ fedora|lastest Fedora|[![ghcr build status](https://github.com/indimail/docker/a
 Let's say you want to use the **indimail** image and CentOS8
 
 ```
-$ podman pull ghcr.io/mbhangui/indimail:stream8
-Trying to pull ghcr.io/mbhangui/indimail:stream8...
+$ podman pull ghcr.io/indimail/indimail:stream8
+Trying to pull ghcr.io/indimail/indimail:stream8...
 Getting image source signatures
 Copying blob 6910e5a164f7 skipped: already exists  
 Copying blob 9c29f394b0db done  
@@ -130,8 +130,8 @@ You can list the image using the `podman images` command
 ```
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
-ghcr.io/mbhangui/indimail        stream8      e543dee69ab7   38 hours ago   1.03 GB
-ghcr.io/mbhangui/indimail        fc33         a5266643441b   4 days ago     1.13 GB
+ghcr.io/indimail/indimail        stream8      e543dee69ab7   38 hours ago   1.03 GB
+ghcr.io/indimail/indimail        fc33         a5266643441b   4 days ago     1.13 GB
 ```
 
 ## Start the podman container
@@ -180,7 +180,7 @@ You can combine the pull and run in a single command. Below are 3 use cases of i
    NOTE: You need to give /bin/bash in the below command
 
    $ podman run -it --rm -h indimail.org --name indimail \
-       ghcr.io/mbhangui/indimail:stream8 /bin/bash
+       ghcr.io/indimail/indimail:stream8 /bin/bash
 
    # Start indimail in the above container
    indimail.org:(root) / > /usr/libexec/indimail/svscanboot &
@@ -195,7 +195,7 @@ You can combine the pull and run in a single command. Below are 3 use cases of i
    docker-entrypoint(8)
 
    $ podman run -d --rm -h indimail.org --name indimail \
-     ghcr.io/mbhangui/indimail:stream8
+     ghcr.io/indimail/indimail:stream8
 
    # Connect to the above container
    $ podman exec -ti indimail bash
@@ -380,7 +380,7 @@ So what if you wanted to restrict a volume to a specific container only? Well, t
 ```
 $ podman ps
 CONTAINER ID  IMAGE                                   COMMAND   CREATED             STATUS                 PORTS  NAMES
-0deab2154ef8  ghcr.io/mbhangui/indimail:stream8  indimail  About a minute ago  Up About a minute ago         indimail
+0deab2154ef8  ghcr.io/indimail/indimail:stream8  indimail  About a minute ago  Up About a minute ago         indimail
 ```
 
 ## Execute an interactive shell in the container
@@ -767,8 +767,8 @@ Storing signatures
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
 localhost/mycontainer            latest       7bcf4b2ff83e   53 seconds ago   1.16 GB
-ghcr.io/mbhangui/indimail        stream8      e543dee69ab7   39 hours ago     1.03 GB
-ghcr.io/mbhangui/indimail        fc31         a5266643441b   4 days ago       1.13 GB
+ghcr.io/indimail/indimail        stream8      e543dee69ab7   39 hours ago     1.03 GB
+ghcr.io/indimail/indimail        fc31         a5266643441b   4 days ago       1.13 GB
 ```
 
 The original container is now longer needed to run. We can stop it and remove the image from memory
@@ -876,13 +876,13 @@ You can use the docker images or podman images command to list the container ima
 
 $ podman images
 REPOSITORY                                 TAG         IMAGE ID      CREATED         SIZE
-ghcr.io/mbhangui/indimail-mta              stream8     108c6e83242e  2 hours ago     717 MB
-ghcr.io/mbhangui/indimail-mta              hirsute     bf58434c3a76  3 hours ago     347 MB
-ghcr.io/mbhangui/indimail                  alpine      62f9d0d95427  15 hours ago    468 MB
+ghcr.io/indimail/indimail-mta              stream8     108c6e83242e  2 hours ago     717 MB
+ghcr.io/indimail/indimail-mta              hirsute     bf58434c3a76  3 hours ago     347 MB
+ghcr.io/indimail/indimail                  alpine      62f9d0d95427  15 hours ago    468 MB
 localhost/indimail                         alpine      62f9d0d95427  15 hours ago    468 MB
-ghcr.io/mbhangui/indimail-mta              alpine      0dffb4b398af  28 hours ago    404 MB
+ghcr.io/indimail/indimail-mta              alpine      0dffb4b398af  28 hours ago    404 MB
 localhost/indimail-mta                     alpine      0dffb4b398af  28 hours ago    404 MB
-ghcr.io/mbhangui/tinydnssec                alpine      dc1c37c76a50  41 hours ago    97.2 MB
+ghcr.io/indimail/tinydnssec                alpine      dc1c37c76a50  41 hours ago    97.2 MB
 localhost/tinydnssec                       alpine      dc1c37c76a50  41 hours ago    97.2 MB
 registry.access.redhat.com/rhel7           latest      538460c14d75  2 weeks ago     216 MB
 localhost/indimail-mta                     tumbleweed  999a86c2bc61  2 weeks ago     413 MB
