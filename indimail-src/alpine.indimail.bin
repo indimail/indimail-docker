@@ -6,7 +6,7 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
-	&& touch /usr/local/srctmp/incomplete; \
+	&& touch /usr/local/srctmp/incomplete \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
@@ -105,7 +105,7 @@ RUN export HOSTNAME=indimail.org \
 		echo "Completed stage 3"; \
 		/bin/rm -f /usr/local/srctmp/incomplete; \
 	) > /var/log/build/build.bin.log 2>&1 \
-	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log)
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) \
 	&& (test -d /var/indimail/mysqldb/data/indimail && echo "MySQL db creation succeeded") || (echo "MySQL db creation failed" && exit 1)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
