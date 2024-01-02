@@ -6,6 +6,7 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
+	&& touch /usr/local/srctmp/incomplete \
 	&& cd /root \
 	&& (emaint -ay sync; \
 		#rm -f /var/db/repos/gentoo/metadata/timestamp.x
@@ -89,8 +90,9 @@ RUN export HOSTNAME=indimail.org \
 			/usr/lib/libsrs2.a /lib/security/pam-multi.la /var/log/build/build.log.gz; \
 		/sbin/ldconfig; \
 		/bin/rm -rf /run/* || true; \
+		/bin/rm -f /usr/local/srctmp/incomplete; \
 	) > /var/log/build/build.bin.log 2>&1 \
-	&& (echo "Build Succeeded" && gzip /var/log/build/build.bin.log) || (echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1)
+	&& (test -f /usr/local/srctmp/incomplete && echo "Build Failed" && cat /var/log/build/build.bin.log && exit 1) || (echo "Build Succeeded" && gzip /var/log/build/build.bin.log)
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
 CMD ["indimail-mta"]
