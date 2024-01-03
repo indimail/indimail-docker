@@ -877,7 +877,6 @@ You can use the docker images or podman images command to list the container ima
 $ podman images
 REPOSITORY                                 TAG         IMAGE ID      CREATED         SIZE
 ghcr.io/indimail/indimail-mta              stream8     108c6e83242e  2 hours ago     717 MB
-ghcr.io/indimail/indimail-mta              hirsute     bf58434c3a76  3 hours ago     347 MB
 ghcr.io/indimail/indimail                  alpine      62f9d0d95427  15 hours ago    468 MB
 localhost/indimail                         alpine      62f9d0d95427  15 hours ago    468 MB
 ghcr.io/indimail/indimail-mta              alpine      0dffb4b398af  28 hours ago    404 MB
@@ -887,12 +886,11 @@ localhost/tinydnssec                       alpine      dc1c37c76a50  41 hours ag
 registry.access.redhat.com/rhel7           latest      538460c14d75  2 weeks ago     216 MB
 localhost/indimail-mta                     tumbleweed  999a86c2bc61  2 weeks ago     413 MB
 localhost/indimail-mta                     leap15.3    899596f466a1  2 weeks ago     500 MB
-localhost/indimail-mta                     debian10    f3a8194282d7  3 weeks ago     306 MB
+localhost/indimail-mta                     debian12    f3a8194282d7  3 weeks ago     306 MB
 registry.opensuse.org/opensuse/leap        15.3        accc3d285fe7  4 weeks ago     108 MB
 registry.opensuse.org/opensuse/leap        latest      accc3d285fe7  4 weeks ago     108 MB
 docker.io/library/almalinux                8           7a497d63e726  4 weeks ago     216 MB
 docker.io/library/debian                   10          7a4951775d15  5 weeks ago     119 MB
-docker.io/library/ubuntu                   hirsute     093da574621d  5 weeks ago     82.9 MB
 docker.io/library/alpine                   latest      d4ff818577bc  6 weeks ago     5.87 MB
 registry.fedoraproject.org/fedora          34          abec9a7a7dc6  6 weeks ago     184 MB
 docker.io/library/almalinux                latest      11c550a4f6c5  8 weeks ago     216 MB
@@ -1036,7 +1034,7 @@ Another advice would be to avoid Redhat images. Use the Rockylinux, Almalinux im
 This repository also has build scripts that help in generating docker/podman images. These are the main scripts for building docker/podman images for indimail, indimail-mta, indimail-web. They build and push the images to [hub.docker.com](https://hub.docker.com/u/cprogrammer)
 
 The recommended steps are
-1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, almalinux9, lunar, jammy, focal, bionic, debian10, debian11, fc37, fc38, leap15.3, leap15.5, oracle8, rockylinux8, rockylinux9, tumbleweed.
+1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, almalinux9, lunar, jammy, focal, bionic, debian10, debian11, debian12, fc38, fc39, leap15.5, oracle8, rockylinux8, rockylinux9, tumbleweed.
 2. run buildall-bin-from-src when indimail, indimail-mta sources are updated or when a new distribution is added
 3. run buildall-src-image occasionaly. This will build intermediate base images having development and other packages needed to build the indimail, indimail-mta packages. This is done only for alpine, archlinux, gentoo, ubi8, centos-stream8, centos-stream9. Once you have the intermediate base images you can run buildall-bin-from-src as and when indimail, indimail-mta sources are updated.
 
@@ -1070,11 +1068,9 @@ rockylinux9|OK|OK|OK
 stream8|OK|OK|OK
 stream9|OK|OK|OK
 centos7|OK|OK|OK
-fc37|OK|OK|OK
 fc38|OK|OK|OK
+fc39|OK|OK|OK
 leap15.5|OK|OK|OK
-tumbleweed|OK|OK|OK
-debian10|OK|OK|OK
 debian11|OK|OK|OK
 debian12|OK|OK|OK
 bionic|OK|OK|OK
@@ -1082,7 +1078,7 @@ focal|OK|OK|OK
 jammy|OK|OK|OK
 lunar|OK|OK|OK
 
-Tested on 30-Aug-2023
+Tested on 03-Jan-2024
 
 *Built using indimail source packages*
 
@@ -1095,7 +1091,7 @@ archlinux|OK|OK|NA
 ubi8|OK|OK|NA
 ubi9|OK|FAIL|NA
 
-Tested on 30-Aug-2023
+Tested on 03-Jan-2024
 
 # SUPPORT INFORMATION
 

@@ -80,9 +80,6 @@ setup_localuser()
 	echo "chown -R \$localuser:\$gid /home/\$localuser"
 	echo "/usr/sbin/usermod -aG qcerts \$localuser"
 	echo "/usr/sbin/usermod -aG indimail \$localuser"
-	echo "if [ -d /etc/sudoers.d -a ! -f /etc/sudoers.d/01-\$localuser ] ; then"
-	echo "	echo \"\$localuser  ALL=(ALL)   NOPASSWD: ALL\" > /etc/sudoers.d/01-\$localuser"
-	echo "fi"
 	echo "if [ -f /usr/bin/sudo ] ; then"
 	echo "	exit 0"
 	echo "fi"
@@ -94,6 +91,9 @@ setup_localuser()
 	echo "	env DEBIAN_FRONTEND=noninteractive apt-get -y install sudo"
 	echo "elif [ -x /sbin/apk ] ; then"
 	echo "	/sbin/apk install sudo"
+	echo "fi"
+	echo "if [ -d /etc/sudoers.d -a ! -f /etc/sudoers.d/01-\$localuser ] ; then"
+	echo "	echo \"\$localuser  ALL=(ALL)   NOPASSWD: ALL\" > /etc/sudoers.d/01-\$localuser"
 	echo "fi"
 	) > $out
 	mv $out /tmp/create_testuser
@@ -1106,6 +1106,7 @@ test_docker()
 	if [ "$what" = "indimail-web" -o "$what" = "indimail" ] ; then
 		if [ $extensive -eq 1 ] ; then
 			wget -nv $raw_url
+			chmod +x testindimail-virtual
 			$podcmd cp testindimail-virtual $name:/usr/bin
 			/bin/rm -f testindimail-virtual
 			$podcmd exec -ti $name setuidgid -s $localuser /usr/bin/testindimail-virtual -y -c
@@ -1223,10 +1224,6 @@ do
 	extensive=1
 	shift
 	;;
-	-h | --help)
-	usage
-	shift
-	;;
 	-H | --halt)
 	halt_on_error=1
 	shift
@@ -1259,6 +1256,10 @@ do
 	shift
 	break
 	;;
+	-h | --help)
+	usage
+	shift
+	;;
 	*)
 	echo "Unexpected option: $1 - this should'nt happen." 1>&2
 	usage
@@ -1270,7 +1271,18 @@ do_setup
 do_svscan_without_svscanlog
 [ $verbose -eq 1 ] && echo
 
-if [ $# -eq 0 ] ; then
+if [ $# -gt 0 ] ; then
+	for i in $*
+	do
+		what=$(echo $i|cut -d: -f1)
+		image=$(echo $i|cut -d: -f2)
+		test_docker $image $what
+		if [ $doquit -eq 1 ] ; then
+			break
+		fi
+		echo
+	done
+else
 	if [ -z "$catalog" ] ; then
 		process_indimail=1
 		process_indimail_mta=1
@@ -1386,17 +1398,6 @@ if [ $# -eq 0 ] ; then
 			echo
 		done
 	fi
-else
-	for i in $*
-	do
-		what=$(echo $i|cut -d: -f1)
-		image=$(echo $i|cut -d: -f2)
-		test_docker $image $what
-		if [ $doquit -eq 1 ] ; then
-			break
-		fi
-		echo
-	done
 fi
 [ $verbose -eq 1 ] && echo "Tests Completed"
 shutdown_svscan $svpid
