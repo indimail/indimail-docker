@@ -1089,7 +1089,7 @@ gentoo|OK|OK|NA
 alpine|OK|OK|NA
 archlinux|OK|OK|NA
 ubi8|OK|OK|NA
-ubi9|OK|FAIL|NA
+ubi9|OK|OK|NA
 
 Tested on 03-Jan-2024
 
