@@ -11,7 +11,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& dnf config-manager --set-enabled ubi-8-baseos-source ubi-8-appstream-source \
 	&& dnf -y install \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
-		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+		https://dev.mysql.com/get/mysql80-community-release-el8-9.noarch.rpm \
 		https://vault.centos.org/centos/8/PowerTools/x86_64/os/Packages/libidn-devel-1.34-5.el8.x86_64.rpm \
 		https://vault.centos.org/centos/8/BaseOS/x86_64/os/Packages/pam-devel-1.3.1-15.el8.x86_64.rpm \
 		https://vault.centos.org/centos/8/BaseOS/x86_64/os/Packages/pam-1.3.1-15.el8.x86_64.rpm \

@@ -11,7 +11,7 @@ RUN export HOSTNAME=indimail.org \
 		'dnf-command(config-manager)' \
 		epel-release \
 		https://rpms.remirepo.net/enterprise/remi-release-8.rpm \
-		https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+		https://dev.mysql.com/get/mysql80-community-release-el8-9.noarch.rpm \
 		dnf-utils \
 		drpm \
 	&& dnf -y module reset php \

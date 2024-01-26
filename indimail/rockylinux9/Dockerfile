@@ -11,7 +11,7 @@ RUN export HOSTNAME=indimail.org \
 		'dnf-command(config-manager)' \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
 	&& dnf -y update \
-	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm \
+	&& rpm -ivh https://dev.mysql.com/get/mysql80-community-release-el9-5.noarch.rpm \
 	&& dnf -y install \
 		gnupg2 \
 		binutils \
