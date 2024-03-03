@@ -22,7 +22,6 @@ RUN export HOSTNAME=indimail.org \
 		telnet \
 		openssh \
 		which \
-		systemd-sysvinit \
 		sudo \
 		strace \
 		lsof \
@@ -31,7 +30,7 @@ RUN export HOSTNAME=indimail.org \
 		perl-Digest-MD5 \
 		perl-Digest-SHA1 \
 		perl-Net-SSLeay \
-		perl-IO-Socket-INET6 \
+		perl-IO-Socket-IP \
 		iputils \
 		cron \
 		gzip \
