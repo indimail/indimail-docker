@@ -4,6 +4,7 @@ dockerfile
 fc35
 fc36
 fc37
+fc38
 *-fc36.yml
 *-fc37.yml
 *-leap15.4.yml
