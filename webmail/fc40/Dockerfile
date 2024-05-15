@@ -62,7 +62,6 @@ RUN export HOSTNAME=indimail.org \
 		perl-Authen-SASL \
 		perl-Digest-HMAC \
 		perl-Digest-SHA \
-	&& setcap cap_sys_nice+ep /usr/libexec/mysqld \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org \
@@ -70,6 +69,7 @@ RUN export HOSTNAME=indimail.org \
 		echo "certificate generation failed" \
 	&& mkdir -p /var/log/build \
 	&& /usr/libexec/indimail/roundcube_config > /var/log/build/roundcube.log 2>&1 \
+	&& setcap cap_sys_nice+ep /usr/libexec/mysqld \
 	&& (echo "Build Succeeded" && gzip /var/log/build/roundcube.log) || (echo "Build Failed" && cat /var/log/build/roundcube.log && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
 		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/roundcube.log.gz && exit 1)
