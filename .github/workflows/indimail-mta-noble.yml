@@ -1,0 +1,33 @@
+name: indimail-mta:noble container image
+
+on:
+  push:
+    paths:
+      - '**/indimail-mta/noble/**'
+      - .github/workflows/indimail-mta-noble.yml
+      - '!**.md'
+  workflow_dispatch:
+
+jobs:
+  build_and_push:
+    name: build and push container image
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: login
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login --username "${{ github.repository_owner }}" --password-stdin ghcr.io
+          echo "${{ secrets.DOCKER_PAT }}" | docker login docker.io --username cprogrammer --password-stdin
+
+      - name: build
+        run: |
+          cp indimail-mta/noble/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:noble" .
+
+      - name: push
+        run: |
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:noble"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:noble" docker.io/cprogrammer/indimail-mta:noble
+          docker push docker.io/cprogrammer/indimail-mta:noble
