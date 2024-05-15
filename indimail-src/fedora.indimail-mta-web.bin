@@ -51,7 +51,6 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
 		setcap -r /usr/libexec/mysqld; \
 		./create_services --add-boot; \
-		setcap cap_sys_nice+ep /usr/libexec/mysqld; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \
@@ -74,6 +73,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		cd ..; ./dnssvc; \
 		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \
+		setcap cap_sys_nice+ep /usr/libexec/mysqld; \
 		cd /; \
 		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		dnf -y erase flex xmlto bison \
