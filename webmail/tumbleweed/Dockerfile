@@ -43,6 +43,7 @@ RUN export HOSTNAME=indimail.org \
 		https://download.opensuse.org/repositories/server:monitoring/openSUSE_Tumbleweed/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& sed -i -e 's{rpm.install.excludedocs = yes{rpm.install.excludedocs = no{' /etc/zypp/zypp.conf \
+	&& rpm -e busybox-diffutils \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail \
 		indimail-mta \
