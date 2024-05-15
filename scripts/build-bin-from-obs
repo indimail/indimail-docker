@@ -70,7 +70,7 @@ cd ..
 if [ -z "$distro_list" ] ; then
 	ask_d=1
 	distro_list="archlinux almalinux9 almalinux8 centos7 debian11 \
-		bionic focal jammy oracle8 fc37 fc38 leap15.4 leap15.5 \
+		bionic focal jammy noble oracle8 fc39 fc40 leap15.5 leap15.6 \
 		tumbleweed rockylinux8"
 fi
 if [ -z "$image_list" ] ; then
