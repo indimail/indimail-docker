@@ -7,7 +7,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
 		mkdir -p /root /usr/local/srctmp /var/log/build \
 		touch /usr/local/srctmp/incomplete; \
-		dnf -y update && dnf -y install passwd iputils mysql-server; \
+		dnf -y update && dnf -y install passwd iputils mysql mysql-server mysql-libs; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
 			do cd $i; echo "updating $i";git pull; cd ..; done; \
@@ -42,7 +42,9 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			indium-x nssd-x fetchmail-x logalert-x procmail-x; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		setcap -r /usr/libexec/mysqld; \
 		./create_services --add-boot; \
+		setcap cap_sys_nice+ep /usr/libexec/mysqld; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
 		cd /usr/local/srctmp/tinydnssec/tinydnssec-x; \

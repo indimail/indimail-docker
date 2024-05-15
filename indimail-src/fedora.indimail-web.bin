@@ -7,7 +7,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
 		mkdir -p /root /usr/local/srctmp /var/log/build; \
 		touch /usr/local/srctmp/incomplete; \
-		dnf -y update && dnf -y install mysql-server httpd mod_ssl \
+		dnf -y update && dnf -y install mysql mysql-server mysql-libs httpd mod_ssl \
 			php php-fpm roundcubemail php-mysqlnd php-imagick passwd iputils; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
@@ -45,6 +45,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 			iwebadmin-x ircube-x ; do cd $i; ./default.configure; make && make install-strip;cd ..; done; \
 		# configure indimail-mta ###############################
 		cd /usr/local/srctmp/indimail-mta/indimail-mta-x; \
+		setcap -r /usr/libexec/mysqld; \
 		./create_services --add-boot; \
 		# tinydnssec ###########################################
 		echo "building tinydnssec"; \
@@ -70,6 +71,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		/bin/rm -rf /usr/local/srctmp /usr/lib64/*.la /var/log/build/build.log.gz; \
 		systemctl disable mysqld 2>/dev/null; \
 		/usr/libexec/indimail/roundcube_config; \
+		setcap cap_sys_nice+ep /usr/libexec/mysqld; \
 		dnf -y erase flex xmlto bison \
 			gcc gcc-g++ autoconf automake libtool tcl tk git \
 			libgcrypt-devel gettext-devel libgcrypt-devel \
