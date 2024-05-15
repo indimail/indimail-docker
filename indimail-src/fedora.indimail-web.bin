@@ -5,8 +5,9 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
+		mkdir -p /root /usr/local/srctmp /var/log/build; \
 		touch /usr/local/srctmp/incomplete; \
-		dnf -y update && dnf -y install mysql-server mariadb httpd mod_ssl \
+		dnf -y update && dnf -y install mysql-server httpd mod_ssl \
 			php php-fpm roundcubemail php-mysqlnd php-imagick passwd iputils; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \

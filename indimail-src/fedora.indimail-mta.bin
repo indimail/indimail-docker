@@ -5,6 +5,7 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& (set -e; \
+		mkdir -p /root /usr/local/srctmp /var/log/build; \
 		touch /usr/local/srctmp/incomplete; \
 		dnf -y update; \
 		dnf -y install passwd iputils; \
