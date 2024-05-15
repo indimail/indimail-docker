@@ -1,10 +1,10 @@
-name: indimail-mta:fc39 container image
+name: indimail-mta:fc40 container image
 
 on:
   push:
     paths:
-      - '**/indimail-mta/fc39/**'
-      - .github/workflows/indimail-mta-fc39.yml
+      - '**/indimail-mta/fc40/**'
+      - .github/workflows/indimail-mta-fc40.yml
       - '!**.md'
   workflow_dispatch:
 
@@ -23,11 +23,11 @@ jobs:
 
       - name: build
         run: |
-          cp indimail-mta/fc39/Dockerfile .
-          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:fc39" .
+          cp indimail-mta/fc40/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:fc40" .
 
       - name: push
         run: |
-          docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:fc39"
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:fc39" docker.io/cprogrammer/indimail-mta:fc39
-          docker push docker.io/cprogrammer/indimail-mta:fc39
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-mta:fc40"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-mta:fc40" docker.io/cprogrammer/indimail-mta:fc40
+          docker push docker.io/cprogrammer/indimail-mta:fc40
