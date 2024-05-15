@@ -11,6 +11,8 @@ RUN export HOSTNAME=indimail.org \
 		--add-repo https://download.opensuse.org/repositories/home:mbhangui/Fedora_40/home:mbhangui.repo \
 	&& mkdir -p /root/Downloads \
 	&& dnf -y update \
+	&& dnf -y install mysql-server \
+	&& setcap -r /usr/libexec/mysqld \
 	&& dnf -y install \
 		binutils \
 		gnupg2 \
@@ -60,6 +62,7 @@ RUN export HOSTNAME=indimail.org \
 		perl-Authen-SASL \
 		perl-Digest-HMAC \
 		perl-Digest-SHA \
+	&& setcap cap_sys_nice+ep /usr/libexec/mysqld \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org \
