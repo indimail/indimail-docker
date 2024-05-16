@@ -1057,30 +1057,30 @@ All images on the docker.io and ghcr.io are now tested using the [testdocker scr
 
 *Built using indimail binary packages*
 
-Build Date: Sat, 13 Jan 2024 15:06:03 +0530
+Build Date: Wed, 16 May 2024
 
 Image|indimail-mta|virtualdomains|webmail
 -----|------------|--------------|-------
-almalinux8|OK|OK|OK
-almalinux9|OK|OK|OK
-oracle8|OK|OK|OK
-oracle9|OK|OK|OK
-rockylinux8|OK|OK|OK
-rockylinux9|OK|OK|OK
-stream8|OK|OK|OK
-stream9|OK|OK|OK
-centos7|OK|OK|OK
-fc38|OK|OK|OK
-fc39|OK|OK|OK
-leap15.5|OK|OK|OK
-debian11|OK|OK|OK
-debian12|OK|OK|OK
+almalinux8|OK|OK|NA
+almalinux9|OK|OK|NA
+oracle8|OK|OK|NA
+oracle9|OK|OK|NA
+rockylinux8|OK|OK|NA
+rockylinux9|OK|OK|NA
+stream8|OK|OK|NA
+stream9|OK|OK|NA
+fc39|OK|OK|NA
+fc40|OK|NO|NO
+leap15.5|NO|NO|NO
+debian11|NA|NA|NA
+debian12|OK|OK|NA
 bionic|OK|OK|OK
-focal|OK|OK|OK
-jammy|OK|OK|OK
-lunar|OK|OK|OK
+focal|NA|NA|NA
+jammy|NA|NA|NA
+lunar|NA|NA|NA
+noble|OK|NO|NO
 
-Tested on 03-Jan-2024
+Tested on 16-May-2024
 
 *Built using indimail source packages*
 
@@ -1088,14 +1088,18 @@ Build Date: Sat, 13 Jan 2024 15:06:24 +0530
 
 Image|indimail-mta|virtualdomains|webmail
 -----|------------|--------------|-------
-fedora|OK|OK|OK
+fedora|OK|NO|NO
 gentoo|OK|OK|NA
 alpine|OK|OK|NA
 archlinux|OK|OK|NA
 ubi8|OK|OK|NA
 ubi9|OK|OK|NA
 
-Tested on 03-Jan-2024
+Tested on 16-May-2024
+
+OK - Test successful
+NO - Test failed
+NA - Not tested
 
 # SUPPORT INFORMATION
 
