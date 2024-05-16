@@ -307,6 +307,7 @@ test_pop3()
 		tcount=$(expr $tcount + 1)
 		printf "  testing POP3  login %s and mail retrieval succeeded\n" "$1"
 	else
+		/bin/rm -f $testdir/tcpclient.pop3
 		printf "  testing POP3  login %s and mail retrieval failed\n" "$1"
 		cat $logdir/pop3d/pop3d.log
 		[ -z "$failed" ] && failed="pop3d:2110-$what:$image" || failed="$failed pop3d:2110-$what:$image"
@@ -335,6 +336,7 @@ test_pop3()
 			tcount=$(expr $tcount + 1)
 			printf "  testing Open RELAY using POP3  login succeeded\n"
 		else
+			/bin/rm -f $testdir/tcpclient.pop3
 			printf "  testing Open RELAY using POP3  login failed ret1=%d ret2=%d\n" $ret1 $ret2
 			select_relay
 			delete_relay
@@ -351,6 +353,7 @@ test_pop3()
 		tcount=$(expr $tcount + 1)
 		printf "  testing POP3S login %s and mail retrieval succeeded\n" "$1"
 	else
+		/bin/rm -f $testdir/tcpclient.pop3
 		if [ $do_relay -eq 1 ] ; then
 			delete_relay
 		fi
@@ -360,6 +363,7 @@ test_pop3()
 		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
+	/bin/rm -f $testdir/tcpclient.pop3
 	if [ $do_relay -eq 1 ] ; then
 		swaks -S --to tuser01@$domain4 --from $from --server 127.0.0.1 --port 2025 >> $logdir/pop3d/pop3d.log 2>&1
 		ret1=$?
@@ -473,6 +477,7 @@ test_imap()
 		tcount=$(expr $tcount + 1)
 		printf "  testing IMAP  login %s and mail retrieval succeeded\n" "$1"
 	else
+		/bin/rm -f $testdir/tcpclient.imap
 		fcount=$(expr $fcount + 1)
 		printf "  testing IMAP  login %s and mail retrieval failed\n" "$1"
 		cat $logdir/imapd/imapd.log
@@ -486,6 +491,7 @@ test_imap()
 			tcount=$(expr $tcount + 1)
 			printf "  testing record in relay table succeeded\n"
 		else
+			/bin/rm -f $testdir/tcpclient.imap
 			fcount=$(expr $fcount + 1)
 			printf "  testing record in relay table failed\n"
 			select_relay
@@ -504,6 +510,7 @@ test_imap()
 			tcount=$(expr $tcount + 1)
 			printf "  testing Open RELAY using IMAP login succeeded\n"
 		else
+			/bin/rm -f $testdir/tcpclient.imap
 			fcount=$(expr $fcount + 1)
 			printf "  testing Open RELAY using IMAP  login failed ret1=%d ret2=%d\n" $ret1 $ret2
 			select_relay
@@ -521,6 +528,7 @@ test_imap()
 		tcount=$(expr $tcount + 1)
 		printf "  testing IMAPS login %s and mail retrieval succeeded\n" "$1"
 	else
+		/bin/rm -f $testdir/tcpclient.imap
 		fcount=$(expr $fcount + 1)
 		if [ $do_relay -eq 1 ] ; then
 			delete_relay
@@ -531,10 +539,11 @@ test_imap()
 		[ $halt_on_error -eq 1 ] && echo "Press ENTER to continue" && read key
 		return 1
 	fi
+	/bin/rm -f $testdir/tcpclient.imap
 	if [ $do_relay -eq 1 ] ; then
-		swaks -S --to tuser01@$domain4 --from $from --server ::1 --port 2025 >> $logdir/imapd-ssl/imapd-ssl.log 2>&1
+		swaks -S --to tuser01@$domain4 --from $from --server 127.0.0.1 --port 2025 >> $logdir/imapd-ssl/imapd-ssl.log 2>&1
 		ret1=$?
-		swaks -S --to tuser01@$domain4 --from $3 --server ::1 --port 2025 >> $logdir/imapd-ssl/imapd-ssl.log 2>&1
+		swaks -S --to tuser01@$domain4 --from $3 --server 127.0.0.1 --port 2025 >> $logdir/imapd-ssl/imapd-ssl.log 2>&1
 		ret2=$?
 		if [ $ret1 -eq 0 -a $ret2 -ne 0 ] ; then
 			delete_relay
@@ -780,7 +789,7 @@ test_iwebadmin()
 		fi
 		[ -z "$failed" ] && failed="iwebadmin-$what:$image" || failed="$failed iwebadmin-$what:$image"
 		if [ $prompt -eq 1 ] ; then
-			echo -n "Press ENTER or quit to quit "
+			echo -n "Press ENTER or type quit to exit "
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
@@ -816,7 +825,7 @@ test_iwebadmin()
 		[ -z "$failed" ] && failed="iwebadmin-$what:$image" || failed="$failed iwebadmin-$what:$image"
 		cat $logdir/$podcmd/roundcube.log
 		if [ $prompt -eq 1 ] ; then
-			echo -n "Press ENTER or quit to quit "
+			echo -n "Press ENTER or type quit to exit "
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
@@ -828,6 +837,31 @@ test_iwebadmin()
 	logout=$(grep logout $logdir/$podcmd/roundcube.log | sed -e "s{.*a href={{" -e "s{>Log Out.*{{" -e "s{\"{{g")
 	$podcmd exec -ti $name /usr/bin/curl -X GET $url > /dev/null
 	/bin/rm -f $logdir/$podcmd/roundcube.log
+}
+
+print_logs()
+{
+	(
+	echo "------ local $what.$image.log ------"
+	cat $logdir/$podcmd/$what.$image.log
+	echo "------ container qmail-smtpd.25 log ------"
+	$podcmd exec -ti $name cat /var/log/svc/smtpd.25/current
+	echo
+	echo "------ container qmail-smtpd.587 log ------"
+	$podcmd exec -ti $name cat /var/log/svc/smtpd.587/current
+	echo
+	echo "------ container qmail-send  log ------"
+	$podcmd exec -ti $name cat /var/log/svc/deliver.25/current
+	echo
+	echo "------ local qmail-smtpd log ------"
+	cat $logdir/smtpd/current
+	echo
+	echo "------ local qmail-send log ------"
+	cat $logdir/qmail-send/current
+	echo
+	echo "------ $what.$image.log ------"
+	cat $logdir/$podcmd/$what.$image.log
+	)
 }
 
 test_docker()
@@ -907,7 +941,7 @@ test_docker()
 	$podcmd exec -ti $name /bin/rm -f /etc/indimail/control/global_vars/TLS_CIPHER_SUITE # remove this later
 	if [ "$name" = "indimail" -o "$name" = "webmail" ] ; then
 		case $image in
-		jammy)
+		jammy|noble)
 			for i in qmail-send.25 slowq-send inlookup.infifo indisrvr.4000
 			do
 				$podcmd exec -ti $name /bin/rm -f /service/$i/variables/MYSQL_OPT_RECONNECT
@@ -955,13 +989,24 @@ test_docker()
 		ret=0
 		check_service $name qmail-smtpd.25 3
 		(
-		$podcmd exec -ti $name sh -c "printf \"&$user@$domain1\n\"         > /var/indimail/alias/.qmail-$user"
+		$podcmd exec -ti $name sh -c "printf \"&$user@$domain1\n/var/indimail/alias/Maildir/\n\" > /var/indimail/alias/.qmail-$user"
 		$podcmd exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
+		) >> $logdir/$podcmd/$what.$image.log 2>&1
 		[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain2 from testuser01@example.com"
+		[ $verbose -eq 1 ] && echo swaks --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+		(
 		if [ $verbose -eq 1 ] ; then
-			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+			(
+			echo "This is a test mail"
+			echo "to $user@$domain2"
+			echo "From testuser01@example.com"
+			) | swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025 --body -
 		else
-			swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+			(
+			echo "This is a test mail"
+			echo "to $user@$domain2"
+			echo "From testuser01@example.com"
+			) | swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
 		fi
 		) >> $logdir/$podcmd/$what.$image.log 2>&1
 	elif [ "$what" = "indimail-web" -o "$what" = "indimail" ] ; then
@@ -1005,15 +1050,23 @@ test_docker()
 		if [ $ret -eq 0 ] ; then
 		check_service $name qmail-smtpd.25 3
 		(
-		$podcmd exec -ti $name sh -c "printf \"&$user@$domain1\n\" > /var/indimail/alias/.qmail-$user"
+		$podcmd exec -ti $name sh -c "printf \"&$user@$domain1\n/var/indimail/alias/Maildir/\n\" > /var/indimail/alias/.qmail-$user"
 		$podcmd exec -ti $name sh -c "printf \"$domain1:$localip:$smtp_port\n\" > /etc/indimail/control/smtproutes"
 		$podcmd exec -ti $name touch /etc/indimail/control/chkrcptdomains
 		$podcmd exec -ti $name svc -h /service/qmail-smtpd.25
 		[ $verbose -eq 1 ] && echo "sending mail to user $user@$domain2 from testuser01@example.com"
 		if [ $verbose -eq 1 ] ; then
-			swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+			(
+			echo "This is a test mail"
+			echo "to $user@$domain2"
+			echo "From testuser01@example.com"
+			)| swaks    --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025 --body -
 		else
-			swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025
+			(
+			echo "This is a test mail"
+			echo "to $user@$domain2"
+			echo "From testuser01@example.com"
+			)| swaks -S --to $user@$domain2 --from testuser01@example.com -s 127.0.0.1 -p 2025 --body -
 		fi
 		) >> $logdir/$podcmd/$what.$image.log 2>&1
 		else
@@ -1038,10 +1091,10 @@ test_docker()
 			ret=1
 			fcount=$(expr $fcount + 1)
 			echo "  testing mail send+receive     via $podcmd container $what.$image failed"
-			cat $logdir/$podcmd/$what.$image.log
+			print_logs
 			[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 			if [ $prompt -eq 1 ] ; then
-				echo -n "Press ENTER or quit to quit "
+				echo -n "Press ENTER or type quit to exit "
 				read key
 				if [ "$key" = "quit" ] ; then
 					doquit=1
@@ -1054,7 +1107,7 @@ test_docker()
 		cat $logdir/$podcmd/$what.$image.log
 		[ -z "$failed" ] && failed="mail-$what:$image" || failed="$failed mail-$what:$image"
 		if [ $prompt -eq 1 ] ; then
-			echo -n "Press ENTER or quit to quit "
+			echo -n "Press ENTER or type quit to exit "
 			read key
 			if [ "$key" = "quit" ] ; then
 				doquit=1
@@ -1091,7 +1144,7 @@ test_docker()
 			echo "  testing webmail   user  login via $podcmd container $what.$image failed"
 			[ -z "$failed" ] && failed="roundcube-$what:$image" || failed="$failed roundcube-$what:$image"
 			if [ $prompt -eq 1 ] ; then
-				echo -n "Press ENTER or quit to quit "
+				echo -n "Press ENTER or type quit to exit "
 				read key
 				if [ "$key" = "quit" ] ; then
 					doquit=1
@@ -1122,29 +1175,9 @@ test_docker()
 		fi
 	fi
 	if [ $verbose -eq 1 ] ; then
-		(
-		echo "------ local $what.$image.log ------"
-		cat $logdir/$podcmd/$what.$image.log
-		echo "------ container qmail-smtpd.25 log ------"
-		$podcmd exec -ti $name cat /var/log/svc/smtpd.25/current
-		echo
-		echo "------ container qmail-smtpd.587 log ------"
-		$podcmd exec -ti $name cat /var/log/svc/smtpd.587/current
-		echo
-		echo "------ container qmail-send  log ------"
-		$podcmd exec -ti $name cat /var/log/svc/deliver.25/current
-		echo
-		echo "------ local qmail-smtpd log ------"
-		cat $logdir/smtpd/current
-		echo
-		echo "------ local qmail-send log ------"
-		cat $logdir/qmail-send/current
-		echo
-		echo "------ $what.$image.log ------"
-		cat $logdir/$podcmd/$what.$image.log
-		)
+		print_logs
 	fi
-	[ $prompt -eq 1 ] && echo -n "Press ENTER or type quit to quit " && read key
+	[ $prompt -eq 1 ] && echo -n "Press ENTER or type quit to exit " && read key
 	if [ "$key" = "quit" ] ; then
 		doquit=1
 	fi
@@ -1164,11 +1197,12 @@ usage()
 {
 	(
 	echo "testdocker [-y|--noprompt] [-u|--update] [-v|--verbose] [-d|--delete] [-c catalog|--catalog catalog]"
+	echo "  [-l|--localip]"
 	echo ""
 	echo "   where catalog is one of indimail, indimail-mta, indimail-mta-web, indimail-web"
 	echo "   if -c is not provided, all four (indimail, indimail-mta, indimail-mta-web, indimail-web) will be processed"
 	echo " or"
-	echo "testdocker [-y|--noprompt] [-u|--update] [-v|--verbose] [-d|--delete] catalog:image"
+	echo "testdocker [-y|--noprompt] [-u|--update] [-v|--verbose] [-d|--delete] [-l|--localip] catalog:image"
 	) 1>&2
 	exit 1
 }
@@ -1185,7 +1219,9 @@ extensive=0
 halt_on_error=0
 podcmd="podman"
 catalog=""
-localip=$(/usr/libexec/indimail/ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
+if [ -z "$localip" ] ; then
+	localip=$(/usr/libexec/indimail/ipmeprint |grep -E -v "ipv6|0.0.0.0|127.0.0.1"|head -1|awk '{print $3}')
+fi
 if [ $(basename $PWD) != "scripts" ] ; then
 	echo "Not in scripts" 1>&2
 	exit 1
@@ -1211,7 +1247,7 @@ if [ ! -x /usr/bin/podman -a ! -x /usr/bin/docker ] ; then
 	echo "podman/docker command not found" 1>&2
 	exit 1
 fi
-options=$(getopt -a -n testdocker -o "hHyuvdec:C:" -l help,halt,noprompt,update,verbose,delete,catalog,command -- "$@")
+options=$(getopt -a -n testdocker -o "hHyuvdec:C:l:" -l help,halt,noprompt,update,verbose,delete,catalog,command,localip -- "$@")
 if [ $? != 0 ]; then
   usage
 fi
@@ -1253,6 +1289,10 @@ do
 	else
 		catalog="$catalog $2"
 	fi
+	shift 2
+	;;
+	-l | --localip)
+	localip=$2
 	shift 2
 	;;
 	--) # end of options
