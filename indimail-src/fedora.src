@@ -23,6 +23,7 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		libdb-devel pam-devel krb5-devel libev-devel libsodium-devel libidn-devel \
 		libidn2-devel readline-devel tcl-devel tk-devel perl-Authen-SASL \
 		perl-Digest-HMAC perl-Digest-SHA perl-Net-SSLeay \
+	&& dnf -y mark install mysql-libs \
 	&& (set -e; \
 		cd /usr/local/srctmp; \
 		for i in libqmail indimail-mta ezmlm-idx tinydnssec indimail-virtualdomains indimail-docker; \
