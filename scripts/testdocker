@@ -1247,7 +1247,7 @@ if [ ! -x /usr/bin/podman -a ! -x /usr/bin/docker ] ; then
 	echo "podman/docker command not found" 1>&2
 	exit 1
 fi
-options=$(getopt -a -n testdocker -o "hHyuvdec:C:l:" -l help,halt,noprompt,update,verbose,delete,catalog,command,localip -- "$@")
+options=$(getopt -a -n testdocker -o "hHyuvdec:C:l:" -l help,halt,noprompt,update,verbose,delete,catalog:,command:,localip: -- "$@")
 if [ $? != 0 ]; then
   usage
 fi
