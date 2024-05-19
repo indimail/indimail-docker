@@ -46,8 +46,6 @@ RUN export HOSTNAME=indimail.org \
 		indimail-access \
 		indimail-auth \
 		indimail-utils \
-		bogofilter-wordlist \
-		indimail-spamfilter \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \

@@ -44,8 +44,6 @@ RUN export HOSTNAME=indimail.org \
 		indimail-auth \
 		indimail-access \
 		indimail-utils \
-		bogofilter-wordlist \
-		indimail-spamfilter \
 		mailx \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
