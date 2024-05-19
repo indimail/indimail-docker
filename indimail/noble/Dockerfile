@@ -55,6 +55,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		libdigest-perl-md5-perl \
 		libdigest-hmac-perl \
 		gsasl \
+	&& find /usr/lib/x86_64-linux-gnu -name libmysqlclient.so.'*'.'*' > /etc/indimail/control/libmysql \
 	&& apt-get -y install \
 		indimail-spamfilter \
 	&& echo "Creating self-signed certificate" \

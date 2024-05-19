@@ -22,6 +22,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"             > /etc/apt/preferences.d/preferences \
 	&& apt-get -y update \
 	&& apt-get -y install \
+		libmysqlclient21 \
 		debianutils \
 		binutils \
 		cron \
@@ -50,6 +51,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+	&& find /usr/lib/x86_64-linux-gnu -name libmysqlclient.so.'*'.'*' > /etc/indimail/control/libmysql \
 	&& apt-get -y install \
 		indimail-spamfilter \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
