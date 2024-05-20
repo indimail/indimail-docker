@@ -30,6 +30,7 @@ RUN export HOSTNAME=indimail.org \
 		cron \
 		gzip \
 		curl \
+		glibc-locale-base \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.6/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo \
@@ -46,6 +47,8 @@ RUN export HOSTNAME=indimail.org \
 		indimail-access \
 		indimail-auth \
 		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
 		mrtg \
 		ezmlm-idx \
 		ezmlm-idx-cgi \

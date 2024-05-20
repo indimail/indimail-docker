@@ -33,6 +33,7 @@ RUN export HOSTNAME=indimail.org \
 		perl-IO-Socket-INET6 \
 		iputils \
 		patch \
+		glibc-locale-base \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.6/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/15.6/server:database.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/15.6/server:monitoring.repo \
@@ -44,6 +45,8 @@ RUN export HOSTNAME=indimail.org \
 		indimail-auth \
 		indimail-access \
 		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
 		mailx \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \

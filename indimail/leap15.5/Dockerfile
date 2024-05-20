@@ -34,6 +34,7 @@ RUN export HOSTNAME=indimail.org \
 		perl-IO-Socket-INET6 \
 		iputils \
 		patch \
+		glibc-locale-base \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.5/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/15.5/server:database.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/15.5/server:monitoring.repo \
@@ -46,6 +47,8 @@ RUN export HOSTNAME=indimail.org \
 		indimail-access \
 		indimail-auth \
 		indimail-utils \
+		bogofilter-wordlist \
+		indimail-spamfilter \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
