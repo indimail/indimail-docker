@@ -1123,7 +1123,7 @@ test_docker()
 		$podcmd cp scripts/test_roundcube $name:/usr/bin
 		$podcmd cp scripts/rclogin.php $name:/usr/bin
 		case $image in
-			leap15.4|leap15.5|tumbleweed)
+			leap15.4|leap15.5|leap15.6|tumbleweed)
 			sleep $sleep_int
 			;;
 			*)
