@@ -96,8 +96,9 @@ fc40|Fedora Core 40|[![ghcr build status](https://github.com/indimail/indimail-d
 
 tag|OS Distribution|indimai-mta|indimail|webmail
 ----|--------------|-----------|--------|-------
-amznlinux2023|Amazon Linux 2023|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-amznlinux2023.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-amznlinux2023.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-amznlinux2023.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-amznlinux2023.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-amznlinux2023.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-amznlinux2023.yml)
-mageia8|Mageia 8|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-mageia8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-mageia8.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mageia8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mageia8.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-mageia8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-mageia8.yml)
+amznlinux2023|Amazon Linux 2023|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-amznlinux2023.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-amznlinux2023.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-amznlinux2023.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-amznlinux2023.yml)|NA
+mageia8|Mageia 8|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-mageia8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-mageia8.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mageia8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mageia8.yml)|NA
+mageia9|Mageia 9|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-mageia9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-mageia9.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mageia9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mageia9.yml)|NA
 
 **Runtime Container images built from Source**
 
@@ -1079,24 +1080,26 @@ stream8|OK|OK|OK
 stream9|OK|OK|OK
 fc39|OK|OK|OK
 fc40|OK|OK|OK
-leap15.5|YES|OK|OK
-leap15.6|YES|OK|OK
+leap15.5|OK|OK|OK
+leap15.6|OK|OK|OK
 amznlinux2023|OK|OK|OK
-mageia8|OK|OK|OK
+mageia8|OK|OK|NA
+mageia9|OK|OK|NA
 debian11|OK|OK|OK
 debian12|OK|OK|OK
 bionic|OK|OK|OK
-focal|YES|OK|OK
-jammy|YES|OK|OK
-lunar|YES|OK|OK
-noble|OK|OK|YES
+focal|OK|OK|OK
+jammy|OK|OK|OK
+lunar|OK|OK|OK
+noble|OK|OK|OK
 
-indimail-mta, indimail Tested on 16-May-2024
-indimail-web Tested on 19-May-2024
+* indimail-mta, indimail Tested on 16-May-2024
+* indimail-web Tested on 19-May-2024
+* indimail, indimail-mta for mageia8, mageia9 ested on 22-May-2024
 
 *Built using indimail source packages*
 
-Build Date: Sat, 13 Jan 2024 15:06:24 +0530
+Build Date: Wed, 16 May 2024
 
 Image|indimail-mta|virtualdomains|webmail
 -----|------------|--------------|-------
@@ -1107,11 +1110,11 @@ fedora|OK|OK|OK
 ubi8|OK|OK|NA
 ubi9|OK|OK|NA
 
-Tested on 16-May-2024
+* Tested on 16-May-2024
 
-OK - Test successful
-NO - Test failed
-NA - Not tested/Not Available
+* OK - Test successful
+* NO - Test failed
+* NA - Not tested/Not Available
 
 # SUPPORT INFORMATION
 
