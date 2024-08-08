@@ -30,7 +30,6 @@ RUN export HOSTNAME=indimail.org \
 		perl-Digest-MD5 \
 		perl-Digest-SHA1 \
 		perl-Net-SSLeay \
-		perl-IO-Socket-IP \
 		iputils \
 		cron \
 		gzip \
