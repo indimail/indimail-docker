@@ -89,8 +89,8 @@ almalinux8|Alma Linux 8|[![ghcr build status](https://github.com/indimail/indima
 almalinux9|Alma Linux 9|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-almalinux9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-almalinux9.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-almalinux9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-almalinux9.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-almalinux9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-almalinux9.yml)
 rockylinux8|Rocky Linux 8|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-rockylinux8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-rockylinux8.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-rockylinux8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-rockylinux8.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-rockylinux8.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-rockylinux8.yml)
 rockylinux9|Rocky Linux 9|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-rockylinux9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-rockylinux9.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-rockylinux9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-rockylinux9.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-rockylinux9.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-rockylinux9.yml)
-fc39|Fedora Core 39|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc39.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc39.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc39.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc39.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc39.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc39.yml)
-fc40|Fedora Core 40|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc40.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc40.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc40.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc40.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc40.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc40.yml)
+fc40|Fedora Core 39|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc40.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc40.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc40.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc40.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc40.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc40.yml)
+fc41|Fedora Core 40|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc41.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-fc41.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc41.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-fc41.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc41.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-fc41.yml)
 
 **Runtime Container images built from indimail, indimail-mta packages from [copr](https://copr.fedorainfracloud.org/coprs/cprogrammer/indimail/)**
 
@@ -140,7 +140,7 @@ You can list the image using the `podman images` command
 $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED        SIZE
 ghcr.io/indimail/indimail        stream8      e543dee69ab7   38 hours ago   1.03 GB
-ghcr.io/indimail/indimail        fc33         a5266643441b   4 days ago     1.13 GB
+ghcr.io/indimail/indimail        fc41         a5266643441b   4 days ago     1.13 GB
 ```
 
 ## Start the podman container
@@ -777,7 +777,7 @@ $ podman images
 REPOSITORY                       TAG          IMAGE ID       CREATED          SIZE
 localhost/mycontainer            latest       7bcf4b2ff83e   53 seconds ago   1.16 GB
 ghcr.io/indimail/indimail        stream8      e543dee69ab7   39 hours ago     1.03 GB
-ghcr.io/indimail/indimail        fc31         a5266643441b   4 days ago       1.13 GB
+ghcr.io/indimail/indimail        fc41         a5266643441b   4 days ago       1.13 GB
 ```
 
 The original container is now longer needed to run. We can stop it and remove the image from memory
@@ -848,9 +848,9 @@ COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /roo
 To build the image use need to use the docker/podman build command .e.g.
 
 ```
-$ docker build -t indimail:fc31 ./Dockerfile .
+$ docker build -t indimail:fc41 ./Dockerfile .
 or
-$ podman build -t indimail:fc31 ./Dockerfile .
+$ podman build -t indimail:fc41 ./Dockerfile .
 ```
 ## Building container images
 
@@ -1043,7 +1043,7 @@ Another advice would be to avoid Redhat images. Use the Rockylinux, Almalinux im
 This repository also has build scripts that help in generating docker/podman images. These are the main scripts for building docker/podman images for indimail, indimail-mta, indimail-web. They build and push the images to [hub.docker.com](https://hub.docker.com/u/cprogrammer)
 
 The recommended steps are
-1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, almalinux9, lunar, jammy, focal, bionic, debian10, debian11, debian12, fc38, fc39, leap15.5, oracle8, rockylinux8, rockylinux9, tumbleweed.
+1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, almalinux9, lunar, jammy, focal, bionic, debian10, debian11, debian12, fc40, fc41, leap15.5, oracle8, rockylinux8, rockylinux9, tumbleweed.
 2. run buildall-bin-from-src when indimail, indimail-mta sources are updated or when a new distribution is added
 3. run buildall-src-image occasionaly. This will build intermediate base images having development and other packages needed to build the indimail, indimail-mta packages. This is done only for alpine, archlinux, gentoo, ubi8, centos-stream8, centos-stream9. Once you have the intermediate base images you can run buildall-bin-from-src as and when indimail, indimail-mta sources are updated.
 
@@ -1078,8 +1078,8 @@ rockylinux8|NO|NO|NO
 rockylinux9|NO|NO|NO
 stream8|NO|NO|NO
 stream9|NO|NO|NO
-fc39|NO|NO|NO
 fc40|NO|NO|NO
+fc41|NO|NO|NO
 leap15.5|NO|NO|NO
 leap15.6|NO|NO|NO
 amznlinux2023|NO|NO|NO
