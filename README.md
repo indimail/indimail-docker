@@ -1066,36 +1066,36 @@ All images on the docker.io and ghcr.io are now tested using the [testdocker scr
 
 *Built using indimail binary packages*
 
-Build Date: Wed, 16 May 2024
+Build Date: Mon, 11 Nov 2024 (Testing not yet started)
 
 Image|indimail-mta|virtualdomains|webmail
 -----|------------|--------------|-------
-almalinux8|OK|OK|OK
-almalinux9|OK|OK|OK
-oracle8|OK|OK|OK
-oracle9|OK|OK|OK
-rockylinux8|OK|OK|OK
-rockylinux9|OK|OK|OK
-stream8|OK|OK|OK
-stream9|OK|OK|OK
-fc39|OK|OK|OK
-fc40|OK|OK|OK
-leap15.5|OK|OK|OK
-leap15.6|OK|OK|OK
-amznlinux2023|OK|OK|OK
-mageia8|OK|OK|NA
-mageia9|OK|OK|NA
-debian11|OK|OK|OK
-debian12|OK|OK|OK
-bionic|OK|OK|OK
-focal|OK|OK|OK
-jammy|OK|OK|OK
-lunar|OK|OK|OK
-noble|OK|OK|OK
+almalinux8|NO|NO|NO
+almalinux9|NO|NO|NO
+oracle8|NO|NO|NO
+oracle9|NO|NO|NO
+rockylinux8|NO|NO|NO
+rockylinux9|NO|NO|NO
+stream8|NO|NO|NO
+stream9|NO|NO|NO
+fc39|NO|NO|NO
+fc40|NO|NO|NO
+leap15.5|NO|NO|NO
+leap15.6|NO|NO|NO
+amznlinux2023|NO|NO|NO
+mageia8|NO|NO|NA
+mageia9|NO|NO|NA
+debian11|NO|NO|NO
+debian12|NO|NO|NO
+bionic|NO|NO|NO
+focal|NO|NO|NO
+jammy|NO|NO|NO
+lunar|NO|NO|NO
+noble|NO|NO|NO
 
-* indimail-mta, indimail Tested on 16-May-2024
-* indimail-web Tested on 19-May-2024
-* indimail, indimail-mta for mageia8, mageia9 ested on 22-May-2024
+* indimail-mta, indimail Tested on XX-Nov-2024
+* indimail-web Tested on XX-Nov-2024
+* indimail, indimail-mta for mageia8, mageia9 ested on XX-Nov-2024
 
 *Built using indimail source packages*
 
@@ -1103,14 +1103,14 @@ Build Date: Wed, 16 May 2024
 
 Image|indimail-mta|virtualdomains|webmail
 -----|------------|--------------|-------
-alpine|OK|OK|NA
-archlinux|OK|OK|NA
-gentoo|OK|OK|NA
-fedora|OK|OK|OK
-ubi8|OK|OK|NA
-ubi9|OK|OK|NA
+alpine|NO|NO|NA
+archlinux|NO|NO|NA
+gentoo|NO|NO|NA
+fedora|NO|NO|NO
+ubi8|NO|NO|NA
+ubi9|NO|NO|NA
 
-* Tested on 16-May-2024
+* Tested on XX-Nov-2024
 
 * OK - Test successful
 * NO - Test failed
