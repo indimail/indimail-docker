@@ -76,7 +76,6 @@ tag|OS Distribution|indimai-mta|indimail|webmail
 bionic|Ubuntu 18.04|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-bionic.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-bionic.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-bionic.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-bionic.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-bionic.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-bionic.yml)
 focal|Ubuntu 20.04|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-focal.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-focal.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-focal.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-focal.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-focal.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-focal.yml)
 jammy|Ubuntu 22.04|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-jammy.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-jammy.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-jammy.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-jammy.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-jammy.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-jammy.yml)
-lunar|Ubuntu 23.04|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-lunar.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-lunar.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-lunar.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-lunar.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-lunar.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-lunar.yml)
 noble|Ubuntu 23.04|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-noble.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-noble.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-noble.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-noble.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-noble.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-noble.yml)
 debian10|Debian10|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-debian10.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-debian10.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-debian10.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-debian10.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-debian10.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-debian10.yml)
 debian11|Debian11|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-debian11.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-mta-debian11.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-debian11.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-debian11.yml)|[![ghcr build status](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-debian11.yml/badge.svg)](https://github.com/indimail/indimail-docker/actions/workflows/indimail-web-debian11.yml)
@@ -1043,7 +1042,7 @@ Another advice would be to avoid Redhat images. Use the Rockylinux, Almalinux im
 This repository also has build scripts that help in generating docker/podman images. These are the main scripts for building docker/podman images for indimail, indimail-mta, indimail-web. They build and push the images to [hub.docker.com](https://hub.docker.com/u/cprogrammer)
 
 The recommended steps are
-1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, almalinux9, lunar, jammy, focal, bionic, debian10, debian11, debian12, fc40, fc41, leap15.5, oracle8, rockylinux8, rockylinux9, tumbleweed.
+1. run buildall-bin-from-obs.yml to build indimail, indimail-mta packages for packages availabe on OpenSUSE Build Service. This are almalinux8, almalinux9, jammy, focal, bionic, debian10, debian11, debian12, fc40, fc41, leap15.5, oracle8, rockylinux8, rockylinux9, tumbleweed.
 2. run buildall-bin-from-src when indimail, indimail-mta sources are updated or when a new distribution is added
 3. run buildall-src-image occasionaly. This will build intermediate base images having development and other packages needed to build the indimail, indimail-mta packages. This is done only for alpine, archlinux, gentoo, ubi8, centos-stream8, centos-stream9. Once you have the intermediate base images you can run buildall-bin-from-src as and when indimail, indimail-mta sources are updated.
 
@@ -1066,7 +1065,7 @@ All images on the docker.io and ghcr.io are now tested using the [testdocker scr
 
 *Built using indimail binary packages*
 
-Build Date: Mon, 11 Nov 2024 (Testing not yet started)
+Build Date: Tue, 24 Dec 2024 (Testing not yet started)
 
 Image|indimail-mta|virtualdomains|webmail
 -----|------------|--------------|-------
@@ -1090,16 +1089,15 @@ debian12|NO|NO|NO
 bionic|NO|NO|NO
 focal|NO|NO|NO
 jammy|NO|NO|NO
-lunar|NO|NO|NO
 noble|NO|NO|NO
 
-* indimail-mta, indimail Tested on XX-Nov-2024
-* indimail-web Tested on XX-Nov-2024
-* indimail, indimail-mta for mageia8, mageia9 ested on XX-Nov-2024
+* indimail-mta, indimail Tested on XX-Dec-2024
+* indimail-web Tested on XX-Dec-2024
+* indimail, indimail-mta for mageia8, mageia9 Tested on XX-Dec-2024
 
 *Built using indimail source packages*
 
-Build Date: Wed, 16 May 2024
+Build Date: Tue, 24 Dec 2024
 
 Image|indimail-mta|virtualdomains|webmail
 -----|------------|--------------|-------
@@ -1110,7 +1108,7 @@ fedora|NO|NO|NO
 ubi8|NO|NO|NA
 ubi9|NO|NO|NA
 
-* Tested on XX-Nov-2024
+* Tested on XX-Dec-2024
 
 * OK - Test successful
 * NO - Test failed
