@@ -9,7 +9,7 @@ LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docke
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root /usr/local/srctmp /var/log/build \
 	&& touch /usr/local/srctmp/incomplete \
-	&& dnf config-manager --set-enabled ubi-9-baseos-source ubi-9-appstream-source \
+	&& dnf config-manager --set-enabled ubi-9-baseos-source-rpms ubi-9-appstream-source-rpms \
 	&& dnf -y erase subscription-manager \
 	&& dnf -y install \
 		https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
