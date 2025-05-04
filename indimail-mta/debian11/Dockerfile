@@ -1,7 +1,18 @@
 # docker build -f dockerfile.debian11 -t cprogrammer/indimail-mta:debian11
 FROM debian:11
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-mta:debian11
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/indimail-mta/debian11/Dockerfile
+EXPOSE 25/tcp
+EXPOSE 106/tcp
+EXPOSE 209/tcp
+EXPOSE 366/tcp
+EXPOSE 465/tcp
+EXPOSE 587/tcp
+EXPOSE 110/tcp
+EXPOSE 143/tcp
+EXPOSE 993/tcp
+EXPOSE 995/tcp
+EXPOSE 3000/udp
 
 # Freshen RUN apt-get -y update
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \

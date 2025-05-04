@@ -1,7 +1,18 @@
 # docker build -f dockerfile.oracle8 -t cprogrammer/indimail-mta:oracle8
 FROM oraclelinux:8
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-mta:oracle8
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/indimail-mta/oracle8/Dockerfile
+EXPOSE 25/tcp
+EXPOSE 106/tcp
+EXPOSE 209/tcp
+EXPOSE 366/tcp
+EXPOSE 465/tcp
+EXPOSE 587/tcp
+EXPOSE 110/tcp
+EXPOSE 143/tcp
+EXPOSE 993/tcp
+EXPOSE 995/tcp
+EXPOSE 3000/udp
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
