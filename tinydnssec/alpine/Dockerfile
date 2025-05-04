@@ -1,6 +1,8 @@
 # docker build -f dockerfile.alpine -t cprogrammer/indimail:alpine
 From alpine:latest
 MAINTAINER cprogrammer
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/tinydnssec/alpine/Dockerfile
+EXPOSE 53/tcp
 
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root /usr/local/src \

@@ -1,7 +1,25 @@
 # docker build -f dockerfile.oracle9 -t cprogrammer/indimail-web:oracle9
 FROM oraclelinux:9
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-web:oracle9
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/almalinux9/oracle9/Dockerfile
+EXPOSE 25/tcp
+EXPOSE 80/tcp
+EXPOSE 106/tcp
+EXPOSE 209/tcp
+EXPOSE 366/tcp
+EXPOSE 443/tcp
+EXPOSE 465/tcp
+EXPOSE 587/tcp
+EXPOSE 110/tcp
+EXPOSE 143/tcp
+EXPOSE 993/tcp
+EXPOSE 995/tcp
+EXPOSE 3000/udp
+EXPOSE 4000/tcp
+EXPOSE 4110/tcp
+EXPOSE 4143/tcp
+EXPOSE 9110/tcp
+EXPOSE 9143/tcp
 
 # Freshen RUN dnf update
 RUN export HOSTNAME=indimail.org \
