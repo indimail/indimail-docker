@@ -118,7 +118,7 @@ do
 			keyg="y"
 		fi
 		if [ " $keyg" = " y" -o " $keyg" = " Y" ] ; then
-			$command push "ghcr.io/$github_owner/$j:$i"
+			$command push ghcr.io/$github_owner/$j:$i
 		fi
 		)  2>&1 | tee /tmp/$j-$i.build
 		/bin/rm -f Dockerfile

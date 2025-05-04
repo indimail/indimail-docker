@@ -75,7 +75,7 @@ do
 		key="y"
 	fi
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		$command push cprogrammer/indimail-src:$tag
+		$command push docker.io/cprogrammer/indimail-src:$tag
 	fi
 
 	if [ $non_interactive -eq 0 ] ; then
@@ -85,6 +85,6 @@ do
 		key="y"
 	fi
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		$command push "ghcr.io/$github_owner/indimail-src:$tag"
+		$command push ghcr.io/$github_owner/indimail-src:$tag
 	fi
 done

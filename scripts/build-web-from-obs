@@ -88,7 +88,7 @@ do
 		key="y"
 	fi
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		$command push "ghcr.io/$github_owner/indimail-web:$i"
+		$command push ghcr.io/$github_owner/indimail-web:$i
 	fi
 
 	if [ $non_interactive -eq 0 ] ; then

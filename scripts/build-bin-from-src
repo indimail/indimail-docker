@@ -74,7 +74,7 @@ do
 		key="y"
 	fi
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		$command push "ghcr.io/$github_owner/$pkg:$tag"
+		$command push ghcr.io/$github_owner/$pkg:$tag
 	fi
 	if [ $non_interactive -eq 0 ] ; then
 		echo -n "$i: Push src to docker.io (Y/N) - "
@@ -83,7 +83,7 @@ do
 		key="y"
 	fi
 	if [ " $key" = " y" -o " $key" = " Y" ] ; then
-		$command push cprogrammer/$pkg:$tag
+		$command push docker.io/cprogrammer/$pkg:$tag
 	fi
 	/bin/rm -f Dockerfile
 done
