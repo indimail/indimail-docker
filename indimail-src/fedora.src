@@ -1,7 +1,7 @@
 # docker build -f fedora.src -t cprogrammer/indimail-src:fedora
 FROM fedora:latest
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source https://github.com/indimail/indimail-docker
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/indimail-src/fedora.src
 
 RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& dnf -y install 'dnf-command(config-manager)' \

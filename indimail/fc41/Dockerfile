@@ -1,7 +1,23 @@
 # docker build -f dockerfile.fc41 -t cprogrammer/indimail:fc41
 FROM fedora:41
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/indimail/indimail:fc41
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/indimail/fc41/Dockerfile
+EXPOSE 25/tcp
+EXPOSE 106/tcp
+EXPOSE 209/tcp
+EXPOSE 366/tcp
+EXPOSE 465/tcp
+EXPOSE 587/tcp
+EXPOSE 110/tcp
+EXPOSE 143/tcp
+EXPOSE 993/tcp
+EXPOSE 995/tcp
+EXPOSE 3000/udp
+EXPOSE 4000/tcp
+EXPOSE 4110/tcp
+EXPOSE 4143/tcp
+EXPOSE 9110/tcp
+EXPOSE 9143/tcp
 
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
