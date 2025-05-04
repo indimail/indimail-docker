@@ -56,8 +56,6 @@ RUN export HOSTNAME=indimail.org \
 		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \
-	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:monitoring/openSUSE_Tumbleweed/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& sed -i -e 's{rpm.install.excludedocs = yes{rpm.install.excludedocs = no{' /etc/zypp/zypp.conf \
 	&& rpm -e busybox-diffutils \
