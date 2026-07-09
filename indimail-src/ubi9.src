@@ -28,13 +28,13 @@ RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 		tar xf mrtg.tar.gz && /bin/rm -f mrtg.tar.gz; \
 		cd mrtg-*; \
 		./configure --prefix=/usr; make && make install; \
-		# gsasl
+		# gdbm
 		cd /usr/local/srctmp; \
-		wget -nv https://ftp.gnu.org/gnu/gdbm/gdbm-1.23.tar.gz; \
+		wget -nv https://ftp.gnu.org/gnu/gdbm/gdbm-1.25.tar.gz \
 			-O /usr/local/srctmp/gdbm.tar.gz; \
 		tar xf gdbm.tar.gz && /bin/rm -f gdbm.tar.gz; \
 		cd gdbm-*; \
-		./configure --prefix=/usr; make && make install; \
+		./configure --prefix=/usr; make && make install-strip; \
 		# indimail
 		cd /usr/local/srctmp; \
 		git clone --no-tags --no-recurse-submodules --depth=1 https://github.com/indimail/libqmail.git; \
