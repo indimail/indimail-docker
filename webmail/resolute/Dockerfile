@@ -31,8 +31,6 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		/etc/dpkg/dpkg.cfg.d/excludes \
 	&& apt-get -y update \
 	&& apt-get -y install curl wget gnupg2 apt-utils \
-	&& curl -fsSL https://dev.mysql.com/get/mysql-apt-config_0.8.29-1_all.deb -o /root/Downloads/mysql-apt_config.deb \
-	&& apt-get -y install /root/Downloads/mysql-apt_config.deb \
 	&& (apt-get -y install mailutils || apt-get -y remove postfix cpio || exit 0) \
 	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/xUbuntu_26.04/Release.key | \
 		gpg --dearmor > /etc/apt/trusted.gpg.d/home_mbhangui.gpg \
@@ -40,7 +38,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"             > /etc/apt/preferences.d/preferences \
 	&& apt-get -y update \
 	&& apt-get -y install \
-		libmysqlclient21 \
+		libmysqlclient24 \
 		debianutils \
 		binutils \
 		cron \
@@ -73,7 +71,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& apt-get -y install \
 		indimail-spamfilter \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org >/dev/null 2>/tmp/cert.log \
-	&& apt-get -y install \
+	&& apt-get -y install --allow-downgrades \
 		apache2 \
 		php \
 		php-mysql \
@@ -97,6 +95,7 @@ RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 		libdigest-hmac-perl \
 		gsasl \
 	&& update-alternatives --config mta \
+	&& apt -y autoremove \
 	&& mkdir -p /var/log/build \
 	&& (set -e; \
 		a2enmod proxy_fcgi setenvif ssl; \
