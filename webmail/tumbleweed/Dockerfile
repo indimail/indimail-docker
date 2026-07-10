@@ -24,7 +24,8 @@ EXPOSE 9143/tcp
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
-	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
+	&& echo "rpm.install.exclude = no"     > /etc/zypp/zypp.conf.d/zypp_rpm.conf \
+	&& echo "rpm.install.excludedocs = no" > /etc/zypp/zypp.conf.d/zypp_docs.conf \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
@@ -56,9 +57,11 @@ RUN export HOSTNAME=indimail.org \
 		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo \
 		https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \
+	&& zypper --non-interactive addrepo \
+		https://download.opensuse.org/repositories/server:monitoring/openSUSE_Tumbleweed/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
-	&& sed -i -e 's{rpm.install.excludedocs = yes{rpm.install.excludedocs = no{' /etc/zypp/zypp.conf \
-	&& rpm -e busybox-diffutils \
+	&& zypper --non-interactive --gpg-auto-import-keys install mariadb \
+	&& /bin/rm -f /etc/my.cnf \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail \
 		indimail-mta \
@@ -83,16 +86,20 @@ RUN export HOSTNAME=indimail.org \
 		php-intl \
 		php-xmlwriter \
 		php-zip \
+		php-fpm \
 		mailx \
+	&& ls -d /var/indimail/mysqldb/data/indimail /var/indimail/mysqldb/data/ /var/indimail/mysqldb/data/mysql >/dev/null \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
-	&& mkdir -p /var/log/build \
+	&& mkdir -p /var/log/build /var/spool/cron/tabs \
 	&& (cp -rp /usr/share/roundcubemail/plugins/* /srv/www/roundcubemail/plugins; \
 		systemctl disable sshd mariadb; \
 		a2enmod php8; \
 		sed -i -e 's{^${LoadModule php_module /usr/lib64/apache2-prefork/mod_php8.so{' /etc/apache2/loadmodule.conf; \
+		ln -s /etc/indimail/indimail.cnf /etc/my.cnf; \
 		/usr/libexec/indimail/roundcube_config) >/var/log/build/roundcube.log 2>&1 \
+	&& ls -d /var/indimail/mysqldb/data/RoundCube_db >/dev/null \
 	&& (echo "Build Succeeded" && gzip /var/log/build/roundcube.log) || (echo "Build Failed" && cat /var/log/build/roundcube.log && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
 		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/roundcube.log.gz && exit 1)

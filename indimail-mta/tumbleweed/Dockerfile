@@ -16,7 +16,7 @@ EXPOSE 3000/udp
 
 RUN export HOSTNAME=indimail.org \
 	&& mkdir -p /root \
-	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
+	&& echo "rpm.install.exclude = no" > /etc/zypp/zypp.conf.d/zypp_rpm.conf \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
@@ -45,7 +45,6 @@ RUN export HOSTNAME=indimail.org \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
-	&& rpm -e busybox-diffutils \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail-mta \
 		logalert \

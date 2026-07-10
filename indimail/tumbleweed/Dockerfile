@@ -22,7 +22,7 @@ EXPOSE 9143/tcp
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
-	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
+	&& echo "rpm.install.exclude = no" > /etc/zypp/zypp.conf.d/zypp_rpm.conf \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		man-pages \
@@ -49,9 +49,12 @@ RUN export HOSTNAME=indimail.org \
 		iputils \
 		patch \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Tumbleweed/home:mbhangui.repo \
+	&& zypper addrepo https://download.opensuse.org/repositories/server:monitoring/openSUSE_Tumbleweed/server:monitoring.repo \
 	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/openSUSE_Tumbleweed/server:database.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
-	&& rpm -e busybox-diffutils \
+	&& zypper --non-interactive --gpg-auto-import-keys install mariadb \
+	&& /bin/rm -f /etc/my.cnf \
+	&& mkdir -p /var/spool/cron/tabs \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail-mta \
 		logalert \
@@ -66,9 +69,11 @@ RUN export HOSTNAME=indimail.org \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+	&& ls -d /var/indimail/mysqldb/data/indimail /var/indimail/mysqldb/data/ /var/indimail/mysqldb/data/mysql >/dev/null \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& systemctl disable sshd \
+	&& ln -s /etc/indimail/indimail.cnf /etc/my.cnf \
 	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
