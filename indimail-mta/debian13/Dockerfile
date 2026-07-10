@@ -18,9 +18,9 @@ EXPOSE 3000/udp
 RUN export HOSTNAME=indimail.org DEBIAN_FRONTEND=noninteractive \
 	&& mkdir -p /root \
 	&& apt-get -y update \
-	&& apt-get -y install wget gnupg2 apt-utils coreutils \
-	&& wget -nv https://download.opensuse.org/repositories/home:mbhangui/Debian_13/Release.key -O - | apt-key add - \
-	&& printf "deb http://download.opensuse.org/repositories/home:/mbhangui/Debian_13/ /\n" > /etc/apt/sources.list.d/indimail.list  \
+	&& apt-get -y install curl gnupg2 apt-utils coreutils \
+	&& printf 'deb http://download.opensuse.org/repositories/home:/mbhangui/Debian_13/ /' | tee /etc/apt/sources.list.d/indimail.list \
+	&& curl -fsSL https://download.opensuse.org/repositories/home:mbhangui/Debian_13/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/indimail.gpg > /dev/null \
 	&& printf "Package: *\nPin: origin download.opensuse.org\nPin-Priority: 1001\n"         > /etc/apt/preferences.d/preferences \
 	&& apt-get -y update \
 	&& apt-get -y install \
