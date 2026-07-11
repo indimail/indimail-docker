@@ -1,7 +1,7 @@
-# docker build -f dockerfile.leap15.6 -t cprogrammer/indimail-web:leap15.6
-FROM opensuse/leap:15.6
+# docker build -f dockerfile.leap16.0 -t cprogrammer/indimail-web:leap16.0
+FROM opensuse/leap:16.0
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/almalinux9/leap15.6/Dockerfile
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/almalinux9/leap16.0/Dockerfile
 EXPOSE 25/tcp
 EXPOSE 80/tcp
 EXPOSE 106/tcp
@@ -24,7 +24,8 @@ EXPOSE 9143/tcp
 RUN export HOSTNAME=indimail.org \
 	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
-	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
+	&& echo "rpm.install.exclude = no" > /etc/zypp/zypp.conf.d/zypp_rpm.conf \
+	&& echo "rpm.install.excludedocs = no" > /etc/zypp/zypp.conf.d/zypp_docs.conf \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
@@ -40,7 +41,6 @@ RUN export HOSTNAME=indimail.org \
 		telnet \
 		openssh \
 		which \
-		systemd-sysvinit \
 		sudo \
 		strace \
 		lsof \
@@ -50,15 +50,17 @@ RUN export HOSTNAME=indimail.org \
 		curl \
 		glibc-locale-base \
 	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.6/home:mbhangui.repo \
+		https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_16.0/home:mbhangui.repo \
 	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:database/15.6/server:database.repo \
+		https://download.opensuse.org/repositories/server:database/16.0/server:database.repo \
 	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:monitoring/15.6/server:monitoring.repo \
+		https://download.opensuse.org/repositories/server:monitoring/16.0/server:monitoring.repo \
 	&& zypper --non-interactive addrepo \
-		https://download.opensuse.org/repositories/server:php:applications/15.6/server:php:applications.repo \
+		https://download.opensuse.org/repositories/server:php:applications/16.0/server:php:applications.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
-	&& sed -i -e 's{rpm.install.excludedocs = yes{rpm.install.excludedocs = no{' /etc/zypp/zypp.conf \
+	&& zypper --non-interactive --gpg-auto-import-keys install mariadb \
+	&& /bin/rm -f /etc/my.cnf \
+	&& ln -sf /etc/indimail/indimail.cnf /etc/my.cnf \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail \
 		indimail-mta \
@@ -73,28 +75,29 @@ RUN export HOSTNAME=indimail.org \
 		ezmlm-idx-mysql \
 		iwebadmin \
 		ircube \
-		apache2-mod_php7 \
-		php7-ctype \
-		php7-curl \
-		php7-exif \
-		php7-fileinfo \
-		php7-gd \
-		php7-imagick \
-		php7-intl \
-		php-xmlwriter \
-		php7-xmlrpc \
-		php7-zip \
+		apache2-mod_php8 \
+		php8-ctype \
+		php8-curl \
+		php8-exif \
+		php8-fileinfo \
+		php8-gd \
+		php8-imagick \
+		php8-intl \
+		php8-zip \
+		php-fpm \
 		roundcubemail \
 		mailx \
+	&& ls -d /var/indimail/mysqldb/data/indimail /var/indimail/mysqldb/data/ /var/indimail/mysqldb/data/mysql >/dev/null \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool \
 		--config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
 	&& mkdir -p /var/log/build \
 	&& (cp -rp /usr/share/roundcubemail/plugins/* /srv/www/roundcubemail/plugins; \
 		systemctl disable sshd mariadb; \
-		a2enmod php7; \
-		sed -i -e 's{^${LoadModule php7_module /usr/lib64/apache2-prefork/mod_php7.so{' /etc/apache2/loadmodule.conf; \
+		a2enmod php8; \
+		sed -i -e 's{^${LoadModule php8_module /usr/lib64/apache2-prefork/mod_php8.so{' /etc/apache2/loadmodule.conf; \
 		/usr/libexec/indimail/roundcube_config) >/var/log/build/roundcube.log 2>&1 \
+	&& ls -d /var/indimail/mysqldb/data/RoundCube_db >/dev/null \
 	&& (echo "Build Succeeded" && gzip /var/log/build/roundcube.log) || (echo "Build Failed" && cat /var/log/build/roundcube.log && exit 1) \
 	&& (test -d /var/indimail/mysqldb/data/RoundCube_db && echo "RoundCube db creation succeeded") || \
 		(echo "RoundCube db creation failed" && gunzip -c /var/log/build/roundcube.log.gz && exit 1)

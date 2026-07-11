@@ -1,12 +1,22 @@
-# docker build -f dockerfile.leap15.4 -t cprogrammer/indimail:leap15.4
-FROM opensuse/leap:15.4
+# docker build -f dockerfile.leap16.0 -t cprogrammer/indimail-mta:leap16.0
+FROM opensuse/leap:16.0
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/mbhangui/indimail:leap15.4
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/indimail-mta/leap16.0/Dockerfile
+EXPOSE 25/tcp
+EXPOSE 106/tcp
+EXPOSE 209/tcp
+EXPOSE 366/tcp
+EXPOSE 465/tcp
+EXPOSE 587/tcp
+EXPOSE 110/tcp
+EXPOSE 143/tcp
+EXPOSE 993/tcp
+EXPOSE 995/tcp
+EXPOSE 3000/udp
 
 RUN export HOSTNAME=indimail.org \
-	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
-	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
+	&& echo "rpm.install.exclude = no" > /etc/zypp/zypp.conf.d/zypp_rpm.conf \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
@@ -22,7 +32,6 @@ RUN export HOSTNAME=indimail.org \
 		telnet \
 		openssh \
 		which \
-		systemd-sysvinit \
 		sudo \
 		strace \
 		lsof \
@@ -31,31 +40,29 @@ RUN export HOSTNAME=indimail.org \
 		perl-Digest-MD5 \
 		perl-Digest-SHA1 \
 		perl-Net-SSLeay \
-		perl-IO-Socket-INET6 \
 		iputils \
 		patch \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.4/home:mbhangui.repo \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/15.4/server:database.repo \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/15.4/server:monitoring.repo \
+		glibc-locale-base \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_16.0/home:mbhangui.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/16.0/server:database.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/16.0/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail-mta \
 		logalert \
 		procmail \
-		indimail \
-		indimail-access \
 		indimail-auth \
+		indimail-access \
 		indimail-utils \
 		bogofilter-wordlist \
 		indimail-spamfilter \
-		ezmlm-idx \
-		ezmlm-idx-cgi \
-		ezmlm-idx-mysql \
+		mailx \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
-	&& systemctl disable sshd \
+	&& [ -x /usr/bin/systemctl ] && systemctl disable sshd \
+	&& unset HOSTNAME \
 	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
 ENTRYPOINT ["docker-entrypoint"]
-CMD ["indimail"]
+CMD ["indimail-mta"]

@@ -72,7 +72,7 @@ RUN export HOSTNAME=indimail.org \
 	&& ls -d /var/indimail/mysqldb/data/indimail /var/indimail/mysqldb/data/ /var/indimail/mysqldb/data/mysql >/dev/null \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
-	&& systemctl disable sshd \
+	&& [ -x /usr/bin/systemctl ] && systemctl disable sshd \
 	&& ln -s /etc/indimail/indimail.cnf /etc/my.cnf \
 	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 

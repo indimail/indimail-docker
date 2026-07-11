@@ -1,10 +1,10 @@
-name: indimail-web:leap15.6 container image
+name: indimail-web:leap16.0 container image
 
 on:
   push:
     paths:
-      - '**/webmail/leap15.6/**'
-      - .github/workflows/indimail-web-leap15.6.yml
+      - '**/webmail/leap16.0/**'
+      - .github/workflows/indimail-web-leap16.0.yml
       - '!**.md'
   workflow_dispatch:
 
@@ -23,11 +23,11 @@ jobs:
 
       - name: build
         run: |
-          cp webmail/leap15.6/Dockerfile .
-          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:leap15.6" .
+          cp webmail/leap16.0/Dockerfile .
+          docker build --tag "ghcr.io/${{ github.repository_owner }}/indimail-web:leap16.0" .
 
       - name: push
         run: |
-          docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:leap15.6"
-          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:leap15.6" docker.io/cprogrammer/indimail-web:leap15.6
-          docker push docker.io/cprogrammer/indimail-web:leap15.6
+          docker push "ghcr.io/${{ github.repository_owner }}/indimail-web:leap16.0"
+          docker image tag "ghcr.io/${{ github.repository_owner }}/indimail-web:leap16.0" docker.io/cprogrammer/indimail-web:leap16.0
+          docker push docker.io/cprogrammer/indimail-web:leap16.0

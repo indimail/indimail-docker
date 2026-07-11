@@ -1,7 +1,7 @@
-# docker build -f dockerfile.leap15.6 -t cprogrammer/indimail:leap15.6
-FROM opensuse/leap:15.6
+# docker build -f dockerfile.leap16.0 -t cprogrammer/indimail:leap16.0
+FROM opensuse/leap:16.0
 MAINTAINER cprogrammer
-LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/indimail/leap15.6/Dockerfile
+LABEL org.opencontainers.image.source=https://github.com/indimail/indimail-docker/blob/master/indimail/leap16.0/Dockerfile
 EXPOSE 25/tcp
 EXPOSE 106/tcp
 EXPOSE 209/tcp
@@ -19,10 +19,9 @@ EXPOSE 4143/tcp
 EXPOSE 9110/tcp
 EXPOSE 9143/tcp
 
-RUN export HOSTNAME=indimail.org \
-	MYSQL_SOCKET=/run/mysqld/mysqld.sock \
+RUN export HOSTNAME=indimail.org MYSQL_SOCKET=/run/mysqld/mysqld.sock \
 	&& mkdir -p /root \
-	&& sed -i 's{rpm.install.exclude.*=.*{rpm.install.exclude = no{' /etc/zypp/zypp.conf \
+	&& echo "rpm.install.exclude = no" > /etc/zypp/zypp.conf.d/zypp_rpm.conf \
 	&& zypper --non-interactive update \
 	&& zypper --non-interactive install \
 		wget \
@@ -38,7 +37,6 @@ RUN export HOSTNAME=indimail.org \
 		telnet \
 		openssh \
 		which \
-		systemd-sysvinit \
 		sudo \
 		strace \
 		lsof \
@@ -47,14 +45,16 @@ RUN export HOSTNAME=indimail.org \
 		perl-Digest-MD5 \
 		perl-Digest-SHA1 \
 		perl-Net-SSLeay \
-		perl-IO-Socket-INET6 \
 		iputils \
 		patch \
 		glibc-locale-base \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_15.6/home:mbhangui.repo \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/15.6/server:database.repo \
-	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/15.6/server:monitoring.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:mbhangui/openSUSE_Leap_16.0/home:mbhangui.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:database/16.0/server:database.repo \
+	&& zypper --non-interactive addrepo https://download.opensuse.org/repositories/server:monitoring/16.0/server:monitoring.repo \
 	&& zypper --non-interactive --gpg-auto-import-keys refresh \
+	&& zypper --non-interactive --gpg-auto-import-keys install mariadb \
+	&& /bin/rm -f /etc/my.cnf \
+	&& mkdir -p /var/spool/cron/tabs \
 	&& zypper --non-interactive --gpg-auto-import-keys install \
 		indimail-mta \
 		logalert \
@@ -68,9 +68,10 @@ RUN export HOSTNAME=indimail.org \
 		ezmlm-idx \
 		ezmlm-idx-cgi \
 		ezmlm-idx-mysql \
+	&& ls -d /var/indimail/mysqldb/data/indimail /var/indimail/mysqldb/data/ /var/indimail/mysqldb/data/mysql >/dev/null \
 	&& echo "Creating self-signed certificate" \
 	&& /usr/sbin/svctool --config=cert --postmaster=postmaster@indimail.org --common_name=indimail.org > /dev/null 2>/tmp/cert.log \
-	&& systemctl disable sshd \
+	&& [ -x /usr/bin/systemctl ] && systemctl disable sshd \
 	&& /bin/rm -rf /run \
 	&& echo "Build Completed" 
 COPY .alias .bash_profile .bashrc .exrc .gfuncs .glogout .indent.pro .vimrc /root/
